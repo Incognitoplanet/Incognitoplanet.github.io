@@ -30,6 +30,12 @@ body {
 }
 
 .corner img {
-    width: 100px;
-    height: 100px;
+    width: 100px; /* You can change the initial size as needed */
+    height: 100px; /* You can change the initial size as needed */
+}
+
+.bottom-left img,
+.bottom-right img {
+    position: absolute;
+    bottom: 0;
 }
