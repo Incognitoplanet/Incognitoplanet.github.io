@@ -8,6 +8,27 @@
     <title>The Hunt</title>
 </head>
 <body>
+    <div class="corner top-left">
+        <img src="fire.gif" alt="Fire" class="corner-image" onclick="changeSize(this)">
+    </div>
+    <div class="corner top-right">
+        <img src="fire.gif" alt="Fire" class="corner-image" onclick="changeSize(this)">
+    </div>
+    <div class="corner bottom-left">
+        <img src="fire.gif" alt="Fire" class="corner-image" onclick="changeSize(this)">
+    </div>
+    <div class="corner bottom-right">
+        <img src="fire.gif" alt="Fire" class="corner-image" onclick="changeSize(this)">
+    </div>
     
+    <script>
+        function changeSize(element) {
+            var newSize = prompt("Enter the new size (e.g., 150px):");
+            if (newSize !== null) {
+                element.style.width = newSize;
+                element.style.height = newSize;
+            }
+        }
+    </script>
 </body>
 </html>
