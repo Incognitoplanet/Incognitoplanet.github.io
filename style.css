@@ -7,8 +7,6 @@ body {
 
 .corner {
     position: absolute;
-    width: 100px; /* You can change the initial size as needed */
-    height: 100px; /* You can change the initial size as needed */
 }
 
 .top-left {
@@ -29,4 +27,9 @@ body {
 .bottom-right {
     bottom: 0;
     right: 0;
+}
+
+.corner img {
+    width: 100px; /* You can change the initial size as needed */
+    height: 100px; /* You can change the initial size as needed */
 }
