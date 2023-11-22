@@ -1,80 +1,363 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css">
-    <link rel="icon" type="image/png" href="spider-man.png">
-    <style>
-        @font-face {
-            font-family: 'Digital7';
-            src: url('digital-7.ttf') format('truetype');
-            font-weight: normal;
-            font-style: normal;
-        }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hunt</title>
+  <style>
+    body {
+      font-family: 'digital-7', sans-serif;
+      background-color: #2c3e50; /* Dark Blue-Grey */
+      color: #ecf0f1; /* Off-White */
+      margin: 20px;
+      text-align: center;
+      position: relative;
+    }
 
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-        }
+    #container {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #34495e; /* Blue-Grey */
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+    }
 
-        body {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            background: #000000 url('background-image.jpg') center/cover no-repeat;
-            font-family: 'Digital7', sans-serif;
-            color: #FF0000;
-        }
+    button {
+      padding: 10px;
+      font-size: 16px;
+      background-color: #2ecc71; /* Emerald Green */
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
 
-        .container {
-            width: 80%;
-            max-width: 400px;
-            padding: 20px;
-            background-color: rgba(0, 0, 0, 0.7);
-            border: 2px solid white;
-            border-radius: 10px;
-            text-align: center;
-        }
+    #copperKeyButton {
+      width: auto;
+      margin-bottom: 10px;
+    }
 
-        .corner {
-            position: fixed;
-            width: 15vmin;
-            max-width: 50px;
-            height: auto;
-            z-index: 1; /* Ensure the corners are above the container */
-        }
+    .line-separator {
+      width: 100%;
+      height: 1px;
+      background-color: #ecf0f1; /* Light Grey */
+      margin: 10px 0;
+    }
 
-        .top-left {
-            top: 0;
-            left: 0;
-        }
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 100; /* Set a higher z-index to make sure modals appear above other elements */
+    }
 
-        .top-right {
-            top: 0;
-            right: 0;
-        }
+    .modal-content {
+      background-color: #34495e;
+      color: #ecf0f1;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+      position: relative;
+    }
 
-        .corner-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            border-radius: 50%;
-        }
+    label,
+    input {
+      display: block;
+      margin-bottom: 10px;
+      color: #ecf0f1;
+    }
 
-        p {
-            margin-bottom: 10px;
-        }
-    </style>
+    input {
+      width: calc(100% - 20px);
+      padding: 10px;
+      border-radius: 5px;
+      color: #2c3e50; /* Dark Blue-Grey */
+    }
+
+    .close-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      font-size: 20px;
+      color: #ecf0f1;
+      cursor: pointer;
+    }
+
+    .eyeball-btn {
+      position: absolute;
+      top: 12px;
+      right: 10px;
+      cursor: pointer;
+      z-index: 1;
+    }
+
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+      border-bottom: 1px solid #ecf0f1; /* Add a border under each username variant */
+      padding-bottom: 5px; /* Adjust padding for better spacing */
+    }
+
+    .red-text {
+      color: #e74c3c; /* Alizarin Red */
+    }
+
+    .square-button {
+      width: 50px;
+      height: 50px;
+      background-color: #34495e; /* Blue-Grey */
+      color: #34495e; /* Hidden color */
+      text-align: center;
+      text-decoration: none;
+      display: inline-block;
+      font-size: 16px;
+      cursor: pointer;
+      position: absolute;
+      bottom: 10px;
+      left: 10px;
+      border-radius: 5px;
+      z-index: 2;
+      opacity: 0; /* Hide the button */
+    }
+
+    #scoreboardContainer {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #34495e;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
+      margin-top: 20px;
+      position: relative;
+      overflow: hidden;
+      z-index: 1; /* Set a lower z-index for the scoreboard to appear beneath modals */
+    }
+
+    #scoreboard {
+      list-style: none;
+      padding: 0;
+      margin: 0;
+    }
+
+    #scoreboard li {
+      display: flex;
+      justify-content: space-between;
+      margin: 10px 0;
+      padding: 10px;
+      border-bottom: 2px solid #ecf0f1;
+    }
+
+    #scoreboard li:last-child {
+      border-bottom: none;
+    }
+
+    .username {
+      font-weight: bold;
+    }
+
+    .points {
+      font-family: 'digital-7', sans-serif;
+      font-size: 20px;
+      color: #e74c3c; /* Alizarin Red */
+    }
+  </style>
+
+  <!-- Include digital-7 font -->
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=digital-7&display=swap">
 </head>
+
 <body>
-      <div class="container">
-        <p>Three hidden keys open three secret gates</p>
-        <p>Wherein the errant will be tested for worthy traits</p>
-        <p>And those with the skill to survive these straits</p>
-        <p>Will reach The End where the prize awaits</p>
+
+  <div id="container">
+    <h1 style="color: #2ecc71;">The Hunt</h1>
+
+    <div id="passwordModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('passwordModal')">&times;</span>
+        <label for="password">Enter the password:</label>
+        <input type="password" id="password">
+        <div class="eyeball-btn" onclick="togglePasswordVisibility('password')"></div>
+        <button onclick="processPassword()">Submit</button>
+      </div>
     </div>
+
+    <div id="usernameModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('usernameModal')">&times;</span>
+        <label for="username">Enter your username:</label>
+        <input type="text" id="username" autocomplete="off">
+        <button onclick="processUsername()">Submit</button>
+      </div>
+    </div>
+
+    <div id="invalidPassword" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('invalidPassword')">&times;</span>
+        <p>Invalid password. Try again later.</p>
+      </div>
+    </div>
+
+    <div id="errorMessageModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('errorMessageModal')">&times;</span>
+        <p>No more points available or username already added. Try again later.</p>
+      </div>
+    </div>
+
+    <div id="usernameExistsModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('usernameExistsModal')">&times;</span>
+        <p>Username already added. Please choose a different username.</p>
+      </div>
+    </div>
+
+    <button id="copperKeyButton" onclick="openPasswordModal()">Copper Key</button>
+    <div class="line-separator"></div>
+
+    <div id="scoreboardContainer">
+      <h2>Scoreboard</h2>
+      <ul id="scoreboard"></ul>
+    </div>
+
+    <button class="square-button" onclick="openPasswordModal()"> </button>
+  </div>
+
+  <script>
+    var password = "Parzival";
+    var resetPassword = "first-to-the-key";
+    var isPasswordEntered = false;
+    var scoreboard = [];
+    var currentPoints = 100000;
+
+    function openPasswordModal() {
+      document.getElementById('passwordModal').style.display = 'flex';
+      document.getElementById('password').value = '';
+    }
+
+    function openUsernameModal() {
+      document.getElementById('usernameModal').style.display = 'flex';
+      document.getElementById('username').value = '';
+    }
+
+    function openInvalidPasswordModal() {
+      document.getElementById('invalidPassword').style.display = 'flex';
+    }
+
+    function openErrorMessageModal() {
+      document.getElementById('errorMessageModal').style.display = 'flex';
+    }
+
+    function openUsernameExistsModal() {
+      document.getElementById('usernameExistsModal').style.display = 'flex';
+    }
+
+    function closeModal(modalId) {
+      document.getElementById(modalId).style.display = 'none';
+    }
+
+    function processPassword() {
+      var enteredPassword = document.getElementById('password').value;
+
+      if (enteredPassword === password) {
+        isPasswordEntered = true;
+        closeModal('passwordModal');
+        openUsernameModal();
+      } else if (enteredPassword === resetPassword) {
+        resetScoreboard();
+        closeModal('passwordModal');
+      } else {
+        openInvalidPasswordModal();
+      }
+    }
+
+    function processUsername() {
+      var enteredUsername = document.getElementById('username').value;
+
+      var usernameExists = scoreboard.some(function(entry) {
+        // Check if the entered username already exists in a case-insensitive manner
+        return entry.username.toLowerCase() === enteredUsername.toLowerCase();
+      });
+
+      if (currentPoints > 0 && enteredUsername && !usernameExists) {
+        addToScoreboard(enteredUsername, currentPoints);
+        currentPoints = Math.floor(currentPoints / 2);
+
+        localStorage.setItem('scoreboard', JSON.stringify(scoreboard));
+        localStorage.setItem('currentPoints', currentPoints);
+
+        updateScoreboardDisplay();
+        closeModal('usernameModal');
+      } else if (usernameExists) {
+        openUsernameExistsModal();
+      } else {
+        openErrorMessageModal();
+      }
+    }
+
+    function addToScoreboard(username, points) {
+      scoreboard.push({
+        username: username,
+        points: points
+      });
+    }
+
+    function updateScoreboardDisplay() {
+      var scoreboardList = document.getElementById("scoreboard");
+      scoreboardList.innerHTML = "";
+      scoreboard.forEach(function (entry) {
+        var listItem = document.createElement("li");
+        listItem.classList.add("red-text");
+
+        var usernameSpan = document.createElement("span");
+        usernameSpan.classList.add("username");
+        usernameSpan.appendChild(document.createTextNode(entry.username));
+
+        var pointsSpan = document.createElement("span");
+        pointsSpan.classList.add("points");
+        pointsSpan.appendChild(document.createTextNode(entry.points + " points"));
+
+        listItem.appendChild(usernameSpan);
+        listItem.appendChild(pointsSpan);
+
+        scoreboardList.appendChild(listItem);
+      });
+    }
+
+    function togglePasswordVisibility(inputId) {
+      var passwordInput = document.getElementById(inputId);
+      passwordInput.type = (passwordInput.type === 'password') ? 'text' : 'password';
+    }
+
+    function resetScoreboard() {
+      scoreboard = [];
+      currentPoints = 100000;
+      localStorage.setItem('scoreboard', JSON.stringify(scoreboard));
+      localStorage.setItem('currentPoints', currentPoints);
+      updateScoreboardDisplay();
+    }
+
+    if (localStorage.getItem('scoreboard')) {
+      scoreboard = JSON.parse(localStorage.getItem('scoreboard'));
+    }
+
+    if (localStorage.getItem('currentPoints')) {
+      currentPoints = parseInt(localStorage.getItem('currentPoints'));
+    }
+  </script>
+
 </body>
+
 </html>
