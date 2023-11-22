@@ -33,6 +33,7 @@
       border-radius: 5px;
       cursor: pointer;
       margin-bottom: 10px;
+      font-family: 'digital-7', sans-serif;
     }
 
     #copperKeyButton {
@@ -74,6 +75,7 @@
       display: block;
       margin-bottom: 10px;
       color: #ecf0f1;
+      font-family: 'digital-7', sans-serif;
     }
 
     input {
@@ -81,6 +83,15 @@
       padding: 10px;
       border-radius: 5px;
       color: #2c3e50; /* Dark Blue-Grey */
+    }
+
+    .close-btn,
+    .eyeball-btn,
+    .red-text,
+    .square-button,
+    .username,
+    .points {
+      font-family: 'digital-7', sans-serif;
     }
 
     .close-btn {
@@ -147,7 +158,7 @@
     }
 
     #scoreboard {
-      list-style: none;
+      list-style-type: none; /* Hide list item marker */
       padding: 0;
       margin: 0;
     }
@@ -169,7 +180,6 @@
     }
 
     .points {
-      font-family: 'digital-7', sans-serif;
       font-size: 20px;
       color: #e74c3c; /* Alizarin Red */
     }
@@ -188,7 +198,7 @@
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('passwordModal')">&times;</span>
         <label for="password">Enter the password:</label>
-        <input type="password" id="password">
+        <input type="password" id="password" onkeydown="if(event.key==='Enter'){processPassword()}">
         <div class="eyeball-btn" onclick="togglePasswordVisibility('password')"></div>
         <button onclick="processPassword()">Submit</button>
       </div>
@@ -198,7 +208,7 @@
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('usernameModal')">&times;</span>
         <label for="username">Enter your username:</label>
-        <input type="text" id="username" autocomplete="off">
+        <input type="text" id="username" autocomplete="off" onkeydown="if(event.key==='Enter'){processUsername()}">
         <button onclick="processUsername()">Submit</button>
       </div>
     </div>
@@ -206,7 +216,7 @@
     <div id="invalidPassword" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('invalidPassword')">&times;</span>
-        <p>Invalid password. Try again later.</p>
+        <p>The password is in another castle</p>
       </div>
     </div>
 
@@ -220,7 +230,7 @@
     <div id="usernameExistsModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('usernameExistsModal')">&times;</span>
-        <p>Username already added. Please choose a different username.</p>
+        <p>You already succeded, cheesebag</p>
       </div>
     </div>
 
@@ -228,7 +238,7 @@
     <div class="line-separator"></div>
 
     <div id="scoreboardContainer">
-      <h2>Scoreboard</h2>
+      <h2>Whats the password?</h2>
       <ul id="scoreboard"></ul>
     </div>
 
@@ -241,6 +251,21 @@
     var isPasswordEntered = false;
     var scoreboard = [];
     var currentPoints = 100000;
+
+    // Function to load scoreboard data from local storage
+    function loadScoreboardFromStorage() {
+      if (localStorage.getItem('scoreboard')) {
+        scoreboard = JSON.parse(localStorage.getItem('scoreboard'));
+        updateScoreboardDisplay();
+      }
+    }
+
+    // Function to load current points from local storage
+    function loadCurrentPointsFromStorage() {
+      if (localStorage.getItem('currentPoints')) {
+        currentPoints = parseInt(localStorage.getItem('currentPoints'));
+      }
+    }
 
     function openPasswordModal() {
       document.getElementById('passwordModal').style.display = 'flex';
@@ -349,13 +374,9 @@
       updateScoreboardDisplay();
     }
 
-    if (localStorage.getItem('scoreboard')) {
-      scoreboard = JSON.parse(localStorage.getItem('scoreboard'));
-    }
-
-    if (localStorage.getItem('currentPoints')) {
-      currentPoints = parseInt(localStorage.getItem('currentPoints'));
-    }
+    // Call functions to load data from local storage on page load
+    loadScoreboardFromStorage();
+    loadCurrentPointsFromStorage();
   </script>
 
 </body>
