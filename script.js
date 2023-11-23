@@ -77,7 +77,7 @@ function processPassword() {
 function processUsername() {
   var enteredUsername = document.getElementById('username').value;
 
-  var usernameExists = scoreboard.some(function(entry) {
+  var usernameExists = scoreboard.some(function (entry) {
     // Check if the entered username already exists in a case-insensitive manner
     return entry.username.toLowerCase() === enteredUsername.toLowerCase();
   });
