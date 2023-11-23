@@ -10,19 +10,18 @@
   <link rel="stylesheet" href="digital-7.ttf">
 
   <!-- Firebase scripts -->
-  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-analytics.js"></script>
-  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-firestore.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.6.0/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/10.6.0/firebase-analytics.js"></script>
 
-  <!-- Your custom script -->
-  <script defer src="script.js"></script>
+  <!-- Your Firebase configuration and initialization -->
+  <script defer src="firebase-config.js"></script>
+
 </head>
 
 <body>
   <div id="container">
     <h1 style="color: #2ecc71;">The Hunt</h1>
 
-    <!-- Password Modal -->
     <div id="passwordModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('passwordModal')">&times;</span>
@@ -33,7 +32,6 @@
       </div>
     </div>
 
-    <!-- Username Modal -->
     <div id="usernameModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('usernameModal')">&times;</span>
@@ -43,7 +41,6 @@
       </div>
     </div>
 
-    <!-- Other Modals -->
     <div id="invalidPassword" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('invalidPassword')">&times;</span>
@@ -65,19 +62,20 @@
       </div>
     </div>
 
-    <!-- Buttons and Separators -->
     <button id="copperKeyButton" onclick="openPasswordModal()">Copper Key</button>
     <div class="line-separator"></div>
 
-    <!-- Scoreboard Section -->
     <div id="scoreboardContainer">
       <h2></h2>
       <ul id="scoreboard"></ul>
     </div>
 
-    <!-- Square Button -->
     <button class="square-button" onclick="openPasswordModal()"> </button>
   </div>
+
+  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-analytics.js"></script>
+  <script defer src="script.js"></script>
 </body>
 
 </html>
