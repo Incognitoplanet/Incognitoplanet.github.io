@@ -1,3 +1,22 @@
+// firebase-config.js
+import { initializeApp } from 'firebase/app';
+import { getAnalytics } from 'firebase/analytics';
+
+const firebaseConfig = {
+  apiKey: 'AIzaSyDgDpECVI6erhSBlPX_wPuzuoMULtq9TUw',
+  authDomain: 'incogplanet-f8231.firebaseapp.com',
+  projectId: 'incogplanet-f8231',
+  storageBucket: 'incogplanet-f8231.appspot.com',
+  messagingSenderId: '704204409452',
+  appId: '1:704204409452:web:0f7c9b0f6a2b1f454c6649',
+  measurementId: 'G-NDHFVS2WZ3',
+};
+
+const app = initializeApp(firebaseConfig);
+const analytics = getAnalytics(app);
+
+export { app, analytics };
+
 // Your existing JavaScript code
 var password = "Parzival";
 var resetPassword = "first-to-the-key";
