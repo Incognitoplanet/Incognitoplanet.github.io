@@ -1,11 +1,11 @@
 :root {
-  --text-color: #ffffff; /* Set the custom property for text color to red */
+  --text-color: #ffffff;
 }
 
 body {
   font-family: 'digital-7', sans-serif;
   background-color: #2c3e50;
-  color: #ecf0f1; /* Default text color for body */
+  color: #ecf0f1;
   margin: 20px;
   text-align: center;
   position: relative;
@@ -39,7 +39,7 @@ button {
 }
 
 #copperKeyButton:hover {
-  transform: scale(1.1); /* Increase the size on hover */
+  transform: scale(1.1);
 }
 
 .line-separator {
@@ -60,12 +60,11 @@ button {
   justify-content: center;
   align-items: center;
   z-index: 100;
-  animation: fadeIn 0.5s ease-in-out; /* Add the fade-in animation */
 }
 
 .modal-content {
   background-color: #34495e;
-  color: #ffffff; /* Use the custom property for text color */
+  color: #ffffff;
   padding: 20px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.7);
@@ -76,7 +75,7 @@ label,
 input {
   display: block;
   margin-bottom: 10px;
-  color: #ffffff; /* Use the custom property for text color */
+  color: #ffffff;
   font-family: 'digital-7', sans-serif;
 }
 
@@ -101,7 +100,7 @@ input {
   top: 10px;
   right: 10px;
   font-size: 20px;
-  color: var(--text-color); /* Use the custom property for text color */
+  color: var(--text-color);
   cursor: pointer;
 }
 
@@ -122,7 +121,7 @@ li {
   margin: 5px 0;
   border-bottom: 1px solid #ecf0f1;
   padding-bottom: 5px;
-  color: var(--text-color); /* Use the custom property for text color */
+  color: var(--text-color);
 }
 
 .red-text {
@@ -172,7 +171,7 @@ li {
   margin: 10px 0;
   padding: 10px;
   border-bottom: 2px solid #ecf0f1;
-  color: var(--text-color); /* Use the custom property for text color in the scoreboard */
+  color: var(--text-color);
 }
 
 #scoreboard li:last-child {
