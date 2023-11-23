@@ -22,34 +22,41 @@ function loadCurrentPointsFromStorage() {
 function openPasswordModal() {
   var passwordModal = document.getElementById('passwordModal');
   passwordModal.style.display = 'flex';
+  passwordModal.classList.add('modal-fade-in'); // Add the fade-in animation class
   document.getElementById('password').value = '';
-  document.getElementById('password').focus(); // Set focus on the password field
+  document.getElementById('password').focus();
 }
 
 function openUsernameModal() {
   var usernameModal = document.getElementById('usernameModal');
   usernameModal.style.display = 'flex';
+  usernameModal.classList.add('modal-fade-in'); // Add the fade-in animation class
   document.getElementById('username').value = '';
-  document.getElementById('username').focus(); // Set focus on the username field
+  document.getElementById('username').focus();
 }
 
 function openInvalidPasswordModal() {
   var invalidPasswordModal = document.getElementById('invalidPassword');
   invalidPasswordModal.style.display = 'flex';
+  invalidPasswordModal.classList.add('modal-fade-in'); // Add the fade-in animation class
 }
 
 function openErrorMessageModal() {
   var errorMessageModal = document.getElementById('errorMessageModal');
   errorMessageModal.style.display = 'flex';
+  errorMessageModal.classList.add('modal-fade-in'); // Add the fade-in animation class
 }
 
 function openUsernameExistsModal() {
   var usernameExistsModal = document.getElementById('usernameExistsModal');
   usernameExistsModal.style.display = 'flex';
+  usernameExistsModal.classList.add('modal-fade-in'); // Add the fade-in animation class
 }
 
 function closeModal(modalId) {
-  document.getElementById(modalId).style.display = 'none';
+  var modal = document.getElementById(modalId);
+  modal.style.display = 'none';
+  modal.classList.remove('modal-fade-in'); // Remove the fade-in animation class when closing
 }
 
 function processPassword() {
