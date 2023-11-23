@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>The Hunt</title>
+  <link rel="icon" href="spider-man.png" type="image/png">
+  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="digital-7.ttf">
+
+  <!-- Firebase scripts -->
+  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-analytics.js"></script>
+</head>
+
+<body>
+  <div id="container">
+    <h1 style="color: #2ecc71;">The Hunt</h1>
+
+    <div id="passwordModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('passwordModal')">&times;</span>
+        <label for="password">Enter the password:</label>
+        <input type="password" id="password" onkeydown="if(event.key==='Enter'){processPassword()}" autofocus>
+        <div class="eyeball-btn" onclick="togglePasswordVisibility('password')"></div>
+        <button onclick="processPassword()">Submit</button>
+      </div>
+    </div>
+
+    <div id="usernameModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('usernameModal')">&times;</span>
+        <label for="username">Enter your username:</label>
+        <input type="text" id="username" autocomplete="off" onkeydown="if(event.key==='Enter'){processUsername()}" autofocus>
+        <button onclick="processUsername()">Submit</button>
+      </div>
+    </div>
+
+    <div id="invalidPassword" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('invalidPassword')">&times;</span>
+        <p>Invalid password. Try again later.</p>
+      </div>
+    </div>
+
+    <div id="errorMessageModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('errorMessageModal')">&times;</span>
+        <p>No more points available or username already added. Try again later.</p>
+      </div>
+    </div>
+
+    <div id="usernameExistsModal" class="modal">
+      <div class="modal-content">
+        <span class="close-btn" onclick="closeModal('usernameExistsModal')">&times;</span>
+        <p>Username already added. Please choose a different username.</p>
+      </div>
+    </div>
+
+    <button id="copperKeyButton" onclick="openPasswordModal()">Copper Key</button>
+    <div class="line-separator"></div>
+
+    <div id="scoreboardContainer">
+      <h2></h2>
+      <ul id="scoreboard"></ul>
+    </div>
+
+    <button class="square-button" onclick="openPasswordModal()"> </button>
+  </div>
+
+  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-app.js"></script>
+  <script defer src="https://www.gstatic.com/firebasejs/9.1.1/firebase-analytics.js"></script>
+  <script defer src="script.js"></script>
+</body>
+
+</html>
