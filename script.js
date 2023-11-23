@@ -1,17 +1,4 @@
-// Firebase configuration
-var firebaseConfig = {
-  apiKey: "AIzaSyDgDpECVI6erhSBlPX_wPuzuoMULtq9TUw",
-  authDomain: "incogplanet-f8231.firebaseapp.com",
-  projectId: "incogplanet-f8231",
-  storageBucket: "incogplanet-f8231.appspot.com",
-  messagingSenderId: "704204409452",
-  appId: "1:704204409452:web:f8a0ce43195f4ec34c6649",
-  measurementId: "G-VH15K2DG3J"
-};
-
-// Initialize Firebase
-firebase.initializeApp(firebaseConfig);
-
+// Your existing JavaScript code
 var password = "Parzival";
 var resetPassword = "first-to-the-key";
 var isPasswordEntered = false;
