@@ -1,36 +1,45 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>The Hunt</title>
-  <link rel="icon" href="spider-man.png" type="image/png">
+  <link rel="stylesheet" href="styles.css">
   <link rel="stylesheet" href="digital-7.ttf">
-  <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
+
   <div id="container">
     <h1 style="color: #2ecc71;">The Hunt</h1>
 
+    <!-- Copper Key Button with Animation -->
+    <button id="copperKeyButton" onclick="openPasswordModal()">Copper Key</button>
+    <div class="line-separator"></div>
+
+    <!-- Password Modal -->
     <div id="passwordModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('passwordModal')">&times;</span>
         <label for="password">Enter the password:</label>
-        <input type="password" id="password" onkeydown="if(event.key==='Enter'){processPassword()}" autofocus>
+        <input type="password" id="password">
         <div class="eyeball-btn" onclick="togglePasswordVisibility('password')"></div>
         <button onclick="processPassword()">Submit</button>
       </div>
     </div>
 
+    <!-- Username Modal -->
     <div id="usernameModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('usernameModal')">&times;</span>
         <label for="username">Enter your username:</label>
-        <input type="text" id="username" autocomplete="off" onkeydown="if(event.key==='Enter'){processUsername()}" autofocus>
+        <input type="text" id="username" autocomplete="off">
         <button onclick="processUsername()">Submit</button>
       </div>
     </div>
 
+    <!-- Invalid Password Modal -->
     <div id="invalidPassword" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('invalidPassword')">&times;</span>
@@ -38,6 +47,7 @@
       </div>
     </div>
 
+    <!-- Error Message Modal -->
     <div id="errorMessageModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('errorMessageModal')">&times;</span>
@@ -45,6 +55,7 @@
       </div>
     </div>
 
+    <!-- Username Exists Modal -->
     <div id="usernameExistsModal" class="modal">
       <div class="modal-content">
         <span class="close-btn" onclick="closeModal('usernameExistsModal')">&times;</span>
@@ -52,17 +63,18 @@
       </div>
     </div>
 
-    <button id="copperKeyButton" onclick="openPasswordModal()">Copper Key</button>
-    <div class="line-separator"></div>
-
+    <!-- Scoreboard Container -->
     <div id="scoreboardContainer">
-      <h2></h2>
+      <h2>Scoreboard</h2>
       <ul id="scoreboard"></ul>
     </div>
 
+    <!-- Square Button -->
     <button class="square-button" onclick="openPasswordModal()"> </button>
   </div>
 
   <script src="script.js"></script>
+
 </body>
+
 </html>
