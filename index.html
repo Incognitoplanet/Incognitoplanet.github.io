@@ -25,7 +25,7 @@
         <label for="password">Enter the password:</label>
         <input type="password" id="password">
         <div class="eyeball-btn" onclick="togglePasswordVisibility('password')"></div>
-        <button onclick="processPassword()">Submit</button>
+        <button id="submitButton" onclick="processPassword()">Submit</button>
       </div>
     </div>
 
@@ -35,7 +35,7 @@
         <span class="close-btn" onclick="closeModal('usernameModal')">&times;</span>
         <label for="username">Enter your username:</label>
         <input type="text" id="username" autocomplete="off">
-        <button onclick="processUsername()">Submit</button>
+        <button id="usernameSubmitButton" onclick="processUsername()">Submit</button>
       </div>
     </div>
 
