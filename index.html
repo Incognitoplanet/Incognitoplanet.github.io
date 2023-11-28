@@ -25,6 +25,7 @@
             justify-content: center;
             height: 100vh;
             flex-direction: column; /* Added to arrange elements vertically */
+            transition: background-color 0.5s ease; /* Transition for background color change */
         }
 
         /* Add glitch animation */
@@ -93,6 +94,19 @@
         button:hover {
             background-color: #cc0000; /* Darker red on hover */
         }
+
+        .animate-bg {
+            animation: flashBackground 0.5s infinite alternate;
+        }
+
+        @keyframes flashBackground {
+            0% { background-color: #ff0000; }
+            20% { background-color: #ff6600; }
+            40% { background-color: #ffff00; }
+            60% { background-color: #33cc33; }
+            80% { background-color: #3366ff; }
+            100% { background-color: #ff0000; }
+        }
     </style>
 </head>
 <body>
@@ -105,7 +119,10 @@
             garfield.style.animation = 'glitch 5s linear';
             setTimeout(function () {
                 garfield.style.animation = 'none'; // Reset to no animation after 5 seconds
-            }, 3700);
+                document.body.classList.remove('animate-bg'); // Stop background color animation
+            }, 5000);
+
+            document.body.classList.add('animate-bg'); // Add class to start background color animation
         }
     </script>
 </body>
