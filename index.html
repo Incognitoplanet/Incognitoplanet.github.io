@@ -78,16 +78,25 @@
 
         button {
             margin-bottom: 10px; /* Added margin to separate button from the image */
-            padding: 10px;
-            background-color: red;
-            color: white;
-            border: none;
+            padding: 15px 30px; /* Adjusted padding for a larger button */
+            background-color: #ff0000; /* Red color */
+            color: #fff;
+            border: 3px solid #ff0000; /* Red border */
+            border-radius: 10px; /* Increased border-radius for a softer look */
             cursor: pointer;
+            font-size: 18px; /* Slightly larger font size */
+            font-weight: bold;
+            text-shadow: 0 0 5px #ff0000; /* Red square border around the text */
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #cc0000; /* Darker red on hover */
         }
     </style>
 </head>
 <body>
-    <button onclick="startGlitch()">Cha Cha Cha</button>
+    <button onclick="startGlitch()">Click Me</button>
     <img id="garfield" src="garf.png" alt="Garfield Dancing">
 
     <script>
