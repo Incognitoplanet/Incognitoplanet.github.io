@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Star Wars Scrolling Text</title>
+    <style>
+        body {
+            background-color: #000;
+            color: #ffd700; /* Set yellow color */
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            overflow: hidden;
+        }
+        .scrolling-text {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            font-size: 24px;
+            line-height: 1.5;
+            animation: scroll 20s linear infinite;
+        }
+        @keyframes scroll {
+            from {
+                transform: translate(-50%, -50%);
+            }
+            to {
+                transform: translate(-50%, -100%);
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="scrolling-text" id="scrollingText"></div>
+
+    <script>
+        // Fetch the content from local storage or the text file
+        const storedScrollPosition = localStorage.getItem('scrollPosition') || 0;
+        fetch('incog.txt')
+            .then(response => response.text())
+            .then(text => {
+                const scrollingText = document.getElementById('scrollingText');
+                scrollingText.textContent = text;
+                scrollingText.style.transform = `translate(-50%, ${-50 + storedScrollPosition}%)`;
+            })
+            .catch(error => console.error('Error fetching text:', error));
+
+        // Save scroll position to local storage on scroll
+        document.querySelector('.scrolling-text').addEventListener('scroll', function () {
+            const scrollPosition = (this.scrollTop / (this.scrollHeight - this.clientHeight)) * 100;
+            localStorage.setItem('scrollPosition', scrollPosition);
+        });
+    </script>
+</body>
+</html>
