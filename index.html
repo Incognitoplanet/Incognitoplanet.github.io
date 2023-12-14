@@ -3,60 +3,16 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Star Wars Scrolling Text</title>
+    <title>Plain Background</title>
     <style>
         body {
-            background-color: #000;
-            color: #ffd700; /* Set yellow color */
-            font-family: 'Arial', sans-serif;
+            background-color: #212529;
             margin: 0;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-        }
-        .scrolling-text-container {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            overflow: hidden;
-        }
-        .scrolling-text {
-            white-space: nowrap;
-            font-size: 24px;
-            line-height: 1.5;
-            position: absolute;
-            bottom: 100%; /* Start off-screen at the bottom */
-            left: 0;
-            transform: translateX(50%) translateY(50%) rotate(-45deg);
-            animation: scroll 20s linear infinite;
-            max-width: 80%; /* Adjust the maximum width as needed */
-        }
-        @keyframes scroll {
-            from {
-                transform: translateX(50%) translateY(50%) rotate(-45deg);
-            }
-            to {
-                transform: translateX(50%) translateY(-150%) rotate(-45deg);
-            }
+            padding: 0;
         }
     </style>
 </head>
 <body>
-    <div class="scrolling-text-container">
-        <div class="scrolling-text" id="scrollingText"></div>
-    </div>
-
-    <script>
-        // Fetch the content from the text file
-        fetch('incog.txt')
-            .then(response => response.text())
-            .then(text => {
-                const scrollingText = document.getElementById('scrollingText');
-                scrollingText.textContent = text;
-            })
-            .catch(error => console.error('Error fetching text:', error));
-    </script>
+    <!-- No text content, just a plain background color -->
 </body>
 </html>
