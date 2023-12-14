@@ -14,44 +14,49 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            height: 100vh;
+        }
+        .scrolling-text-container {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
         }
         .scrolling-text {
             white-space: nowrap;
             font-size: 24px;
             line-height: 1.5;
+            position: absolute;
+            bottom: 100%; /* Start off-screen at the bottom */
+            left: 0;
+            transform: translateX(50%) translateY(50%) rotate(-45deg);
             animation: scroll 20s linear infinite;
             max-width: 80%; /* Adjust the maximum width as needed */
         }
         @keyframes scroll {
             from {
-                transform: translateX(100%);
+                transform: translateX(50%) translateY(50%) rotate(-45deg);
             }
             to {
-                transform: translateX(-100%);
+                transform: translateX(50%) translateY(-150%) rotate(-45deg);
             }
         }
     </style>
 </head>
 <body>
-    <div class="scrolling-text" id="scrollingText"></div>
+    <div class="scrolling-text-container">
+        <div class="scrolling-text" id="scrollingText"></div>
+    </div>
 
     <script>
-        // Fetch the content from local storage or the text file
-        const storedScrollPosition = localStorage.getItem('scrollPosition') || 0;
+        // Fetch the content from the text file
         fetch('incog.txt')
             .then(response => response.text())
             .then(text => {
                 const scrollingText = document.getElementById('scrollingText');
                 scrollingText.textContent = text;
-                scrollingText.style.transform = `translateX(-${100 - storedScrollPosition}%)`;
             })
             .catch(error => console.error('Error fetching text:', error));
-
-        // Save scroll position to local storage on scroll
-        document.querySelector('.scrolling-text').addEventListener('scroll', function () {
-            const scrollPosition = (this.scrollLeft / (this.scrollWidth - this.clientWidth)) * 100;
-            localStorage.setItem('scrollPosition', scrollPosition);
-        });
     </script>
 </body>
 </html>
