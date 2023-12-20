@@ -1,106 +1,21 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Savings Tracker</title>
+    <title>Oh, Fuck</title>
     <style>
         body {
-            font-family: Arial, sans-serif;
-            margin: 20px;
-        }
-
-        h1 {
-            color: #3498db;
-        }
-
-        #savings-total {
-            font-size: 1.5em;
-            color: #2ecc71;
-        }
-
-        #savings-form {
-            margin-top: 20px;
+            margin: 0;
+            padding: 0;
+            background-color: #373330;
         }
     </style>
 </head>
+
 <body>
-    <h1>Savings Tracker</h1>
 
-    <div id="savings-total">
-        <p>Total Savings: $<span id="total-amount">0.00</span></p>
-    </div>
-
-    <form id="savings-form">
-        <label for="amount">Enter Savings Amount:</label>
-        <input type="number" id="amount" step="0.01" placeholder="Enter amount" required>
-        <button type="button" onclick="addSavings()">Add to Savings</button>
-    </form>
-
-    <script>
-        // Get the total amount from the server when the page loads
-        window.onload = function () {
-            fetchTotalAmount();
-        };
-
-        function addSavings() {
-            // Get the input value
-            var amountInput = document.getElementById('amount');
-            var amount = parseFloat(amountInput.value);
-
-            // Validate the input
-            if (isNaN(amount) || amount <= 0) {
-                alert("Please enter a valid positive amount.");
-                return;
-            }
-
-            // Update the total amount
-            var totalAmountElement = document.getElementById('total-amount');
-            var currentTotal = parseFloat(totalAmountElement.textContent);
-            var newTotal = currentTotal + amount;
-
-            // Update the display
-            totalAmountElement.textContent = newTotal.toFixed(2);
-
-            // Save the total amount to the server
-            saveTotalAmount(newTotal);
-
-            // Clear the input field
-            amountInput.value = "";
-        }
-
-        function fetchTotalAmount() {
-            // Fetch the total amount from the server (for this example, we use JSONBin)
-            fetch('https://api.jsonbin.io/b/your-bin-id/latest')
-                .then(response => response.json())
-                .then(data => {
-                    var totalAmountElement = document.getElementById('total-amount');
-                    totalAmountElement.textContent = parseFloat(data.total).toFixed(2);
-                })
-                .catch(error => console.error('Error fetching total amount:', error));
-        }
-
-        function saveTotalAmount(total) {
-            // Save the total amount to the server (for this example, we use JSONBin)
-            fetch('https://api.jsonbin.io/b/your-bin-id', {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'secret-key': 'your-secret-key'
-                },
-                body: JSON.stringify({ total: total })
-            })
-                .then(response => response.json())
-                .then(data => console.log('Total amount saved successfully:', data))
-                .catch(error => console.error('Error saving total amount:', error));
-        }
-
-        // Allow the user to press Enter to add savings
-        document.getElementById('amount').addEventListener('keyup', function (event) {
-            if (event.key === 'Enter') {
-                addSavings();
-            }
-        });
-    </script>
 </body>
+
 </html>
