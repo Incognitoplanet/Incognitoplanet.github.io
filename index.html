@@ -1,117 +1,51 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Login Form</title>
-<style>
-  body {
-    font-family: Arial, sans-serif;
-    background-color: #1d1f21;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
-  form {
-    background-color: #2b2d2f;
-    padding: 20px;
-    border-radius: 10px;
-    box-shadow: 0px 0px 10px rgba(255, 255, 255, 0.1);
-    text-align: center;
-  }
-  h2 {
-    margin-top: 0;
-    color: #fff;
-  }
-  label {
-    display: block;
-    margin-bottom: 10px;
-    color: #fff;
-  }
-  input[type="email"],
-  input[type="password"],
-  input[type="submit"] {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #333;
-    border-radius: 5px;
-    box-sizing: border-box;
-    background-color: #3a3c3e;
-    color: #fff;
-  }
-  input[type="submit"] {
-    background-color: #007bff;
-    cursor: pointer;
-  }
-  input[type="submit"]:hover {
-    background-color: #0056b3;
-  }
-  
-  /* Modal Styles */
-  .modal {
-    display: none;
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-  }
-  .modal-content {
-    background-color: #333;
-    margin: 20% auto;
-    padding: 20px;
-    border-radius: 5px;
-    width: 80%;
-    max-width: 400px;
-    color: #fff;
-    text-align: center;
-  }
-</style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Oh, Fun!</title>
+    <link rel="icon" href="spider-man.png" type="image/png">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #1d1f21;
+            overflow: hidden;
+        }
+
+        header {
+            color: #e5cd0b;
+            padding: 1em;
+            text-align: center;
+            position: relative;
+        }
+
+        #spiderman {
+            width: 100px;
+            height: 100px;
+            margin-top: 20px;
+            animation: pulsate 2s infinite alternate; /* Pulsating animation */
+        }
+
+        @keyframes pulsate {
+            0% {
+                transform: scale(0.5);
+            }
+            100% {
+                transform: scale(3);
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-<form id="loginForm" action="save.php" method="post">
-  <h2>Sign Up</h2>
-  <label for="email">Enter Email Address:</label>
-  <input type="email" id="email" name="email" required autofocus placeholder="Email"><br>
-  <label for="password">Enter Password:</label>
-  <input type="password" id="password" name="password" required placeholder="Password"><br>
-  <input type="submit" value="Submit">
-</form>
-
-<!-- Modal -->
-<div id="myModal" class="modal">
-  <div class="modal-content">
-    <p>Thank you! Please check your email for an update.</p>
-  </div>
-</div>
-
-<script>
-  // Focus on the first text field when the page is loaded
-  document.getElementById("email").focus();
-  
-  // Get the modal
-  var modal = document.getElementById("myModal");
-
-  // Get the form
-  var form = document.getElementById("loginForm");
-
-  // When the user submits the form, show the modal
-  form.addEventListener("submit", function(event) {
-    event.preventDefault(); // Prevent the form from submitting
-    modal.style.display = "block"; // Show the modal
-
-    // Close the modal after 5 seconds
-    setTimeout(function() {
-      modal.style.display = "none";
-    }, 5000);
-  });
-</script>
+    <header>
+        <h1>I'm addicted to Quack</h1>
+        <img id="spiderman" src="dancing-spiderman.gif" alt="Dancing Spider-Man">
+    </header>
 
 </body>
+
 </html>
