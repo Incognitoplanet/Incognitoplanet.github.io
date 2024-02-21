@@ -58,19 +58,24 @@
         var audioFiles = ["file1.mp3", "file2.mp3", "file3.mp3"]; // List of MP3 files
         var currentAudioIndex = 0; // Index of the current MP3 file
 
-        // Function to play the audio
-        function playAudio() {
-            var audio = new Audio(audioFiles[currentAudioIndex]);
+        // Preload all audio files
+        var audioElements = audioFiles.map(function (src) {
+            var audio = new Audio();
+            audio.src = src;
+            return audio;
+        });
+
+        // Function to play the next audio file
+        function playNextAudio() {
+            var audio = audioElements[currentAudioIndex];
             audio.play();
-            currentAudioIndex = (currentAudioIndex + 1) % audioFiles.length; // Move to the next audio file
-            audio.onended = function () {
-                playAudio(); // Play the next audio file when the current one ends
-            };
+            currentAudioIndex = (currentAudioIndex + 1) % audioElements.length; // Move to the next audio file
+            audio.onended = playNextAudio; // Play the next audio file when the current one ends
         }
 
         // Play the first audio file when the page loads
         window.onload = function () {
-            playAudio();
+            playNextAudio();
         };
 
         // Set the date we're counting down to
