@@ -4,8 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Music Selection</title>
-    <link rel="icon" type="image/png" href="spider-man.png">
+    <title>Oh, Fuck</title>
     <style>
         @font-face {
             font-family: 'Digital-7';
@@ -22,14 +21,14 @@
             align-items: center;
             color: red;
             font-family: 'Digital-7', Arial, sans-serif;
-            height: 100vh; /* Adjusted to fill the viewport height */
+            height: 100vh;
         }
 
         #countdown-container {
             text-align: center;
             width: 90%;
             max-width: 400px;
-            margin-bottom: 20px; /* Added margin for spacing */
+            margin-bottom: 20px;
         }
 
         #countdown {
@@ -58,22 +57,24 @@
 
         .modal-content {
             background-color: #373b41;
-            margin: 10% auto; /* Adjusted margin for better centering */
-            padding: 20px;
-            border: 2px solid white;
-            width: 90%; /* Adjusted width for mobile */
-            max-width: 400px; /* Maximum width for larger screens */
-            border-radius: 10px;
+            margin: auto;
+            padding: 10px;
+            border: 1px solid white;
+            width: 80%; 
+            max-height: 40%; 
+            height: 50%; 
+            border-radius: 5px;
             text-align: center;
-            box-shadow: 0 0 10px white;
+            box-shadow: 0 0 5px white;
             color: white;
             position: relative;
         }
 
         .modal-image {
-            width: 100px; /* Adjust size as needed */
+            width: 100px;
             height: auto;
             border-radius: 5px;
+            margin-top: 20px; /* Added margin to move the image */
         }
 
         .modal-button {
@@ -95,20 +96,6 @@
         .modal-button:hover {
             background-color: #45a049;
         }
-
-        /* Adjustments for mobile */
-        @media (max-width: 767px) {
-            .modal-content {
-                padding-bottom: 120px; /* Increased padding to accommodate the image */
-            }
-
-            .modal-image {
-                position: absolute;
-                bottom: 10px;
-                left: 50%;
-                transform: translateX(-50%);
-            }
-        }
     </style>
 </head>
 
@@ -122,8 +109,8 @@
             <p id="modalText">Do you consent?</p>
             <button id="yesButton" class="modal-button">Yes</button>
             <button id="noButton" class="modal-button">No</button>
-            <img src="POD.jpg" alt="POD" class="modal-image">
         </div>
+        <img src="POD.jpg" alt="POD" class="modal-image">
     </div>
 
     <audio id="tributeAudio" loop>
@@ -132,26 +119,27 @@
     </audio>
 
     <script>
-        function startAudio(volume) {
-            var audio = document.getElementById("tributeAudio");
-            var source = document.getElementById("audioSource");
-            source.src = volume === 1 ? "Kickapoo.mp3" : "Fuck Her Gently.mp3";
-            audio.load();
-            audio.play();
-        }
-
         var yesButton = document.getElementById("yesButton");
         var noButton = document.getElementById("noButton");
+
         yesButton.onclick = function () {
             var modal = document.getElementById("myModal");
             modal.style.display = "none";
-            startAudio(1); // Start playing "Kickapoo.mp3" at full volume
+            startAudio("Kickapoo.mp3");
         };
+
         noButton.onclick = function () {
             var modal = document.getElementById("myModal");
             modal.style.display = "none";
-            startAudio(0.5); // Start playing "Fuck Her Gently.mp3" at 50% volume
+            startAudio("Fuck Her Gently.mp3");
         };
+
+        function startAudio(audioSrc) {
+            var audio = document.getElementById("tributeAudio");
+            audio.src = audioSrc;
+            audio.load();
+            audio.play();
+        }
 
         window.addEventListener("load", function () {
             var modal = document.getElementById("myModal");
@@ -177,6 +165,15 @@
                 document.getElementById("countdown").innerHTML = "EXPIRED";
             }
         }, 1000);
+
+        // Function to set modal width
+        function setModalWidth(widthPercentage) {
+            var modalContent = document.querySelector(".modal-content");
+            modalContent.style.width = widthPercentage + "%";
+        }
+
+        // Example: Set modal width to 70%
+        setModalWidth(20);
     </script>
 </body>
 
