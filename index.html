@@ -71,9 +71,6 @@
         }
 
         .modal-image {
-            position: absolute;
-            top: 10px;
-            right: 10px;
             width: 100px; /* Adjust size as needed */
             height: auto;
             border-radius: 5px;
@@ -98,6 +95,20 @@
         .modal-button:hover {
             background-color: #45a049;
         }
+
+        /* Adjustments for mobile */
+        @media (max-width: 767px) {
+            .modal-content {
+                padding-bottom: 70px; /* Increased padding to accommodate the image */
+            }
+
+            .modal-image {
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+        }
     </style>
 </head>
 
@@ -108,10 +119,10 @@
 
     <div id="myModal" class="modal">
         <div class="modal-content">
-            <img src="POD.jpg" alt="POD" class="modal-image">
             <p id="modalText">Do you consent?</p>
             <button id="yesButton" class="modal-button">Yes</button>
             <button id="noButton" class="modal-button">No</button>
+            <img src="POD.jpg" alt="POD" class="modal-image">
         </div>
     </div>
 
@@ -166,24 +177,6 @@
                 document.getElementById("countdown").innerHTML = "EXPIRED";
             }
         }, 1000);
-
-        // Function to adjust the width of the modal
-        function setModalWidth(widthPercentage) {
-            var modalContent = document.querySelector('.modal-content');
-            modalContent.style.width = widthPercentage + '%';
-        }
-
-        // Function to adjust the font size of the modal text
-        function setModalFontSize(fontSize) {
-            var modalText = document.getElementById('modalText');
-            modalText.style.fontSize = fontSize + 'px';
-        }
-
-        // Example: Set modal width to 70%
-        setModalWidth(30);
-
-        // Example: Set modal text font size to 20px
-        setModalFontSize(20);
     </script>
 </body>
 
