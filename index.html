@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oh, Fuck</title>
+    <title>Music Selection</title>
     <link rel="icon" type="image/png" href="spider-man.png">
     <style>
         @font-face {
@@ -19,7 +19,7 @@
             height: 100vh;
             display: flex;
             flex-direction: column;
-            justify-content: center; /* Center vertically */
+            justify-content: center;
             align-items: center;
             color: red;
             font-family: 'Digital-7', Arial, sans-serif;
@@ -28,19 +28,74 @@
 
         #countdown-container {
             text-align: center;
-            width: 90%; /* Adjusted width for mobile devices */
-            max-width: 400px; /* Maximum width for larger screens */
+            width: 90%;
+            max-width: 400px;
         }
 
         #countdown {
-            font-size: 8vw; /* Responsive font size */
-            margin-bottom: 5vh; /* Responsive margin */
+            font-size: 8vw;
+            margin-bottom: 5vh;
         }
 
         @media (min-width: 768px) {
             #countdown {
-                font-size: 48px; /* Adjusted font size for larger screens */
+                font-size: 48px;
             }
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(55, 59, 65, 0.9);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #373b41;
+            margin: 20% auto;
+            padding: 20px;
+            border: 2px solid white;
+            width: 50%;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 0 10px white;
+            color: white;
+            position: relative;
+        }
+
+        .modal-image {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            width: 100px; /* Adjust size as needed */
+            height: auto;
+            border-radius: 5px;
+        }
+
+        .modal-button {
+            padding: 10px 20px;
+            margin: 10px;
+            cursor: pointer;
+            border-radius: 5px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            text-align: center;
+            text-decoration: none;
+            display: inline-block;
+            font-size: 16px;
+            transition-duration: 0.4s;
+            outline: none;
+        }
+
+        .modal-button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
@@ -50,64 +105,84 @@
         <div id="countdown"></div>
     </div>
 
+    <div id="myModal" class="modal">
+        <div class="modal-content">
+            <img src="POD.jpg" alt="POD" class="modal-image">
+            <p id="modalText">Do you consent?</p>
+            <button id="yesButton" class="modal-button">Yes</button>
+            <button id="noButton" class="modal-button">No</button>
+        </div>
+    </div>
+
+    <audio id="tributeAudio" loop>
+        <source id="audioSource" type="audio/mpeg">
+        Your browser does not support the audio element.
+    </audio>
+
     <script>
-        var audioFiles = ["file1.mp3", "file2.mp3", "file3.mp3"]; // List of MP3 files
-        var currentAudioIndex = 0; // Index of the current MP3 file
-
-        // Preload all audio files
-        var audioElements = audioFiles.map(function (src) {
-            var audio = new Audio();
-            audio.src = src;
-            return audio;
-        });
-
-        // Function to play the next audio file
-        function playNextAudio() {
-            var audio = audioElements[currentAudioIndex];
+        function startAudio(volume) {
+            var audio = document.getElementById("tributeAudio");
+            var source = document.getElementById("audioSource");
+            source.src = volume === 1 ? "Kickapoo.mp3" : "Fuck Her Gently.mp3";
+            audio.load();
             audio.play();
-            currentAudioIndex = (currentAudioIndex + 1) % audioElements.length; // Move to the next audio file
-            audio.onended = playNextAudio; // Play the next audio file when the current one ends
         }
 
-        // Play the first audio file when the page loads
-        window.onload = function () {
-            playNextAudio();
+        var yesButton = document.getElementById("yesButton");
+        var noButton = document.getElementById("noButton");
+        yesButton.onclick = function () {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            startAudio(1); // Start playing "Kickapoo.mp3" at full volume
+        };
+        noButton.onclick = function () {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "none";
+            startAudio(0.5); // Start playing "Fuck Her Gently.mp3" at 50% volume
         };
 
-        // Set the date we're counting down to
+        window.addEventListener("load", function () {
+            var modal = document.getElementById("myModal");
+            modal.style.display = "block";
+        });
+
         var countDownDate = new Date("May 8, 2024 00:00:00").getTime();
-
-        // Update the countdown every second
         var x = setInterval(function () {
-
-            // Get the current date and time
             var now = new Date().getTime();
-
-            // Calculate the remaining time
             var distance = countDownDate - now;
-
-            // Calculate days, hours, minutes, and seconds
             var days = Math.floor(distance / (1000 * 60 * 60 * 24));
             var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
             var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
             var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-
-            // Add leading zeros to single-digit numbers
             days = days < 10 ? "0" + days : days;
             hours = hours < 10 ? "0" + hours : hours;
             minutes = minutes < 10 ? "0" + minutes : minutes;
             seconds = seconds < 10 ? "0" + seconds : seconds;
-
-            // Display the countdown in the element with id="countdown"
-            document.getElementById("countdown").innerHTML = days + " : " + hours + " : "
-                + minutes + " : " + seconds;
-
-            // If the countdown is finished, display a message
+            document.getElementById("countdown").innerHTML = days + " : " + hours + " : " +
+                minutes + " : " + seconds;
             if (distance < 0) {
                 clearInterval(x);
                 document.getElementById("countdown").innerHTML = "EXPIRED";
             }
         }, 1000);
+
+        // Function to adjust the width of the modal
+        function setModalWidth(widthPercentage) {
+            var modalContent = document.querySelector('.modal-content');
+            modalContent.style.width = widthPercentage + '%';
+        }
+
+        // Function to adjust the font size of the modal text
+        function setModalFontSize(fontSize) {
+            var modalText = document.getElementById('modalText');
+            modalText.style.fontSize = fontSize + 'px';
+        }
+
+        // Example: Set modal width to 70%
+        setModalWidth(30);
+
+        // Example: Set modal text font size to 20px
+        setModalFontSize(20);
     </script>
 </body>
 
