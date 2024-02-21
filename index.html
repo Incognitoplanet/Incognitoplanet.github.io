@@ -16,20 +16,20 @@
             background-color: #373b41;
             margin: 0;
             padding: 0;
-            height: 100vh;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             color: red;
             font-family: 'Digital-7', Arial, sans-serif;
-            position: relative;
+            height: 100vh; /* Adjusted to fill the viewport height */
         }
 
         #countdown-container {
             text-align: center;
             width: 90%;
             max-width: 400px;
+            margin-bottom: 20px; /* Added margin for spacing */
         }
 
         #countdown {
@@ -99,7 +99,7 @@
         /* Adjustments for mobile */
         @media (max-width: 767px) {
             .modal-content {
-                padding-bottom: 70px; /* Increased padding to accommodate the image */
+                padding-bottom: 120px; /* Increased padding to accommodate the image */
             }
 
             .modal-image {
