@@ -40,6 +40,12 @@
             font-size: 8vw; /* Responsive font size */
             margin-bottom: 5vh; /* Responsive margin */
         }
+
+        @media (min-width: 768px) {
+            #countdown {
+                font-size: 48px; /* Adjusted font size for larger screens */
+            }
+        }
     </style>
 </head>
 
@@ -49,6 +55,24 @@
     </div>
 
     <script>
+        var audioFiles = ["file1.mp3", "file2.mp3", "file3.mp3"]; // List of MP3 files
+        var currentAudioIndex = 0; // Index of the current MP3 file
+
+        // Function to play the audio
+        function playAudio() {
+            var audio = new Audio(audioFiles[currentAudioIndex]);
+            audio.play();
+            currentAudioIndex = (currentAudioIndex + 1) % audioFiles.length; // Move to the next audio file
+            audio.onended = function () {
+                playAudio(); // Play the next audio file when the current one ends
+            };
+        }
+
+        // Play the first audio file when the page loads
+        window.onload = function () {
+            playAudio();
+        };
+
         // Set the date we're counting down to
         var countDownDate = new Date("May 8, 2024 00:00:00").getTime();
 
