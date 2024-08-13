@@ -228,14 +228,17 @@
             }
 
             .navbar {
-                flex-direction: column;
-                align-items: flex-start;
+                flex-direction: row; /* Change to row for mobile */
+                justify-content: space-between;
             }
 
             .navbar nav {
-                margin-top: 10px;
-                gap: 10px;
-                flex-direction: column;
+                display: flex;
+                gap: 10px; /* Adjust gap for mobile view */
+            }
+
+            .navbar nav a {
+                font-size: 0.9em; /* Slightly smaller font size for mobile */
             }
         }
     </style>
