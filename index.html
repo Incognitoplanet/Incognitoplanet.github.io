@@ -1,27 +1,445 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Oh, Fuck</title>
-<link rel="icon" type="image/png" href="spider-man.png">
-<style>
-  body {
-    background-color: #373b41;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    margin: 0;
-  }
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Photo Portfolio</title>
+    <style>
+        /* Global Styles */
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
 
-  img {
-    width: 250px;
-    height: auto;
-  }
-</style>
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        a {
+            color: #373b41;
+            text-decoration: none;
+            transition: color 0.3s ease;
+        }
+
+        a:hover {
+            color: #5a6268;
+        }
+
+        /* Navigation Bar */
+        .navbar {
+            position: sticky;
+            top: 0;
+            background-color: #ffffff;
+            padding: 15px 20px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .navbar h1 {
+            font-size: 1.5em;
+            margin: 0;
+            color: #373b41;
+        }
+
+        .navbar nav {
+            display: flex;
+            gap: 20px;
+        }
+
+        .navbar nav a {
+            font-size: 1em;
+            color: #373b41;
+        }
+
+        /* Header Section */
+        .portfolio-header {
+            text-align: center;
+            padding: 5px 20px;
+            background: url('planet.jpg') no-repeat center center;
+            background-size: cover;
+            color: #ffffff;
+        }
+
+        .portfolio-header h1 {
+            font-size: 3.5em;
+            margin-bottom: 10px;
+            letter-spacing: 2px;
+        }
+
+        .portfolio-header p {
+            font-size: 1.2em;
+            margin: 0;
+            font-weight: 300;
+        }
+
+        /* Portfolio Grid */
+        .portfolio-container {
+            flex: 1; /* Allow this section to grow and push footer down */
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+        }
+
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* Ensures 3 columns */
+            grid-gap: 20px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            overflow: hidden;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            background-color: #e0e0e0;
+            cursor: pointer;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; /* Ensure image covers the tile without leaving gaps */
+            display: block;
+        }
+
+        .portfolio-item:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .portfolio-item .overlay {
+            position: absolute;
+            bottom: 0;
+            background: rgba(55, 59, 65, 0.85);
+            color: #ffffff;
+            width: 100%;
+            height: 30%; /* Adjust height to 30% */
+            transform: translateY(100%);
+            transition: transform 0.5s ease;
+            padding: 10px;
+            box-sizing: border-box;
+            text-align: center;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .portfolio-item:hover .overlay {
+            transform: translateY(0);
+        }
+
+        .overlay h3 {
+            margin: 0 0 10px 0;
+            font-size: 1.2em;
+            letter-spacing: 1px;
+        }
+
+        .overlay p {
+            margin: 0;
+            font-size: 0.9em;
+            font-weight: 300;
+        }
+
+        /* Footer */
+        .footer {
+            background-color: #373b41;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.9em;
+            position: relative;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        .footer a {
+            color: #adb5bd;
+        }
+
+        /* Footer Icons Container */
+        .footer-icons {
+            margin-top: 10px;
+        }
+
+        /* Footer Icons */
+        .footer-icons a {
+            margin: 0 10px;
+            display: inline-block;
+            position: relative;
+        }
+
+        .footer-icons img {
+            width: 24px;
+            height: 24px;
+            vertical-align: middle;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        }
+
+        .footer-icons a:hover img {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; 
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            position: relative;
+            max-width: 100%;
+            max-height: 100%;
+            overflow: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .modal-content img {
+            display: block;
+            max-width: 100%;
+            max-height: 100vh; /* Ensure the image fits within the viewport height */
+        }
+
+        .close {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            color: #ffffff;
+            font-size: 35px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        @media (max-width: 900px) {
+            .portfolio-grid {
+                grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns for medium screens */
+            }
+        }
+
+        @media (max-width: 600px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr; /* Adjust to 1 column for small screens */
+            }
+
+            .portfolio-header h1 {
+                font-size: 2.5em;
+            }
+
+            .navbar {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .navbar nav {
+                margin-top: 10px;
+                gap: 10px;
+                flex-direction: column;
+            }
+        }
+    </style>
 </head>
 <body>
-  <p>Under Contruction</p>
+    <div class="navbar">
+        <h1>My Portfolio</h1>
+        <nav>
+            <a href="#portfolio">Portfolio</a>
+            <a href="#about">About</a>
+            <a href="#contact">Contact</a>
+        </nav>
+    </div>
+
+    <div class="portfolio-header">
+        <h1>My Photo Portfolio</h1>
+        <p>A collection of my finest works</p>
+    </div>
+
+    <div class="portfolio-container" id="portfolio">
+        <div class="portfolio-grid">
+            <!-- Portfolio Item 1 -->
+            <div class="portfolio-item" data-images='["C:/Users/KyleTuck/Downloads/DSCF2044.JPG"]'>
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2044.JPG" alt="Photo 1">
+                <div class="overlay">
+                    <h3>Photo Title 1</h3>
+                    <p>Short description or caption for photo 1.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 2 -->
+            <div class="portfolio-item" data-images='["C:/Users/KyleTuck/Downloads/DSCF2030.JPG", "C:/Users/KyleTuck/Downloads/DSCF2031.JPG"]'>
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2030.JPG" alt="Photo 2">
+                <div class="overlay">
+                    <h3>Photo Title 2</h3>
+                    <p>Short description or caption for photo 2.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 3 -->
+            <div class="portfolio-item" data-images='["temp/photo3.jpg"]'>
+                <img src="temp/photo3.jpg" alt="Photo 3">
+                <div class="overlay">
+                    <h3>Photo Title 3</h3>
+                    <p>Short description or caption for photo 3.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 4 -->
+            <div class="portfolio-item" data-images='["temp/photo4.jpg"]'>
+                <img src="temp/photo4.jpg" alt="Photo 4">
+                <div class="overlay">
+                    <h3>Photo Title 4</h3>
+                    <p>Short description or caption for photo 4.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 5 -->
+            <div class="portfolio-item" data-images='["temp/photo5.jpg"]'>
+                <img src="temp/photo5.jpg" alt="Photo 5">
+                <div class="overlay">
+                    <h3>Photo Title 5</h3>
+                    <p>Short description or caption for photo 5.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 6 -->
+            <div class="portfolio-item" data-images='["temp/photo6.jpg"]'>
+                <img src="temp/photo6.jpg" alt="Photo 6">
+                <div class="overlay">
+                    <h3>Photo Title 6</h3>
+                    <p>Short description or caption for photo 6.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 7 -->
+            <div class="portfolio-item" data-images='["temp/photo7.jpg"]'>
+                <img src="temp/photo7.jpg" alt="Photo 7">
+                <div class="overlay">
+                    <h3>Photo Title 7</h3>
+                    <p>Short description or caption for photo 7.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 8 -->
+            <div class="portfolio-item" data-images='["temp/photo8.jpg"]'>
+                <img src="temp/photo8.jpg" alt="Photo 8">
+                <div class="overlay">
+                    <h3>Photo Title 8</h3>
+                    <p>Short description or caption for photo 8.</p>
+                </div>
+            </div>
+
+            <!-- Portfolio Item 9 -->
+            <div class="portfolio-item" data-images='["temp/photo9.jpg"]'>
+                <img src="temp/photo9.jpg" alt="Photo 9">
+                <div class="overlay">
+                    <h3>Photo Title 9</h3>
+                    <p>Short description or caption for photo 9.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal for Image Display -->
+    <div id="imageModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <!-- Images will be added here by JavaScript -->
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 My Photo Portfolio. All rights reserved. | <a href="#contact">Contact Me</a></p>
+        <div class="footer-icons">
+            <a href="https://www.instagram.com/kyle_tuck99/" target="_blank">
+                <img src="instagram.png" alt="Instagram">
+            </a>
+            <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank">
+                <img src="linkedin.png" alt="LinkedIn">
+            </a>
+            <a href="https://www.youtube.com/@TuuuckTV" target="_blank">
+                <img src="youtube.png" alt="YouTube">
+            </a>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Modal functionality
+            $('.portfolio-item').click(function() {
+                var images = $(this).data('images');
+                var $modalContent = $('.modal-content');
+
+                // Clear existing images
+                $modalContent.find('img').remove();
+
+                // Add new images to modal
+                images.forEach(function(src) {
+                    $modalContent.append('<img src="' + src + '" alt="Image">');
+                });
+
+                // Show the modal
+                var $modal = $('#imageModal');
+                $modal.show();
+
+                // Adjust modal size based on image size
+                var $firstImage = $modalContent.find('img').first();
+
+                $firstImage.on('load', function() {
+                    var imgWidth = $firstImage[0].naturalWidth;
+                    var imgHeight = $firstImage[0].naturalHeight;
+
+                    // Set the size of the modal content to fit the image
+                    $modalContent.css({
+                        'width': imgWidth + 'px',
+                        'height': imgHeight + 'px'
+                    });
+
+                    // Ensure the modal is centered
+                    $modal.css({
+                        'display': 'flex',
+                        'align-items': 'center',
+                        'justify-content': 'center'
+                    });
+                });
+            });
+
+            $('.close').click(function() {
+                $('#imageModal').hide();
+            });
+
+            $(window).click(function(event) {
+                if ($(event.target).is('#imageModal')) {
+                    $('#imageModal').hide();
+                }
+            });
+        });
+    </script>
 </body>
 </html>
