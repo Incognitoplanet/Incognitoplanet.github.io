@@ -194,48 +194,6 @@
             filter: brightness(1.2);
         }
 
-        /* Modal Styles */
-        .modal {
-            display: none; /* Hidden by default */
-            position: fixed; 
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            overflow: auto;
-            background-color: rgba(0,0,0,0.8);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            position: relative;
-            max-width: 100%;
-            max-height: 100%;
-            overflow: hidden;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content img {
-            display: block;
-            max-width: 100%;
-            max-height: 100vh; /* Ensure the image fits within the viewport height */
-        }
-
-        .close {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            color: #ffffff;
-            font-size: 35px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
         @media (max-width: 900px) {
             .portfolio-grid {
                 grid-template-columns: repeat(2, 1fr); /* Adjust to 2 columns for medium screens */
@@ -282,7 +240,7 @@
     <div class="portfolio-container" id="portfolio">
         <div class="portfolio-grid">
             <!-- Portfolio Item 1 -->
-            <div class="portfolio-item" data-images='["C:/Users/KyleTuck/Downloads/DSCF2044.JPG"]'>
+            <div class="portfolio-item">
                 <img src="C:/Users/KyleTuck/Downloads/DSCF2044.JPG" alt="Photo 1">
                 <div class="overlay">
                     <h3>Photo Title 1</h3>
@@ -291,7 +249,7 @@
             </div>
 
             <!-- Portfolio Item 2 -->
-            <div class="portfolio-item" data-images='["C:/Users/KyleTuck/Downloads/DSCF2030.JPG", "C:/Users/KyleTuck/Downloads/DSCF2031.JPG"]'>
+            <div class="portfolio-item">
                 <img src="C:/Users/KyleTuck/Downloads/DSCF2030.JPG" alt="Photo 2">
                 <div class="overlay">
                     <h3>Photo Title 2</h3>
@@ -300,8 +258,8 @@
             </div>
 
             <!-- Portfolio Item 3 -->
-            <div class="portfolio-item" data-images='["temp/photo3.jpg"]'>
-                <img src="temp/photo3.jpg" alt="Photo 3">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2032.JPG" alt="Photo 3">
                 <div class="overlay">
                     <h3>Photo Title 3</h3>
                     <p>Short description or caption for photo 3.</p>
@@ -309,8 +267,8 @@
             </div>
 
             <!-- Portfolio Item 4 -->
-            <div class="portfolio-item" data-images='["temp/photo4.jpg"]'>
-                <img src="temp/photo4.jpg" alt="Photo 4">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2033.JPG" alt="Photo 4">
                 <div class="overlay">
                     <h3>Photo Title 4</h3>
                     <p>Short description or caption for photo 4.</p>
@@ -318,8 +276,8 @@
             </div>
 
             <!-- Portfolio Item 5 -->
-            <div class="portfolio-item" data-images='["temp/photo5.jpg"]'>
-                <img src="temp/photo5.jpg" alt="Photo 5">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2034.JPG" alt="Photo 5">
                 <div class="overlay">
                     <h3>Photo Title 5</h3>
                     <p>Short description or caption for photo 5.</p>
@@ -327,8 +285,8 @@
             </div>
 
             <!-- Portfolio Item 6 -->
-            <div class="portfolio-item" data-images='["temp/photo6.jpg"]'>
-                <img src="temp/photo6.jpg" alt="Photo 6">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2035.JPG" alt="Photo 6">
                 <div class="overlay">
                     <h3>Photo Title 6</h3>
                     <p>Short description or caption for photo 6.</p>
@@ -336,8 +294,8 @@
             </div>
 
             <!-- Portfolio Item 7 -->
-            <div class="portfolio-item" data-images='["temp/photo7.jpg"]'>
-                <img src="temp/photo7.jpg" alt="Photo 7">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2036.JPG" alt="Photo 7">
                 <div class="overlay">
                     <h3>Photo Title 7</h3>
                     <p>Short description or caption for photo 7.</p>
@@ -345,8 +303,8 @@
             </div>
 
             <!-- Portfolio Item 8 -->
-            <div class="portfolio-item" data-images='["temp/photo8.jpg"]'>
-                <img src="temp/photo8.jpg" alt="Photo 8">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2037.JPG" alt="Photo 8">
                 <div class="overlay">
                     <h3>Photo Title 8</h3>
                     <p>Short description or caption for photo 8.</p>
@@ -354,21 +312,13 @@
             </div>
 
             <!-- Portfolio Item 9 -->
-            <div class="portfolio-item" data-images='["temp/photo9.jpg"]'>
-                <img src="temp/photo9.jpg" alt="Photo 9">
+            <div class="portfolio-item">
+                <img src="C:/Users/KyleTuck/Downloads/DSCF2038.JPG" alt="Photo 9">
                 <div class="overlay">
                     <h3>Photo Title 9</h3>
                     <p>Short description or caption for photo 9.</p>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Modal for Image Display -->
-    <div id="imageModal" class="modal">
-        <div class="modal-content">
-            <span class="close">&times;</span>
-            <!-- Images will be added here by JavaScript -->
         </div>
     </div>
 
@@ -390,56 +340,7 @@
     <!-- Scripts -->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
-        $(document).ready(function() {
-            // Modal functionality
-            $('.portfolio-item').click(function() {
-                var images = $(this).data('images');
-                var $modalContent = $('.modal-content');
-
-                // Clear existing images
-                $modalContent.find('img').remove();
-
-                // Add new images to modal
-                images.forEach(function(src) {
-                    $modalContent.append('<img src="' + src + '" alt="Image">');
-                });
-
-                // Show the modal
-                var $modal = $('#imageModal');
-                $modal.show();
-
-                // Adjust modal size based on image size
-                var $firstImage = $modalContent.find('img').first();
-
-                $firstImage.on('load', function() {
-                    var imgWidth = $firstImage[0].naturalWidth;
-                    var imgHeight = $firstImage[0].naturalHeight;
-
-                    // Set the size of the modal content to fit the image
-                    $modalContent.css({
-                        'width': imgWidth + 'px',
-                        'height': imgHeight + 'px'
-                    });
-
-                    // Ensure the modal is centered
-                    $modal.css({
-                        'display': 'flex',
-                        'align-items': 'center',
-                        'justify-content': 'center'
-                    });
-                });
-            });
-
-            $('.close').click(function() {
-                $('#imageModal').hide();
-            });
-
-            $(window).click(function(event) {
-                if ($(event.target).is('#imageModal')) {
-                    $('#imageModal').hide();
-                }
-            });
-        });
+        // Any JavaScript or jQuery code that was previously handling the modal should be removed as well.
     </script>
 </body>
 </html>
