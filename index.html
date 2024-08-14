@@ -109,7 +109,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 30%;
+            height: 70px; /* 20% height of the portfolio-item */
             background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
             color: #fff;
             transform: translateY(100%);
@@ -171,6 +171,60 @@
             transform: scale(1.2);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
             filter: brightness(1.2);
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none; /* Hidden by default */
+            position: fixed; /* Stay in place */
+            z-index: 1001; /* Sit on top */
+            left: 0;
+            top: 0;
+            width: 100%; /* Full width */
+            height: 100%; /* Full height */
+            overflow: auto; /* Enable scroll if needed */
+            background-color: rgba(0, 0, 0, 0.8); /* Black background with opacity */
+        }
+
+        .modal-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: #fff;
+            box-sizing: border-box;
+            z-index: 1002; /* Ensure it's above the image */
+        }
+
+        .modal-title {
+            font-size: 1.5em;
+        }
+
+        .modal-close {
+            font-size: 2em;
+            cursor: pointer;
+        }
+
+        .modal-close:hover {
+            color: #ddd;
+        }
+
+        .modal-content {
+            margin: 60px auto 20px auto; /* Ensure margin accommodates the header */
+            padding: 20px;
+            width: 80%; /* Could be more or less depending on screen size */
+            max-width: 700px;
+        }
+
+        .modal-content img {
+            width: 100%; /* Full width */
+            height: auto; /* Keep aspect ratio */
+            display: block; /* Make sure it's block */
         }
 
         @media (max-width: 900px) {
@@ -240,10 +294,27 @@
         </div>
     </div>
 
+    <!-- Modal Structure -->
+    <div id="modal" class="modal">
+        <div class="modal-header">
+            <span id="modal-close" class="modal-close">&times;</span>
+            <div id="modal-title" class="modal-title"></div>
+        </div>
+        <div class="modal-content">
+            <img id="modal-image" src="" alt="">
+        </div>
+    </div>
+
     <script>
         document.addEventListener('DOMContentLoaded', function() {
             const apiUrl = 'https://api.github.com/repos/Incognitoplanet/Incognitoplanet.github.io/contents/images';
             const portfolioGrid = document.getElementById('portfolio-grid');
+
+            // Modal elements
+            const modal = document.getElementById('modal');
+            const modalImage = document.getElementById('modal-image');
+            const modalTitle = document.getElementById('modal-title');
+            const modalClose = document.getElementById('modal-close');
 
             fetch(apiUrl)
                 .then(response => response.json())
@@ -279,12 +350,31 @@
                             portfolioItem.appendChild(imgElement);
                             portfolioItem.appendChild(overlay);
 
+                            // Add click event to open modal
+                            portfolioItem.addEventListener('click', function() {
+                                modalImage.src = imgUrl;
+                                modalTitle.textContent = imgTitle;
+                                modal.style.display = 'block';
+                            });
+
                             // Append portfolio item to grid
                             portfolioGrid.appendChild(portfolioItem);
                         }
                     });
                 })
                 .catch(error => console.error('Error fetching images:', error));
+
+            // Close modal event
+            modalClose.addEventListener('click', function() {
+                modal.style.display = 'none';
+            });
+
+            // Close modal when clicking outside of the modal content
+            window.addEventListener('click', function(event) {
+                if (event.target === modal) {
+                    modal.style.display = 'none';
+                }
+            });
         });
     </script>
 </body>
