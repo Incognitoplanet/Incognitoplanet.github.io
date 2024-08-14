@@ -185,7 +185,7 @@
             position: relative; /* Position relative for title and close button */
             margin: 5% auto; /* Center modal content */
             padding: 0; /* Remove default padding */
-            width: 80%; /* Default width */
+            width: 90%; /* Default width for mobile screens */
             max-width: 700px;
             box-sizing: border-box;
         }
@@ -261,6 +261,21 @@
 
             .navbar nav a {
                 font-size: 0.9em;
+            }
+
+            .modal-content {
+                width: 95%; /* Slightly more responsive for very small screens */
+                max-width: 90%; /* Ensures it fits well on mobile */
+            }
+
+            .modal-header {
+                top: -40px; /* Adjust title position for smaller screens */
+                width: calc(100% - 20px); /* Ensure header fits well on mobile */
+            }
+
+            .modal-close {
+                top: -40px; /* Align close button with title on small screens */
+                right: 5px; /* Adjust position */
             }
         }
     </style>
