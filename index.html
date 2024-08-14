@@ -185,14 +185,17 @@
             position: relative; /* Position relative for title and close button */
             margin: 5% auto; /* Center modal content */
             padding: 0; /* Remove default padding */
-            width: 80%; /* Could be more or less depending on screen size */
+            width: 80%; /* Default width */
             max-width: 700px;
+            box-sizing: border-box;
         }
 
         .modal-content img {
             width: 100%; /* Full width */
             height: auto; /* Keep aspect ratio */
             display: block; /* Make sure it's block */
+            max-height: 80vh; /* Limit height to 80% of viewport height */
+            object-fit: contain; /* Ensure image is contained */
         }
 
         .modal-header {
