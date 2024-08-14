@@ -27,7 +27,7 @@
         .header {
             position: relative;
             text-align: center;
-            padding: 0 20px; /* Remove top and bottom padding */
+            padding: 0 20px;
             background: url('planet.jpg') no-repeat center center;
             background-size: cover;
             color: #ffffff;
@@ -39,11 +39,11 @@
             display: flex;
             justify-content: center;
             align-items: center;
-            background: transparent; /* Transparent to let the background image show */
+            background: transparent;
             position: relative;
             z-index: 1001;
-            padding: 10px 0; /* Adjust vertical padding */
-            flex-wrap: wrap; /* Allow wrapping for smaller screens */
+            padding: 10px 0;
+            flex-wrap: wrap;
         }
 
         .navbar nav {
@@ -64,7 +64,7 @@
         .header h1 {
             font-size: 3.5em;
             margin: 0;
-            padding: 50px 0 10px; /* Reduced padding to minimize gap and added bottom margin */
+            padding: 50px 0 10px;
             letter-spacing: 2px;
         }
 
@@ -77,8 +77,8 @@
 
         .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr); /* 3 columns layout */
-            grid-gap: 10px; /* Space between grid items */
+            grid-template-columns: repeat(3, 1fr);
+            grid-gap: 10px;
         }
 
         .portfolio-item {
@@ -92,7 +92,7 @@
         .portfolio-item img {
             width: 100%;
             height: 100%;
-            object-fit: cover; /* Cover the grid cell without distortion */
+            object-fit: cover;
         }
 
         /* Overlay Styles */
@@ -101,8 +101,8 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 70px; /* 20% height of the portfolio-item */
-            background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
+            height: 70px;
+            background: rgba(0, 0, 0, 0.7);
             color: #fff;
             transform: translateY(100%);
             transition: transform 0.3s ease;
@@ -167,28 +167,28 @@
 
         /* Modal Styles */
         .modal {
-            display: none; /* Hidden by default */
-            position: fixed; /* Stay in place */
-            z-index: 1001; /* Sit on top */
+            display: none;
+            position: fixed;
+            z-index: 1001;
             left: 0;
             top: 0;
-            width: 100%; /* Full width */
-            height: 100%; /* Full height */
-            overflow: auto; /* Enable scroll if needed */
-            background-color: rgba(0, 0, 0, 0.8); /* Black background with opacity */
-            display: flex; /* Use flex to center content */
-            align-items: center; /* Center vertically */
-            justify-content: center; /* Center horizontally */
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            background-color: rgba(0, 0, 0, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .modal-content {
             position: relative;
             padding: 0;
-            width: 90%; /* Default width */
+            width: 90%;
             max-width: 700px;
             box-sizing: border-box;
-            text-align: center; /* Center the modal content */
-            margin: auto; /* Center the modal horizontally */
+            text-align: center;
+            margin: auto;
         }
 
         .modal-content img {
@@ -204,12 +204,12 @@
 
         .modal-title {
             font-size: 1.0em;
-            background: rgba(0, 0, 0, 0.8); /* Darker, sleeker background */
+            background: rgba(0, 0, 0, 0.8);
             color: #fff;
             padding: 5px;
             border-radius: 5px;
             display: inline-block;
-            border: 2px solid #444; /* Thin border for better fit */
+            border: 2px solid #444;
         }
 
         .modal-close {
@@ -226,30 +226,53 @@
             color: #ddd;
         }
 
+        .modal-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            z-index: 1002;
+        }
+
+        .modal-nav button {
+            background: rgba(0, 0, 0, 0.7);
+            border: none;
+            color: white;
+            font-size: 2em;
+            padding: 10px;
+            cursor: pointer;
+        }
+
+        .modal-nav button:hover {
+            background: rgba(0, 0, 0, 0.9);
+        }
+
         @media (max-width: 900px) {
             .portfolio-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for medium screens */
+                grid-template-columns: repeat(3, 1fr); /* 3 columns for mobile screens */
             }
         }
 
         @media (max-width: 600px) {
             .portfolio-grid {
-                grid-template-columns: 1fr; /* 1 column for small screens */
+                grid-template-columns: repeat(3, 1fr); /* Ensure 3x3 layout on small screens */
             }
 
             .header h1 {
                 font-size: 2.5em;
-                padding: 30px 0 10px; /* Reduced padding to minimize gap */
+                padding: 30px 0 10px;
             }
 
             .navbar {
-                flex-direction: row; /* Align items horizontally */
-                justify-content: center; /* Center items horizontally */
-                padding: 10px 0; /* Maintain vertical padding */
+                flex-direction: row;
+                justify-content: center;
+                padding: 10px 0;
             }
 
             .navbar nav {
-                gap: 15px; /* Reduced gap for smaller screens */
+                gap: 15px;
             }
 
             .navbar nav a {
@@ -257,18 +280,18 @@
             }
 
             .modal-content {
-                width: 95%; /* Slightly more responsive for very small screens */
-                max-width: 90%; /* Ensures it fits well on mobile */
+                width: 95%;
+                max-width: 90%;
             }
 
             .modal-header {
-                top: 10px; /* Adjust position for smaller screens */
-                width: calc(100% - 20px); /* Ensure header fits well on mobile */
+                top: 10px;
+                width: calc(100% - 20px);
             }
 
             .modal-close {
-                top: 10px; /* Align close button with title on small screens */
-                right: 10px; /* Adjust position */
+                top: 10px;
+                right: 10px;
             }
         }
     </style>
@@ -316,6 +339,10 @@
                 <div id="modal-title" class="modal-title"></div>
             </div>
             <img id="modal-image" src="" alt="">
+            <div class="modal-nav">
+                <button id="prev-btn">&laquo;</button>
+                <button id="next-btn">&raquo;</button>
+            </div>
         </div>
     </div>
 
@@ -329,6 +356,11 @@
             const modalImage = document.getElementById('modal-image');
             const modalTitle = document.getElementById('modal-title');
             const modalClose = document.getElementById('modal-close');
+            const prevBtn = document.getElementById('prev-btn');
+            const nextBtn = document.getElementById('next-btn');
+
+            let images = [];
+            let currentIndex = 0;
 
             // Hide modal by default
             modal.style.display = 'none';
@@ -363,14 +395,22 @@
 
                             // Add click event to open modal
                             portfolioItem.addEventListener('click', () => {
+                                currentIndex = images.findIndex(img => img.url === imgUrl);
+                                showImage(currentIndex);
                                 modal.style.display = 'flex';
-                                modalImage.src = imgUrl;
-                                modalTitle.textContent = imgTitle;
                             });
+
+                            images.push({ url: imgUrl, title: imgTitle });
                         }
                     });
                 })
                 .catch(error => console.error('Error fetching images:', error));
+
+            function showImage(index) {
+                if (index < 0 || index >= images.length) return;
+                modalImage.src = images[index].url;
+                modalTitle.textContent = images[index].title;
+            }
 
             // Close modal event
             modalClose.addEventListener('click', () => {
@@ -382,6 +422,20 @@
                 if (event.target === modal) {
                     modal.style.display = 'none';
                 }
+            });
+
+            // Navigate to previous image
+            prevBtn.addEventListener('click', () => {
+                if (images.length === 0) return;
+                currentIndex = (currentIndex - 1 + images.length) % images.length;
+                showImage(currentIndex);
+            });
+
+            // Navigate to next image
+            nextBtn.addEventListener('click', () => {
+                if (images.length === 0) return;
+                currentIndex = (currentIndex + 1) % images.length;
+                showImage(currentIndex);
             });
         });
     </script>
