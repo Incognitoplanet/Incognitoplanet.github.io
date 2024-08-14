@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Oh, Fuck</title>
+    <title>Incognito Planet</title>
     <link rel="icon" href="spider-man.png" type="image/png">
     <style>
         /* Global Styles */
@@ -58,10 +58,14 @@
             font-size: 1.2em;
             color: #ffffff;
             text-decoration: none;
+            border-bottom: 2px solid transparent; /* For the underline effect */
+            padding-bottom: 5px;
+            transition: border-color 0.3s ease; /* Smooth transition for the underline */
         }
 
         .navbar a:hover {
             color: #ddd;
+            border-bottom: 2px solid #ddd; /* Underline color on hover */
         }
 
         /* Portfolio Section */
@@ -75,6 +79,8 @@
             display: grid;
             grid-template-columns: repeat(3, 1fr);
             grid-gap: 10px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .portfolio-item {
@@ -236,27 +242,32 @@
         }
 
         .modal-nav button {
-            background: none;
+            background: rgba(0, 0, 0, 0.5); /* Faint background */
             border: none;
             color: white;
             font-size: 2em;
             padding: 10px;
             cursor: pointer;
+            transition: background 0.3s ease, color 0.3s ease;
         }
 
         .modal-nav button:hover {
+            background: rgba(0, 0, 0, 0.7); /* Darker on hover */
             color: #ddd;
         }
 
+        /* Responsive Layout */
         @media (max-width: 900px) {
             .portfolio-grid {
                 grid-template-columns: repeat(3, 1fr); /* 3 columns for mobile screens */
+                grid-auto-rows: minmax(200px, auto); /* Ensure rows adjust to content */
             }
         }
 
         @media (max-width: 600px) {
             .portfolio-grid {
                 grid-template-columns: repeat(2, 1fr); /* 2 columns for small screens */
+                grid-gap: 5px; /* Reduce gap on small screens */
             }
 
             .header h1 {
@@ -311,17 +322,11 @@
     </div>
 
     <div class="footer">
-        <p>&copy; 2024 My Photo Portfolio. All rights reserved. | <a href="#contact">Contact Me</a></p>
+        <p>&copy; 2024 Incognito Planet. All rights reserved.</p>
         <div class="footer-icons">
-            <a href="https://www.instagram.com/kyle_tuck99/" target="_blank">
-                <img src="instagram.png" alt="Instagram">
-            </a>
-            <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank">
-                <img src="linkedin.png" alt="LinkedIn">
-            </a>
-            <a href="https://www.youtube.com/@TuuuckTV" target="_blank">
-                <img src="youtube.png" alt="YouTube">
-            </a>
+            <a href="#"><img src="facebook-icon.png" alt="Facebook"></a>
+            <a href="#"><img src="twitter-icon.png" alt="Twitter"></a>
+            <a href="#"><img src="instagram-icon.png" alt="Instagram"></a>
         </div>
     </div>
 
@@ -334,8 +339,8 @@
             </div>
             <img id="modal-image" src="" alt="">
             <div class="modal-nav">
-                <button id="prev-btn">&laquo;</button>
-                <button id="next-btn">&raquo;</button>
+                <button id="prev">&#10094;</button>
+                <button id="next">&#10095;</button>
             </div>
         </div>
     </div>
@@ -350,8 +355,8 @@
             const modalImage = document.getElementById('modal-image');
             const modalTitle = document.getElementById('modal-title');
             const modalClose = document.getElementById('modal-close');
-            const prevBtn = document.getElementById('prev-btn');
-            const nextBtn = document.getElementById('next-btn');
+            const prevBtn = document.getElementById('prev');
+            const nextBtn = document.getElementById('next');
 
             let images = [];
             let currentIndex = 0;
