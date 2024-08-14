@@ -15,6 +15,7 @@
             background-color: #f0f0f0;
             color: #333;
             line-height: 1.6;
+            text-align: center; /* Center content by default */
         }
 
         /* Main Content Wrapper */
@@ -31,14 +32,17 @@
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1000;
             display: flex;
-            justify-content: space-between;
+            justify-content: center; /* Center navbar content */
             align-items: center;
+            flex-wrap: wrap; /* Wrap content to support small screens */
         }
 
         .navbar h1 {
             font-size: 1.5em;
             margin: 0;
             color: #373b41;
+            flex: 1 1 100%; /* Ensure the title is on its own row */
+            text-align: center; /* Center the title */
         }
 
         .navbar nav {
@@ -179,34 +183,30 @@
             height: 100%; /* Full height */
             overflow: auto; /* Enable scroll if needed */
             background-color: rgba(0, 0, 0, 0.8); /* Black background with opacity */
+            display: flex; /* Use flex to center content */
+            align-items: center; /* Center vertically */
+            justify-content: center; /* Center horizontally */
         }
 
         .modal-content {
-            position: relative; /* Position relative for title and close button */
-            margin: 5% auto; /* Center modal content */
-            padding: 0; /* Remove default padding */
-            width: 90%; /* Default width for mobile screens */
+            position: relative;
+            padding: 0;
+            width: 90%; /* Default width */
             max-width: 700px;
             box-sizing: border-box;
+            text-align: center; /* Center the modal content */
+            margin: auto; /* Center the modal horizontally */
         }
 
         .modal-content img {
-            width: 100%; /* Full width */
-            height: auto; /* Keep aspect ratio */
-            display: block; /* Make sure it's block */
-            max-height: 80vh; /* Limit height to 80% of viewport height */
-            object-fit: contain; /* Ensure image is contained */
+            width: 100%;
+            height: auto;
+            max-height: 80vh;
+            object-fit: contain;
         }
 
         .modal-header {
-            position: absolute;
-            top: -50px; /* Move title and close button slightly down */
-            left: 50%;
-            transform: translateX(-50%);
-            width: calc(100% - 20px); /* Full width minus padding */
-            text-align: center;
-            z-index: 1002; /* Ensure it's above the image */
-            padding: 0 10px;
+            margin-bottom: 10px;
         }
 
         .modal-title {
@@ -221,12 +221,12 @@
 
         .modal-close {
             position: absolute;
-            top: -50px; /* Align with the title */
-            right: 10px;
+            top: 10px;
+            right: 20px;
             font-size: 2em;
             color: #fff;
             cursor: pointer;
-            z-index: 1003; /* Ensure it's above the title and image */
+            z-index: 1003;
         }
 
         .modal-close:hover {
@@ -250,13 +250,14 @@
 
             .navbar {
                 flex-direction: column;
-                align-items: flex-start;
+                align-items: center;
             }
 
             .navbar nav {
                 flex-direction: column;
                 gap: 10px;
                 width: 100%;
+                align-items: center;
             }
 
             .navbar nav a {
@@ -269,13 +270,13 @@
             }
 
             .modal-header {
-                top: -40px; /* Adjust title position for smaller screens */
-                width: calc(100% - 20px); /* Ensure header fits well on mobile */
+                top: -10px;
+                width: calc(100% - 20px);
             }
 
             .modal-close {
-                top: -40px; /* Align close button with title on small screens */
-                right: 5px; /* Adjust position */
+                top: -10px;
+                right: 5px;
             }
         }
     </style>
@@ -339,6 +340,10 @@
             const modalTitle = document.getElementById('modal-title');
             const modalClose = document.getElementById('modal-close');
 
+            // Hide modal by default
+            modal.style.display = 'none';
+
+            // Fetch images from the GitHub API and populate the portfolio grid
             fetch(apiUrl)
                 .then(response => response.json())
                 .then(data => {
@@ -368,7 +373,7 @@
 
                             // Add click event to open modal
                             portfolioItem.addEventListener('click', () => {
-                                modal.style.display = 'block';
+                                modal.style.display = 'flex';
                                 modalImage.src = imgUrl;
                                 modalTitle.textContent = imgTitle;
                             });
