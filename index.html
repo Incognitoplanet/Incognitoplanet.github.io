@@ -15,7 +15,7 @@
             background-color: #f0f0f0;
             color: #333;
             line-height: 1.6;
-            text-align: center; /* Center content by default */
+            text-align: center;
         }
 
         /* Main Content Wrapper */
@@ -23,26 +23,27 @@
             flex: 1;
         }
 
-        /* Navigation Bar */
-        .navbar {
-            position: sticky;
-            top: 0;
-            background-color: #ffffff;
-            padding: 15px 20px;
+        /* Header Section (Navbar + Title) */
+        .header {
+            position: relative;
+            text-align: center;
+            padding: 0 20px; /* Remove top and bottom padding */
+            background: url('planet.jpg') no-repeat center center;
+            background-size: cover;
+            color: #ffffff;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             z-index: 1000;
-            display: flex;
-            justify-content: center; /* Center navbar content */
-            align-items: center;
-            flex-wrap: wrap; /* Wrap content to support small screens */
         }
 
-        .navbar h1 {
-            font-size: 1.5em;
-            margin: 0;
-            color: #373b41;
-            flex: 1 1 100%; /* Ensure the title is on its own row */
-            text-align: center; /* Center the title */
+        .navbar {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: transparent; /* Transparent to let the background image show */
+            position: relative;
+            z-index: 1001;
+            padding: 10px 0; /* Adjust vertical padding */
+            flex-wrap: wrap; /* Allow wrapping for smaller screens */
         }
 
         .navbar nav {
@@ -51,27 +52,19 @@
         }
 
         .navbar nav a {
-            font-size: 1em;
-            color: #373b41;
+            font-size: 1.2em;
+            color: #ffffff;
             text-decoration: none;
         }
 
         .navbar nav a:hover {
-            color: #5a6268;
+            color: #ddd;
         }
 
-        /* Header Section */
-        .portfolio-header {
-            text-align: center;
-            padding: 5px 20px;
-            background: url('planet.jpg') no-repeat center center;
-            background-size: cover;
-            color: #ffffff;
-        }
-
-        .portfolio-header h1 {
+        .header h1 {
             font-size: 3.5em;
-            margin-bottom: 10px;
+            margin: 0;
+            padding: 50px 0 10px; /* Reduced padding to minimize gap and added bottom margin */
             letter-spacing: 2px;
         }
 
@@ -244,24 +237,23 @@
                 grid-template-columns: 1fr; /* 1 column for small screens */
             }
 
-            .portfolio-header h1 {
+            .header h1 {
                 font-size: 2.5em;
+                padding: 30px 0 10px; /* Reduced padding to minimize gap */
             }
 
             .navbar {
-                flex-direction: column;
-                align-items: center;
+                flex-direction: row; /* Align items horizontally */
+                justify-content: center; /* Center items horizontally */
+                padding: 10px 0; /* Maintain vertical padding */
             }
 
             .navbar nav {
-                flex-direction: column;
-                gap: 10px;
-                width: 100%;
-                align-items: center;
+                gap: 15px; /* Reduced gap for smaller screens */
             }
 
             .navbar nav a {
-                font-size: 0.9em;
+                font-size: 1em;
             }
 
             .modal-content {
@@ -270,29 +262,27 @@
             }
 
             .modal-header {
-                top: -10px;
-                width: calc(100% - 20px);
+                top: 10px; /* Adjust position for smaller screens */
+                width: calc(100% - 20px); /* Ensure header fits well on mobile */
             }
 
             .modal-close {
-                top: -10px;
-                right: 5px;
+                top: 10px; /* Align close button with title on small screens */
+                right: 10px; /* Adjust position */
             }
         }
     </style>
 </head>
 <body>
-    <div class="navbar">
+    <div class="header">
         <h1>Incognito Planet</h1>
-        <nav>
-            <a href="#portfolio">Portfolio</a>
-            <a href="#about">About</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    </div>
-
-    <div class="portfolio-header">
-        <h1>Pictures and stuff</h1>
+        <div class="navbar">
+            <nav>
+                <a href="#portfolio">Portfolio</a>
+                <a href="#about">About</a>
+                <a href="#contact">Contact</a>
+            </nav>
+        </div>
     </div>
 
     <div class="content">
