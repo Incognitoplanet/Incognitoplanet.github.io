@@ -133,6 +133,9 @@
             text-align: center;
             padding: 20px;
             font-size: 0.9em;
+            position: relative; /* Changed to relative */
+            bottom: 0; /* Ensures it is at the bottom */
+            width: 100%;
         }
 
         .footer p {
@@ -237,27 +240,27 @@
         }
 
         .modal-nav button {
-            background: rgba(0, 0, 0, 0.7);
+            background: none;
             border: none;
-            color: white;
+            color: #fff;
             font-size: 2em;
             padding: 10px;
             cursor: pointer;
         }
 
         .modal-nav button:hover {
-            background: rgba(0, 0, 0, 0.9);
+            color: #ddd;
         }
 
         @media (max-width: 900px) {
             .portfolio-grid {
-                grid-template-columns: repeat(3, 1fr); /* 3 columns for mobile screens */
+                grid-template-columns: repeat(2, 1fr); /* 2 columns for mobile screens */
             }
         }
 
         @media (max-width: 600px) {
             .portfolio-grid {
-                grid-template-columns: repeat(3, 1fr); /* Ensure 3x3 layout on small screens */
+                grid-template-columns: 1fr; /* 1 column for very small screens */
             }
 
             .header h1 {
@@ -266,7 +269,7 @@
             }
 
             .navbar {
-                flex-direction: row;
+                flex-direction: column;
                 justify-content: center;
                 padding: 10px 0;
             }
