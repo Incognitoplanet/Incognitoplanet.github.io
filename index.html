@@ -109,7 +109,7 @@
             bottom: 0;
             left: 0;
             width: 100%;
-            height: 20%;
+            height: 30%;
             background: rgba(0, 0, 0, 0.7); /* Semi-transparent black background */
             color: #fff;
             transform: translateY(100%);
@@ -219,49 +219,8 @@
 
     <div class="content">
         <div class="portfolio-container" id="portfolio">
-            <div class="portfolio-grid">
-                <!-- Portfolio Item 1 -->
-                <div class="portfolio-item">
-                    <img src="bbq.JPG" alt="Photo 1">
-                    <div class="overlay">
-                        <div class="overlay-content">
-                            <h3>Image Title 1</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Portfolio Item 2 -->
-                <div class="portfolio-item">
-                    <img src="board.JPG" alt="Photo 2">
-                    <div class="overlay">
-                        <div class="overlay-content">
-                            <h3>Image Title 2</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Portfolio Item 3 -->
-                <div class="portfolio-item">
-                    <img src="southport.JPG" alt="Photo 3">
-                    <div class="overlay">
-                        <div class="overlay-content">
-                            <h3>Image Title 3</h3>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Portfolio Item 4 -->
-                <div class="portfolio-item">
-                    <img src="JJ.JPG" alt="Photo 4">
-                    <div class="overlay">
-                        <div class="overlay-content">
-                            <h3>Image Title 4</h3>
-                        </div>
-                    </div>
-                </div>
-                
-                <!-- Additional Portfolio Items -->
-                <!-- Ensure there are enough items to fill the grid if needed -->
+            <div class="portfolio-grid" id="portfolio-grid">
+                <!-- JavaScript will dynamically insert portfolio items here -->
             </div>
         </div>
     </div>
@@ -280,5 +239,53 @@
             </a>
         </div>
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const apiUrl = 'https://github.com/Incognitoplanet/Incognitoplanet.github.io/tree/main/images';
+            const portfolioGrid = document.getElementById('portfolio-grid');
+
+            fetch(apiUrl)
+                .then(response => response.json())
+                .then(data => {
+                    data.forEach(file => {
+                        if (file.type === 'file') {
+                            const imgUrl = file.download_url;
+                            const imgTitle = file.name.split('.')[0]; // Extract title from filename
+
+                            // Create portfolio item
+                            const portfolioItem = document.createElement('div');
+                            portfolioItem.className = 'portfolio-item';
+
+                            // Create image element
+                            const imgElement = document.createElement('img');
+                            imgElement.src = imgUrl;
+                            imgElement.alt = imgTitle;
+
+                            // Create overlay
+                            const overlay = document.createElement('div');
+                            overlay.className = 'overlay';
+
+                            const overlayContent = document.createElement('div');
+                            overlayContent.className = 'overlay-content';
+
+                            const titleElement = document.createElement('h3');
+                            titleElement.textContent = imgTitle;
+
+                            overlayContent.appendChild(titleElement);
+                            overlay.appendChild(overlayContent);
+
+                            // Append image and overlay to portfolio item
+                            portfolioItem.appendChild(imgElement);
+                            portfolioItem.appendChild(overlay);
+
+                            // Append portfolio item to grid
+                            portfolioGrid.appendChild(portfolioItem);
+                        }
+                    });
+                })
+                .catch(error => console.error('Error fetching images:', error));
+        });
+    </script>
 </body>
 </html>
