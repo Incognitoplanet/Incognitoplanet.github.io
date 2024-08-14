@@ -60,18 +60,19 @@
         }
 
         .navbar a {
-            font-size: 1.2em;
-            color: #ffffff;
-            text-decoration: underline;
-            border-bottom: 2px solid transparent; /* For the underline effect */
-            padding-bottom: 5px;
-            transition: border-color 0.3s ease; /* Smooth transition for the underline */
-        }
+    font-size: 1.2em;
+    color: #ffffff;
+    text-decoration: underline;
+    border-bottom: 2px solid transparent; /* For the underline effect */
+    padding-bottom: 3px; /* Reduced padding to decrease gap */
+    transition: border-color 0.3s ease, padding-bottom 0.3s ease; /* Smooth transition for padding */
+}
 
-        .navbar a:hover {
-            color: #ddd;
-            border-bottom: 2px solid #ddd; /* Underline color on hover */
-        }
+.navbar a:hover {
+    color: #ddd;
+    border-bottom: 2px solid #ddd; /* Underline color on hover */
+    padding-bottom: 1px; /* Increased padding on hover to highlight */
+}
 
         /* Portfolio Section */
         .portfolio-container {
@@ -135,44 +136,44 @@
 
         /* Footer */
         .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    background-color: #373b41;
-    color: #ffffff;
-    padding: 10px;
-    font-size: 0.9em;
-    position: relative;
-    bottom: 0;
-    width: 100%;
-    box-sizing: border-box; /* Ensure padding is included in total width */
-}
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #373b41;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 0.9em;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box; /* Ensure padding is included in total width */
+        }
 
-.footer p {
-    margin: 0;
-}
+        .footer p {
+            margin: 0;
+        }
 
-.footer-icons {
-    display: flex;
-    gap: 10px;
-    margin-left: auto; /* Pushes social icons to the far right */
-}
+        .footer-icons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto; /* Pushes social icons to the far right */
+        }
 
-.footer-icons a {
-    display: inline-block;
-}
+        .footer-icons a {
+            display: inline-block;
+        }
 
-.footer-icons img {
-    width: 24px;
-    height: 24px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
-}
+        .footer-icons img {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        }
 
-.footer-icons a:hover img {
-    transform: scale(1.2);
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    filter: brightness(1.2);
-}
+        .footer-icons a:hover img {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.2);
+        }
 
         /* Modal Styles */
         .modal {
@@ -265,12 +266,13 @@
             .portfolio-grid {
                 grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns on larger mobile screens */
                 grid-auto-rows: minmax(200px, auto); /* Ensure rows adjust to content */
+                grid-gap: 10px; /* Adjust gap if necessary */
             }
         }
 
         @media (max-width: 600px) {
             .portfolio-grid {
-                grid-template-columns: repeat(2, 1fr); /* 2 columns for smaller screens */
+                grid-template-columns: repeat(3, 1fr); /* Ensure 3 columns on small screens */
                 grid-gap: 5px; /* Reduce gap on small screens */
             }
 
@@ -328,10 +330,9 @@
     <div class="footer">
         <p>&copy; 2024 Incognito Planet. All rights reserved.</p>
         <div class="footer-icons">
-        <a href="https://www.instagram.com/kyle_tuck99/" target="_blank"><img src="instagram.png" alt="Instagram" class="footer-icon"></a>
-        <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="footer-icon"></a>
-        <a href="https://www.youtube.com/@TuuuckTV" target="_blank"><img src="youtube.png" alt="YouTube" class="footer-icon"></a>
-
+            <a href="https://www.instagram.com/kyle_tuck99/" target="_blank"><img src="instagram.png" alt="Instagram" class="footer-icon"></a>
+            <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="footer-icon"></a>
+            <a href="https://www.youtube.com/@TuuuckTV" target="_blank"><img src="youtube.png" alt="YouTube" class="footer-icon"></a>
         </div>
     </div>
 
