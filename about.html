@@ -19,6 +19,13 @@
             overflow-x: hidden; /* Prevent horizontal scroll */
         }
 
+        /* Main Wrapper to Flexbox for Layout */
+        .main-wrapper {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh; /* Full viewport height */
+        }
+
         /* Header Section (Navbar + Title) */
         .header {
             position: relative;
@@ -101,8 +108,6 @@
             color: #ffffff;
             padding: 10px;
             font-size: 0.9em;
-            position: relative;
-            bottom: 0;
             width: 100%;
             box-sizing: border-box;
         }
@@ -114,7 +119,6 @@
         .footer-icons {
             display: flex;
             gap: 10px;
-            margin-left: auto;
         }
 
         .footer-icons a {
@@ -154,40 +158,53 @@
             .about-content {
                 padding: 20px;
             }
+
+            .footer {
+                font-size: 0.8em;
+                flex-direction: column;
+                align-items: center;
+                padding: 15px;
+            }
+
+            .footer-icons {
+                margin-top: 10px;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>Incognito Planet</h1>
-        <div class="navbar">
-            <a href="index.html#portfolio">Portfolio</a>
-            <a href="about.html">About</a>
-            <a href="index.html#contact">Contact</a>
+    <div class="main-wrapper">
+        <div class="header">
+            <h1>Incognito Planet</h1>
+            <div class="navbar">
+                <a href="index.html#portfolio">Portfolio</a>
+                <a href="about.html">About</a>
+                <a href="index.html#contact">Contact</a>
+            </div>
         </div>
-    </div>
 
-    <div class="about-container">
-        <div class="about-content">
-            <h2>About Incognito Planet</h2>
-            <p>
-                Welcome to Incognito Planet, a space where creativity meets mystery. We are a team of passionate individuals dedicated to exploring the unknown, pushing the boundaries of design, and crafting experiences that resonate with the curious minds of the world.
-            </p>
-            <p>
-                Our portfolio reflects a journey through uncharted territories of art and imagination, showcasing our unique take on the universe that surrounds us. Each project is a testament to our commitment to quality and our unrelenting quest for innovation.
-            </p>
-            <p>
-                Join us as we venture into the extraordinary, turning visions into reality and inspiring others to see the world through a different lens. Whether you're an artist, a thinker, or just someone who loves the thrill of discovery, there's something here for you.
-            </p>
+        <div class="about-container">
+            <div class="about-content">
+                <h2>About Incognito Planet</h2>
+                <p>
+                    Welcome to Incognito Planet, a space where creativity meets mystery. We are a team of passionate individuals dedicated to exploring the unknown, pushing the boundaries of design, and crafting experiences that resonate with the curious minds of the world.
+                </p>
+                <p>
+                    Our portfolio reflects a journey through uncharted territories of art and imagination, showcasing our unique take on the universe that surrounds us. Each project is a testament to our commitment to quality and our unrelenting quest for innovation.
+                </p>
+                <p>
+                    Join us as we venture into the extraordinary, turning visions into reality and inspiring others to see the world through a different lens. Whether you're an artist, a thinker, or just someone who loves the thrill of discovery, there's something here for you.
+                </p>
+            </div>
         </div>
-    </div>
 
-    <div class="footer">
-        <p>&copy; 2024 Incognito Planet. All rights reserved.</p>
-        <div class="footer-icons">
-            <a href="https://www.instagram.com/kyle_tuck99/" target="_blank"><img src="instagram.png" alt="Instagram" class="footer-icon"></a>
-            <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="footer-icon"></a>
-            <a href="https://www.youtube.com/@TuuuckTV" target="_blank"><img src="youtube.png" alt="YouTube" class="footer-icon"></a>
+        <div class="footer">
+            <p>&copy; 2024 Incognito Planet. All rights reserved.</p>
+            <div class="footer-icons">
+                <a href="https://www.instagram.com/kyle_tuck99/" target="_blank"><img src="instagram.png" alt="Instagram" class="footer-icon"></a>
+                <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="footer-icon"></a>
+                <a href="https://www.youtube.com/@TuuuckTV" target="_blank"><img src="youtube.png" alt="YouTube" class="footer-icon"></a>
+            </div>
         </div>
     </div>
 </body>
