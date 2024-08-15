@@ -17,6 +17,8 @@
             line-height: 1.6;
             text-align: center;
             overflow-x: hidden; /* Prevent horizontal scroll */
+            display: flex;
+            flex-direction: column;
         }
 
         body.no-scroll {
@@ -28,6 +30,7 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            justify-content: center; /* Center the content vertically if needed */
         }
 
         /* Header Section (Navbar + Title) */
@@ -83,7 +86,7 @@
 
         .portfolio-grid {
             display: grid;
-            grid-template-columns: repeat(3, 1fr);
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
             grid-gap: 10px;
             width: 100%;
             box-sizing: border-box;
@@ -143,8 +146,6 @@
             color: #ffffff;
             padding: 10px;
             font-size: 0.9em;
-            position: relative;
-            bottom: 0;
             width: 100%;
             box-sizing: border-box; /* Ensure padding is included in total width */
         }
@@ -198,7 +199,6 @@
             max-width: 700px;
             box-sizing: border-box;
             text-align: center;
-            margin: auto;
         }
 
         .modal-content img {
@@ -224,8 +224,8 @@
 
         .modal-close {
             position: absolute;
-            top: 1px;
-            right: 20px;
+            top: 10px;
+            right: 10px;
             font-size: 2em;
             color: #fff;
             cursor: pointer;
@@ -264,15 +264,13 @@
         /* Responsive Layout */
         @media (max-width: 900px) {
             .portfolio-grid {
-                grid-template-columns: repeat(3, 1fr); /* Maintain 3 columns on larger mobile screens */
-                grid-auto-rows: minmax(200px, auto); /* Ensure rows adjust to content */
-                grid-gap: 10px; /* Adjust gap if necessary */
+                grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Maintain responsive grid */
             }
         }
 
         @media (max-width: 600px) {
             .portfolio-grid {
-                grid-template-columns: repeat(3, 1fr); /* Ensure 3 columns on small screens */
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* More columns on smaller screens */
                 grid-gap: 5px; /* Reduce gap on small screens */
             }
 
