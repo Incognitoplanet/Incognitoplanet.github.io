@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About - Incognito Planet</title>
+    <link rel="icon" href="alien_black.png" type="image/png">
+    <style>
+        /* Global Styles */
+        html, body {
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #f0f0f0;
+            color: #333;
+            line-height: 1.6;
+            text-align: center;
+            overflow-x: hidden; /* Prevent horizontal scroll */
+        }
+
+        /* Header Section (Navbar + Title) */
+        .header {
+            position: relative;
+            text-align: center;
+            padding: 0 20px;
+            background: url('planet.jpg') no-repeat center center;
+            background-size: cover;
+            color: #ffffff;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            font-size: 3.5em;
+            margin: 0;
+            padding: 50px 0 10px;
+            letter-spacing: 2px;
+        }
+
+        .navbar {
+            position: absolute;
+            top: 10px;
+            right: 20px;
+            display: flex;
+            gap: 20px;
+            background: transparent;
+        }
+
+        .navbar a {
+            font-size: 1.2em;
+            color: #ffffff;
+            text-decoration: underline;
+            border-bottom: 2px solid transparent;
+            padding-bottom: 3px;
+            transition: border-color 0.3s ease, padding-bottom 0.3s ease;
+        }
+
+        .navbar a:hover {
+            color: #ddd;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 1px;
+        }
+
+        /* About Section */
+        .about-container {
+            max-width: 1200px;
+            margin: 50px auto;
+            padding: 0 20px;
+            background-color: #ffffff;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            border-radius: 8px;
+            text-align: left;
+        }
+
+        .about-content {
+            padding: 40px;
+            box-sizing: border-box;
+        }
+
+        .about-content h2 {
+            font-size: 2.5em;
+            margin-bottom: 20px;
+            color: #333;
+            text-align: center;
+        }
+
+        .about-content p {
+            font-size: 1.1em;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            color: #555;
+            text-align: justify;
+        }
+
+        /* Footer */
+        .footer {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background-color: #373b41;
+            color: #ffffff;
+            padding: 10px;
+            font-size: 0.9em;
+            position: relative;
+            bottom: 0;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        .footer p {
+            margin: 0;
+        }
+
+        .footer-icons {
+            display: flex;
+            gap: 10px;
+            margin-left: auto;
+        }
+
+        .footer-icons a {
+            display: inline-block;
+        }
+
+        .footer-icons img {
+            width: 24px;
+            height: 24px;
+            transition: transform 0.3s ease, box-shadow 0.3s ease, filter 0.3s ease;
+        }
+
+        .footer-icons a:hover img {
+            transform: scale(1.2);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            filter: brightness(1.2);
+        }
+
+        /* Responsive Layout */
+        @media (max-width: 600px) {
+            .header h1 {
+                font-size: 2.5em;
+                padding: 30px 0 10px;
+            }
+
+            .navbar {
+                position: static;
+                flex-direction: row;
+                justify-content: center;
+                padding: 10px 0;
+            }
+
+            .navbar a {
+                font-size: 1em;
+            }
+
+            .about-content {
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <h1>Incognito Planet</h1>
+        <div class="navbar">
+            <a href="index.html#portfolio">Portfolio</a>
+            <a href="about.html">About</a>
+            <a href="index.html#contact">Contact</a>
+        </div>
+    </div>
+
+    <div class="about-container">
+        <div class="about-content">
+            <h2>About Incognito Planet</h2>
+            <p>
+                Welcome to Incognito Planet, a space where creativity meets mystery. We are a team of passionate individuals dedicated to exploring the unknown, pushing the boundaries of design, and crafting experiences that resonate with the curious minds of the world.
+            </p>
+            <p>
+                Our portfolio reflects a journey through uncharted territories of art and imagination, showcasing our unique take on the universe that surrounds us. Each project is a testament to our commitment to quality and our unrelenting quest for innovation.
+            </p>
+            <p>
+                Join us as we venture into the extraordinary, turning visions into reality and inspiring others to see the world through a different lens. Whether you're an artist, a thinker, or just someone who loves the thrill of discovery, there's something here for you.
+            </p>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>&copy; 2024 Incognito Planet. All rights reserved.</p>
+        <div class="footer-icons">
+            <a href="https://www.instagram.com/kyle_tuck99/" target="_blank"><img src="instagram.png" alt="Instagram" class="footer-icon"></a>
+            <a href="https://www.linkedin.com/in/kyle-tuck-667416205" target="_blank"><img src="linkedin.png" alt="LinkedIn" class="footer-icon"></a>
+            <a href="https://www.youtube.com/@TuuuckTV" target="_blank"><img src="youtube.png" alt="YouTube" class="footer-icon"></a>
+        </div>
+    </div>
+</body>
+</html>
