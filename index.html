@@ -26,28 +26,40 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            width: 100%; /* Ensure full width for the container */
         }
 
-        /* Diagonal text shadows for a subtle 3D effect */
-        .day, .date, .time {
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
+        .day-date-container {
+            display: flex;
+            justify-content: center; /* Center date and time */
+            align-items: center; /* Center vertically */
+            width: 100%; /* Full width */
         }
 
         .day {
             font-size: 4rem;
-            margin-bottom: 5px;
+            margin-right: 70px; /* Space between day and date */
+            text-align: left; /* Align text to the left */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
+        }
+
+        .date-time {
+            display: flex;
+            flex-direction: column; /* Stack date and time vertically */
+            align-items: center; /* Center items */
         }
 
         .date {
             font-size: 2.5rem;
-            margin-bottom: 20px;
             letter-spacing: 0.3em; /* Increased spacing */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
         }
 
         .time {
-            font-size: 3rem;
-            margin: 10px 0;
+            font-size: 2.5rem; /* Match the font size of the date */
             letter-spacing: 0.1em; /* Spacing between time digits */
+            margin-top: 15px; /* Space between date and time */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
         }
 
         /* Adjust font size for smaller screens */
@@ -55,7 +67,7 @@
             .time {
                 font-size: 3rem;
             }
-            .day, .date {
+            .day, .date, .time {
                 font-size: 1.8rem;
             }
         }
@@ -68,11 +80,6 @@
             .date, .time {
                 font-size: 2rem; /* Adjust date and time size */
             }
-            .day-date-container {
-                flex-direction: row; /* Arrange day and date in a row */
-                justify-content: space-between; /* Space between day and date */
-                width: 100%; /* Full width for the container */
-            }
         }
     </style>
 </head>
@@ -81,9 +88,11 @@
     <div class="clock-container">
         <div class="day-date-container">
             <div class="day" id="day">Friday</div>
-            <div class="date" id="date">27 - 09</div>
+            <div class="date-time">
+                <div class="date" id="date">27 / 09</div>
+                <div class="time" id="time">00 : 00 : 00</div>
+            </div>
         </div>
-        <div class="time" id="time">00 : 00 : 00</div>
     </div>
 
     <script>
@@ -100,7 +109,7 @@
 
             // Update the day and date divs
             document.getElementById('day').innerText = dayName; // Full day name
-            document.getElementById('date').innerText = `${day} / ${month}`; // Format as DD - MM
+            document.getElementById('date').innerText = `${day} / ${month}`; // Format as DD / MM
 
             // Get current time in 24-hour format
             const hours = String(now.getHours()).padStart(2, '0');
