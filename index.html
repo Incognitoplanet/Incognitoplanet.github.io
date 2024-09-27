@@ -19,7 +19,6 @@
             background-color: #d5ceb8; /* White background */
             color: black; /* Black text */
             font-family: 'OfficialBook', sans-serif; /* Apply the custom font */
-            font-size: 36px;
             text-align: center;
         }
 
@@ -51,53 +50,28 @@
             letter-spacing: 0.1em; /* Spacing between time digits */
         }
 
-        /* Adjust font size for smaller screens in portrait mode */
-        @media (max-width: 600px) and (orientation: portrait) {
-            .clock-container {
-                flex-direction: column;
-                text-align: center;
-            }
-
-            .day {
-                font-size: 2.5rem;
-            }
-
-            .date {
-                font-size: 1.8rem;
-            }
-
+        /* Adjust font size for smaller screens */
+        @media (max-width: 600px) {
             .time {
-                font-size: 2.5rem;
+                font-size: 3rem;
+            }
+            .day, .date {
+                font-size: 1.8rem;
             }
         }
 
-        /* Landscape mode on mobile: move day to left, and date/time to the right */
-        @media (max-width: 600px) and (orientation: landscape) {
-            .clock-container {
-                flex-direction: row;
-                justify-content: space-between;
-                width: 100%;
-                padding: 0 20px;
-            }
-
+        /* Landscape orientation adjustments */
+        @media (orientation: landscape) and (max-width: 600px) {
             .day {
-                font-size: 2.5rem;
-                text-align: left;
+                font-size: 2.5rem; /* Shorter day name */
             }
-
-            .date-time {
-                display: flex;
-                flex-direction: column;
-                align-items: flex-end;
-                text-align: right;
+            .date, .time {
+                font-size: 2rem; /* Adjust date and time size */
             }
-
-            .date {
-                font-size: 1.8rem;
-            }
-
-            .time {
-                font-size: 2.5rem;
+            .day-date-container {
+                flex-direction: row; /* Arrange day and date in a row */
+                justify-content: space-between; /* Space between day and date */
+                width: 100%; /* Full width for the container */
             }
         }
     </style>
@@ -105,38 +79,35 @@
 <body>
 
     <div class="clock-container">
-        <!-- Separate day, date, and time -->
-        <div class="date-time">
-            <div class="date" id="date">27/09</div>
+        <div class="day-date-container">
             <div class="day" id="day">Friday</div>
-            <div class="time" id="time">00 : 00 : 00</div>
+            <div class="date" id="date">27 - 09</div>
         </div>
+        <div class="time" id="time">00 : 00 : 00</div>
     </div>
 
     <script>
         function updateClock() {
             const now = new Date();
+            
+            // Get day in words
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayName = daysOfWeek[now.getDay()];
 
-            // Full and abbreviated days
-            const fullDaysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
-            const shortDaysOfWeek = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+            // Get current date in DD-MM format
+            const day = String(now.getDate()).padStart(2, '0');
+            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
 
-            // Detect orientation and screen width to determine day format
-            const isMobileLandscape = window.matchMedia("(max-width: 600px) and (orientation: landscape)").matches;
-            const dayName = isMobileLandscape ? shortDaysOfWeek[now.getDay()] : fullDaysOfWeek[now.getDay()];
+            // Update the day and date divs
+            document.getElementById('day').innerText = dayName; // Full day name
+            document.getElementById('date').innerText = `${day} - ${month}`; // Format as DD - MM
 
             // Get current time in 24-hour format
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
 
-            // Get current date
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
-
-            // Update the day, date, and time divs
-            document.getElementById('day').innerText = dayName;
-            document.getElementById('date').innerText = `${day}/${month}`;
+            // Update the time div
             document.getElementById('time').innerText = `${hours} : ${minutes} : ${seconds}`;
         }
 
@@ -145,9 +116,6 @@
 
         // Initialize clock on page load
         updateClock();
-
-        // Re-run updateClock when orientation changes to adapt the layout
-        window.addEventListener("orientationchange", updateClock);
     </script>
 
 </body>
