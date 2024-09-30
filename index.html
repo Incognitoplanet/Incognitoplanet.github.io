@@ -26,6 +26,7 @@
             font-family: 'OfficialBook', sans-serif; /* Custom font */
             text-align: center;
             flex-direction: column; /* Stack content vertically */
+            user-select: none; /* Prevent text selection */
         }
 
         .clock-container {
@@ -66,6 +67,52 @@
             letter-spacing: 0.1em; /* Spacing between time digits */
             margin-top: 15px; /* Space between date and time */
             text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
+            position: relative; /* For glitch effect */
+        }
+
+        /* Glitch effect styles */
+        .glitch {
+            position: relative;
+            color: black; /* Base color */
+            animation: glitch-animation 0.3s infinite; /* Add animation */
+        }
+
+        @keyframes glitch-animation {
+            0% {
+                text-shadow: 
+                    1px 0 red, 
+                    -1px 0 blue, 
+                    1px 1px rgba(0,0,0,0.5),
+                    -1px -1px rgba(0,0,0,0.5);
+            }
+            20% {
+                text-shadow: 
+                    1px 0 red, 
+                    -1px 0 blue, 
+                    1px 1px rgba(0,0,0,0.5),
+                    -1px -1px rgba(0,0,0,0.5);
+            }
+            40% {
+                text-shadow: 
+                    -1px 0 red, 
+                    1px 0 blue, 
+                    -1px 1px rgba(0,0,0,0.5),
+                    1px -1px rgba(0,0,0,0.5);
+            }
+            60% {
+                text-shadow: 
+                    -1px 0 red, 
+                    1px 0 blue, 
+                    -1px 1px rgba(0,0,0,0.5),
+                    1px -1px rgba(0,0,0,0.5);
+            }
+            100% {
+                text-shadow: 
+                    1px 0 red, 
+                    -1px 0 blue, 
+                    1px 1px rgba(0,0,0,0.5),
+                    -1px -1px rgba(0,0,0,0.5);
+            }
         }
 
         /* Adjust font size for smaller screens */
@@ -73,7 +120,7 @@
             .time {
                 font-size: 3rem;
             }
-            .day, .date, .time {
+            .day, .date {
                 font-size: 1.8rem;
             }
         }
@@ -83,8 +130,11 @@
             .day {
                 font-size: 2.5rem; /* Shorter day name */
             }
-            .date, .time {
-                font-size: 2rem; /* Adjust date and time size */
+            .date {
+                font-size: 2rem; /* Adjust date size */
+            }
+            .time {
+                font-size: 2rem; /* Adjust time size */
             }
         }
 
@@ -129,7 +179,7 @@
         }
 
         .fullscreen-btn img:hover {
-            opacity: 0.8; /* Slightly increase opacity on hover */
+            opacity: 100%; /* Slightly increase opacity on hover */
         }
 
     </style>
@@ -159,6 +209,8 @@
     </footer>
 
     <script>
+        let lastSecond = -1; // Initialize to an impossible second
+
         function updateClock() {
             const now = new Date();
             
@@ -181,10 +233,28 @@
 
             // Update the time div
             document.getElementById('time').innerText = `${hours} : ${minutes} : ${seconds}`;
+
+            // Check if it's a new minute
+            if (seconds === '00' && lastSecond !== 0) {
+                applyGlitchEffect();
+                lastSecond = 0; // Update lastSecond to indicate glitch has been applied
+            } else if (seconds !== '00') {
+                lastSecond = -1; // Reset lastSecond when not a new minute
+            }
+        }
+
+        function applyGlitchEffect() {
+            const timeElement = document.getElementById('time');
+            timeElement.classList.add('glitch'); // Add glitch class
+
+            // Remove glitch effect after 2 seconds
+            setTimeout(() => {
+                timeElement.classList.remove('glitch'); // Remove glitch class
+            }, 1000); // 1000 milliseconds = 2 seconds
         }
 
         // Update clock every second
-        setInterval(updateClock, 5000);
+        setInterval(updateClock, 5000); // Update every second
 
         // Initialize clock on page load
         updateClock();
