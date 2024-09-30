@@ -112,9 +112,34 @@
             object-fit: cover; /* Ensure the image covers the area without distortion */
         }
 
+        /* Fullscreen toggle button using image */
+        .fullscreen-btn {
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            cursor: pointer;
+            z-index: 10;
+        }
+
+        .fullscreen-btn img {
+            width: 40px; /* Adjust button size */
+            height: 40px;
+            opacity: 0.5; /* 50% opacity */
+            transition: opacity 0.3s ease;
+        }
+
+        .fullscreen-btn img:hover {
+            opacity: 0.8; /* Slightly increase opacity on hover */
+        }
+
     </style>
 </head>
 <body>
+
+    <!-- Fullscreen toggle button using an image -->
+    <div class="fullscreen-btn" onclick="toggleFullscreen()">
+        <img src="fullscreen.png" alt="Fullscreen">
+    </div>
 
     <div class="clock-container">
         <div class="day-date-container">
@@ -163,6 +188,15 @@
 
         // Initialize clock on page load
         updateClock();
+
+        // Fullscreen toggle function
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen();
+            } else if (document.exitFullscreen) {
+                document.exitFullscreen();
+            }
+        }
     </script>
 
 </body>
