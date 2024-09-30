@@ -4,10 +4,15 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clock</title>
+    
+    <!-- Favicon and Apple Touch Icon -->
+    <link rel="icon" type="image/png" href="spiderman.png" sizes="32x32"> <!-- Favicon -->
+    <link rel="apple-touch-icon" href="spiderman.png"> <!-- App Icon for mobile devices -->
+    
     <style>
         @font-face {
             font-family: 'OfficialBook'; 
-            src: url('OfficialBook.ttf') format('truetype'); /* Ensure the correct path to your officialBook.ttf file */
+            src: url('OfficialBook.ttf') format('truetype'); /* Ensure the correct path to your OfficialBook.ttf file */
         }
 
         body {
@@ -16,17 +21,18 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #d5ceb8; /* White background */
-            color: black; /* Black text */
-            font-family: 'OfficialBook', sans-serif; /* Apply the custom font */
+            background-color: #d5ceb8; /* Background color */
+            color: black; /* Text color */
+            font-family: 'OfficialBook', sans-serif; /* Custom font */
             text-align: center;
+            flex-direction: column; /* Stack content vertically */
         }
 
         .clock-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%; /* Ensure full width for the container */
+            width: 100%; /* Full width for container */
         }
 
         .day-date-container {
@@ -40,7 +46,7 @@
             font-size: 4rem;
             margin-right: 70px; /* Space between day and date */
             text-align: left; /* Align text to the left */
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
         }
 
         .date-time {
@@ -52,14 +58,14 @@
         .date {
             font-size: 2.5rem;
             letter-spacing: 0.3em; /* Increased spacing */
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
         }
 
         .time {
-            font-size: 2.5rem; /* Match the font size of the date */
+            font-size: 2.5rem; /* Match font size of date */
             letter-spacing: 0.1em; /* Spacing between time digits */
             margin-top: 15px; /* Space between date and time */
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Diagonal shadow */
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
         }
 
         /* Adjust font size for smaller screens */
@@ -81,6 +87,31 @@
                 font-size: 2rem; /* Adjust date and time size */
             }
         }
+
+        footer {
+            position: fixed;
+            bottom: 0;
+            right: 0;
+            padding: 10px;
+            color: Black;
+            font-family: OfficialBook, Arial, sans-serif;
+            z-index: 1;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+        }
+
+        .footer-icons {
+            margin-left: 10px;
+        }
+
+        .footer-icon {
+            margin-right: 5px;
+            width: 24px; /* Set the width of the icons */
+            height: 24px; /* Set the height of the icons */
+            object-fit: cover; /* Ensure the image covers the area without distortion */
+        }
+
     </style>
 </head>
 <body>
@@ -94,6 +125,13 @@
             </div>
         </div>
     </div>
+
+    <footer>
+        <p>&copy; 2024 KyleTuck.com. All rights reserved.</p>
+        <div class="footer-icons">
+            <a href="https://kyletuck.com/" target="_blank"><img src="spiderman.png" alt="KT" class="footer-icon"></a>
+        </div>
+    </footer>
 
     <script>
         function updateClock() {
