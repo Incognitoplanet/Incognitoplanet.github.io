@@ -27,6 +27,7 @@
             text-align: center;
             flex-direction: column; /* Stack content vertically */
             user-select: none; /* Prevent text selection */
+            cursor: default; /* Show cursor by default */
         }
 
         .clock-container {
@@ -182,6 +183,11 @@
             opacity: 100%; /* Slightly increase opacity on hover */
         }
 
+        /* Cursor visibility control */
+        body.cursor-hidden {
+            cursor: none; /* Hide cursor */
+        }
+        
     </style>
 </head>
 <body>
@@ -210,6 +216,7 @@
 
     <script>
         let lastSecond = -1; // Initialize to an impossible second
+        let mouseTimer; // Timer for mouse movement
 
         function updateClock() {
             const now = new Date();
@@ -254,7 +261,7 @@
         }
 
         // Update clock every second
-        setInterval(updateClock, 5000); // Update every second
+        setInterval(updateClock, 1000); // Update every second
 
         // Initialize clock on page load
         updateClock();
@@ -263,9 +270,41 @@
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen();
+                startMouseTimer(); // Start the mouse timer when entering fullscreen
             } else if (document.exitFullscreen) {
                 document.exitFullscreen();
+                resetCursor(); // Reset cursor when exiting fullscreen
             }
+        }
+
+        // Function to handle mouse movement
+        function startMouseTimer() {
+            // Mouse movement event listener
+            document.addEventListener('mousemove', () => {
+                clearTimeout(mouseTimer); // Clear the existing timer
+                document.body.classList.remove('cursor-hidden'); // Show cursor
+
+                // Set a timer to hide the cursor after 2 seconds of inactivity
+                mouseTimer = setTimeout(() => {
+                    if (document.fullscreenElement) {
+                        document.body.classList.add('cursor-hidden'); // Hide cursor only in fullscreen
+                    }
+                }, 2000); // 2000 milliseconds = 2 seconds
+            });
+
+            // Show cursor on page load in fullscreen
+            document.body.classList.remove('cursor-hidden');
+        }
+
+        // Reset cursor when exiting fullscreen
+        function resetCursor() {
+            clearTimeout(mouseTimer); // Clear any existing timers
+            document.body.classList.remove('cursor-hidden'); // Show cursor
+        }
+
+        // Start the mouse timer if already in fullscreen on load
+        if (document.fullscreenElement) {
+            startMouseTimer();
         }
     </script>
 
