@@ -65,10 +65,15 @@
 
         .time {
             font-size: 2.5rem; /* Match font size of date */
-            letter-spacing: 0.1em; /* Spacing between time digits */
             margin-top: 15px; /* Space between date and time */
             text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
             position: relative; /* For glitch effect */
+        }
+
+        .time-part {
+            display: inline-block; /* Make them inline-block for spacing */
+            width: 50px; /* Fixed width to prevent shifting */
+            text-align: center; /* Center align the text */
         }
 
         /* Glitch effect styles */
@@ -202,7 +207,11 @@
             <div class="day" id="day">Friday</div>
             <div class="date-time">
                 <div class="date" id="date">27 / 09</div>
-                <div class="time" id="time">00 : 00 : 00</div>
+                <div class="time" id="time">
+                    <span class="time-part" id="hours">00</span> : 
+                    <span class="time-part" id="minutes">00</span> : 
+                    <span class="time-part" id="seconds">00</span>
+                </div>
             </div>
         </div>
     </div>
@@ -231,7 +240,7 @@
 
             // Update the day and date divs
             document.getElementById('day').innerText = dayName; // Full day name
-            document.getElementById('date').innerText = `${day} / ${month}`; // Format as DD / MM
+            document.getElementById('date').innerText = `${day}-${month}`; // Format as DD / MM
 
             // Get current time in 24-hour format
             const hours = String(now.getHours()).padStart(2, '0');
@@ -239,7 +248,9 @@
             const seconds = String(now.getSeconds()).padStart(2, '0');
 
             // Update the time div
-            document.getElementById('time').innerText = `${hours} : ${minutes} : ${seconds}`;
+            document.getElementById('hours').innerText = hours; // Update hours
+            document.getElementById('minutes').innerText = minutes; // Update minutes
+            document.getElementById('seconds').innerText = seconds; // Update seconds
 
             // Check if it's a new minute
             if (seconds === '00' && lastSecond !== 0) {
