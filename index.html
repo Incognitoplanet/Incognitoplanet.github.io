@@ -30,52 +30,11 @@
             cursor: default; /* Show cursor by default */
         }
 
-        .message {
-            font-size: 3rem;
-            opacity: 0;
-            animation: fadeInLeft 2s forwards, fadeOutRight 2s 2s forwards; /* Updated timings */
-            margin-bottom: 20px; /* Space between the message and the clock */
-            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
-        }
-
-        @keyframes fadeInLeft {
-            0% {
-                opacity: 0;
-                transform: translateX(-100%);
-            }
-            100% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-        }
-
-        @keyframes fadeOutRight {
-            0% {
-                opacity: 1;
-                transform: translateX(0);
-            }
-            100% {
-                opacity: 0;
-                transform: translateX(100%);
-            }
-        }
-
         .clock-container {
             display: flex;
             flex-direction: column;
             align-items: center;
             width: 100%; /* Full width for container */
-            opacity: 0;
-            animation: fadeInClock 2s 1s forwards; /* Delay the clock appearance */
-        }
-
-        @keyframes fadeInClock {
-            0% {
-                opacity: 0;
-            }
-            100% {
-                opacity: 1;
-            }
         }
 
         .day-date-container {
@@ -102,19 +61,14 @@
             font-size: 2.5rem;
             letter-spacing: 0.3em; /* Increased spacing */
             text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
-            margin-bottom: 10px; /* Space between date and time */
         }
 
         .time {
             font-size: 2.5rem; /* Match font size of date */
             letter-spacing: 0.1em; /* Spacing between time digits */
+            margin-top: 15px; /* Space between date and time */
             text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
             position: relative; /* For glitch effect */
-            
-            /* New properties */
-            width: 120px; /* Fixed width for the time display */
-            text-align: center; /* Center align text */
-            white-space: nowrap; /* Prevent line breaks */
         }
 
         /* Glitch effect styles */
@@ -131,6 +85,27 @@
                     -1px 0 blue, 
                     1px 1px rgba(0,0,0,0.5),
                     -1px -1px rgba(0,0,0,0.5);
+            }
+            20% {
+                text-shadow: 
+                    1px 0 red, 
+                    -1px 0 blue, 
+                    1px 1px rgba(0,0,0,0.5),
+                    -1px -1px rgba(0,0,0,0.5);
+            }
+            40% {
+                text-shadow: 
+                    -1px 0 red, 
+                    1px 0 blue, 
+                    -1px 1px rgba(0,0,0,0.5),
+                    1px -1px rgba(0,0,0,0.5);
+            }
+            60% {
+                text-shadow: 
+                    -1px 0 red, 
+                    1px 0 blue, 
+                    -1px 1px rgba(0,0,0,0.5),
+                    1px -1px rgba(0,0,0,0.5);
             }
             100% {
                 text-shadow: 
@@ -222,9 +197,6 @@
         <img src="fullscreen.png" alt="Fullscreen">
     </div>
 
-    <!-- Message -->
-    <div class="message">Have a good day</div>
-
     <div class="clock-container">
         <div class="day-date-container">
             <div class="day" id="day">Friday</div>
@@ -269,45 +241,72 @@
             // Update the time div
             document.getElementById('time').innerText = `${hours} : ${minutes} : ${seconds}`;
 
-            // Check if seconds have changed
-            if (seconds !== lastSecond) {
-                lastSecond = seconds;
-                console.log("Second updated:", seconds); // Log updated seconds for debugging
+            // Check if it's a new minute
+            if (seconds === '00' && lastSecond !== 0) {
+                applyGlitchEffect();
+                lastSecond = 0; // Update lastSecond to indicate glitch has been applied
+            } else if (seconds !== '00') {
+                lastSecond = -1; // Reset lastSecond when not a new minute
             }
         }
 
-        // Call updateClock immediately and then every second
-        updateClock(); // Initial call
-        setInterval(updateClock, 1000); // Update every second
+        function applyGlitchEffect() {
+            const timeElement = document.getElementById('time');
+            timeElement.classList.add('glitch'); // Add glitch class
 
-        // Function to handle fullscreen toggle
+            // Remove glitch effect after 2 seconds
+            setTimeout(() => {
+                timeElement.classList.remove('glitch'); // Remove glitch class
+            }, 1000); // 1000 milliseconds = 2 seconds
+        }
+
+        // Update clock every second
+        setInterval(updateClock, 5000); // Update every second
+
+        // Initialize clock on page load
+        updateClock();
+
+        // Fullscreen toggle function
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    console.log(`Error attempting to enable full-screen mode: ${err.message}`);
-                });
-            } else {
+                document.documentElement.requestFullscreen();
+                startMouseTimer(); // Start the mouse timer when entering fullscreen
+            } else if (document.exitFullscreen) {
                 document.exitFullscreen();
+                resetCursor(); // Reset cursor when exiting fullscreen
             }
         }
 
-        // Function to hide cursor on mouse inactivity
-        function hideCursor() {
-            document.body.classList.add('cursor-hidden');
-        }
+        // Function to handle mouse movement
+        function startMouseTimer() {
+            // Mouse movement event listener
+            document.addEventListener('mousemove', () => {
+                clearTimeout(mouseTimer); // Clear the existing timer
+                document.body.classList.remove('cursor-hidden'); // Show cursor
 
-        function showCursor() {
+                // Set a timer to hide the cursor after 2 seconds of inactivity
+                mouseTimer = setTimeout(() => {
+                    if (document.fullscreenElement) {
+                        document.body.classList.add('cursor-hidden'); // Hide cursor only in fullscreen
+                    }
+                }, 2000); // 2000 milliseconds = 2 seconds
+            });
+
+            // Show cursor on page load in fullscreen
             document.body.classList.remove('cursor-hidden');
         }
 
-        document.addEventListener('mousemove', () => {
-            showCursor();
-            clearTimeout(mouseTimer);
-            mouseTimer = setTimeout(hideCursor, 2000); // Hide cursor after 2 seconds of inactivity
-        });
+        // Reset cursor when exiting fullscreen
+        function resetCursor() {
+            clearTimeout(mouseTimer); // Clear any existing timers
+            document.body.classList.remove('cursor-hidden'); // Show cursor
+        }
 
-        // Show cursor on initial page load
-        showCursor();
+        // Start the mouse timer if already in fullscreen on load
+        if (document.fullscreenElement) {
+            startMouseTimer();
+        }
     </script>
+
 </body>
 </html>
