@@ -206,7 +206,7 @@
         <div class="day-date-container">
             <div class="day" id="day">Friday</div>
             <div class="date-time">
-                <div class="date" id="date">27 / 09</div>
+                <div class="date" id="date">October 10th</div>
                 <div class="time" id="time">
                     <span class="time-part" id="hours">00</span> : 
                     <span class="time-part" id="minutes">00</span> : 
@@ -234,13 +234,23 @@
             const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const dayName = daysOfWeek[now.getDay()];
 
-            // Get current date in DD-MM format
-            const day = String(now.getDate()).padStart(2, '0');
-            const month = String(now.getMonth() + 1).padStart(2, '0'); // Months are 0-indexed
+            // Get current date in phonetic format
+            const day = now.getDate();
+            const monthIndex = now.getMonth();
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const monthName = months[monthIndex]; // Get month name
+
+            // Determine the ordinal suffix for the day
+            const suffix = (day) => {
+                if (day % 10 === 1 && day !== 11) return "st";
+                if (day % 10 === 2 && day !== 12) return "nd";
+                if (day % 10 === 3 && day !== 13) return "rd";
+                return "th";
+            };
 
             // Update the day and date divs
             document.getElementById('day').innerText = dayName; // Full day name
-            document.getElementById('date').innerText = `${day} / ${month}`; // Format as DD / MM
+            document.getElementById('date').innerText = `${monthName} ${day}${suffix(day)}`; // Format as Month Dayth
 
             // Get current time in 24-hour format
             const hours = String(now.getHours()).padStart(2, '0');
@@ -259,16 +269,6 @@
             } else if (seconds !== '00') {
                 lastSecond = -1; // Reset lastSecond when not a new minute
             }
-        }
-
-        function applyGlitchEffect() {
-            const timeElement = document.getElementById('time');
-            timeElement.classList.add('glitch'); // Add glitch class
-
-            // Remove glitch effect after 2 seconds
-            setTimeout(() => {
-                timeElement.classList.remove('glitch'); // Remove glitch class
-            }, 1000); // 1000 milliseconds = 2 seconds
         }
 
         // Update clock every second
@@ -318,6 +318,5 @@
             startMouseTimer();
         }
     </script>
-
 </body>
 </html>
