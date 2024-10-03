@@ -240,7 +240,7 @@
 
             // Update the day and date divs
             document.getElementById('day').innerText = dayName; // Full day name
-            document.getElementById('date').innerText = `${day}-${month}`; // Format as DD / MM
+            document.getElementById('date').innerText = `${day} / ${month}`; // Format as DD / MM
 
             // Get current time in 24-hour format
             const hours = String(now.getHours()).padStart(2, '0');
