@@ -1,0 +1,291 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Clock with Countdown Timer</title>
+
+    <link rel="icon" type="image/png" href="spiderman.png" sizes="32x32"> <!-- Favicon -->
+    <link rel="apple-touch-icon" href="spiderman.png"> <!-- App Icon for mobile devices -->
+
+    <style>
+        @font-face {
+            font-family: 'OfficialBook';
+            src: url('OfficialBook.ttf') format('truetype'); /* Ensure the correct path to your OfficialBook.ttf file */
+        }
+
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #d5ceb8;
+            color: black;
+            font-family: 'OfficialBook', sans-serif;
+            text-align: center;
+            flex-direction: column;
+            user-select: none;
+        }
+
+        .clock-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .day-date-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .day {
+            font-size: 4rem;
+            margin-right: 70px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .date-time {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .date {
+            font-size: 2.5rem;
+            letter-spacing: 0.3em;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .time {
+            font-size: 2.5rem;
+            margin-top: 15px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Timer styles */
+        .timer-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            background: #D9D2BF;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-timer {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            cursor: pointer;
+            width: 30px;
+            height: 20px;
+            opacity: 30%;
+        }
+
+        .timer-display {
+            font-size: 24px;
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 1rem;
+            color: white;
+            background-color: #2a2924;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
+        button:hover {
+            background-color: #3f3e39;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            background-color: #2A5B8A;
+            transform: scale(0.95);
+        }
+
+        /* Fullscreen button style */
+        .fullscreen-btn {
+            position: absolute;
+            top: 10px; /* Position at the top */
+            left: 10px; /* Position at the left */
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            background-image: url('fullscreen.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            opacity: 50%;
+            border: none;
+        }
+
+        /* Active countdown display centered at top with same font and shadow */
+        .active-timer-display {
+            display: none; /* Hidden initially */
+            position: absolute;
+            top: 10px;
+            font-size: 2rem;
+            font-family: 'OfficialBook', sans-serif;
+            color: black;
+            text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5); /* Shadow to match other elements */
+        }
+    </style>
+</head>
+<body>
+
+    <div class="clock-container">
+        <div class="day-date-container">
+            <div class="day" id="day">Friday</div>
+            <div class="date-time">
+                <div class="date" id="date">October 10th</div>
+                <div class="time" id="time">
+                    <span id="hours">00</span> : <span id="minutes">00</span> : <span id="seconds">00</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Toggle Button -->
+        <img class="toggle-timer" src="arrow.png" alt="Toggle Timer" onclick="toggleTimer()">
+    </div>
+
+    <!-- Timer Container for input controls -->
+    <div class="timer-container" id="timer-container">
+        <div class="timer-display" id="timer">00 : 00 : 00</div>
+
+        <!-- Timer Input Fields -->
+        <div class="timer-controls">
+            <input type="number" id="input-hours" placeholder="HH" min="0" max="99">
+            <input type="number" id="input-minutes" placeholder="MM" min="0" max="59">
+            <input type="number" id="input-seconds" placeholder="SS" min="0" max="59">
+            <button onclick="startCountdown()">Start</button>
+            <button onclick="resetCountdown()">Reset</button>
+        </div>
+    </div>
+
+    <!-- Active Countdown Display at the Top Center -->
+    <div class="active-timer-display" id="active-timer-display">00 : 00 : 00</div>
+
+    <!-- Fullscreen Button -->
+    <button class="fullscreen-btn" onclick="toggleFullscreen()"></button>
+
+    <script>
+        let countdownInterval;
+        let countdownSeconds = 0;
+
+        function updateClock() {
+            const now = new Date();
+            const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
+            const dayName = daysOfWeek[now.getDay()];
+            const day = now.getDate();
+            const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+            const monthName = months[now.getMonth()];
+
+            const suffix = (day) => {
+                if (day % 10 === 1 && day !== 11) return "st";
+                if (day % 10 === 2 && day !== 12) return "nd";
+                if (day % 10 === 3 && day !== 13) return "rd";
+                return "th";
+            };
+
+            document.getElementById('day').innerText = dayName;
+            document.getElementById('date').innerText = `${monthName} ${day}${suffix(day)}`;
+
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
+        }
+
+        setInterval(updateClock, 5000);
+        updateClock();
+
+        function toggleTimer() {
+            const timerContainer = document.getElementById('timer-container');
+            // Toggle visibility of the timer container
+            timerContainer.style.display = timerContainer.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function startCountdown() {
+            clearInterval(countdownInterval);
+
+            const hours = parseInt(document.getElementById('input-hours').value) || 0;
+            const minutes = parseInt(document.getElementById('input-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('input-seconds').value) || 0;
+
+            countdownSeconds = hours * 3600 + minutes * 60 + seconds;
+
+            // Hide input fields and show active timer display at the top
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('active-timer-display').style.display = 'block';
+
+            countdownInterval = setInterval(() => {
+                if (countdownSeconds > 0) {
+                    countdownSeconds--;
+                    updateActiveTimerDisplay();
+                } else {
+                    clearInterval(countdownInterval);
+                    alert("Countdown finished!");
+                    document.getElementById('active-timer-display').style.display = 'none'; // Hide after completion
+                }
+            }, 1000);
+
+            updateActiveTimerDisplay();
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            countdownSeconds = 0;
+            document.getElementById('input-hours').value = '';
+            document.getElementById('input-minutes').value = '';
+            document.getElementById('input-seconds').value = '';
+            document.getElementById('timer').innerText = '00 : 00 : 00';
+            document.getElementById('active-timer-display').style.display = 'none'; // Hide active timer
+        }
+
+        function updateActiveTimerDisplay() {
+            const hours = String(Math.floor(countdownSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((countdownSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(countdownSeconds % 60).padStart(2, '0');
+            document.getElementById('active-timer-display').innerText = `${hours} : ${minutes} : ${seconds}`;
+        }
+
+        // Fullscreen functionality
+        function toggleFullscreen() {
+            if (!document.fullscreenElement) {
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
+            }
+        }
+    </script>
+</body>
+</html>
