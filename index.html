@@ -3,16 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Clock</title>
-    
-    <!-- Favicon and Apple Touch Icon -->
-    <link rel="icon" type="image/png" href="spiderman.png" sizes="32x32"> <!-- Favicon -->
-    <link rel="apple-touch-icon" href="spiderman.png"> <!-- App Icon for mobile devices -->
-    
+    <title>Incognto Planet</title>
+
+    <link rel="icon" type="image/png" href="spiderman.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="spiderman.png">
+
     <style>
         @font-face {
-            font-family: 'OfficialBook'; 
-            src: url('OfficialBook.ttf') format('truetype'); /* Ensure the correct path to your OfficialBook.ttf file */
+            font-family: 'OfficialBook';
+            src: url('OfficialBook.ttf') format('truetype');
         }
 
         body {
@@ -21,186 +20,170 @@
             align-items: center;
             height: 100vh;
             margin: 0;
-            background-color: #d5ceb8; /* Background color */
-            color: black; /* Text color */
-            font-family: 'OfficialBook', sans-serif; /* Custom font */
+            background-color: #d5ceb8;
+            color: black;
+            font-family: 'OfficialBook', sans-serif;
             text-align: center;
-            flex-direction: column; /* Stack content vertically */
-            user-select: none; /* Prevent text selection */
-            cursor: default; /* Show cursor by default */
+            flex-direction: column;
+            user-select: none;
         }
 
         .clock-container {
             display: flex;
             flex-direction: column;
             align-items: center;
-            width: 100%; /* Full width for container */
         }
 
         .day-date-container {
             display: flex;
-            justify-content: center; /* Center date and time */
-            align-items: center; /* Center vertically */
-            width: 100%; /* Full width */
+            justify-content: center;
+            align-items: center;
         }
 
         .day {
             font-size: 4rem;
-            margin-right: 70px; /* Space between day and date */
-            text-align: left; /* Align text to the left */
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
+            margin-right: 70px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
         }
 
         .date-time {
             display: flex;
-            flex-direction: column; /* Stack date and time vertically */
-            align-items: center; /* Center items */
+            flex-direction: column;
+            align-items: center;
         }
 
         .date {
             font-size: 2.5rem;
-            letter-spacing: 0.3em; /* Increased spacing */
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
+            letter-spacing: 0.3em;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
         }
 
         .time {
-            font-size: 2.5rem; /* Match font size of date */
-            margin-top: 15px; /* Space between date and time */
-            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3); /* Text shadow */
-            position: relative; /* For glitch effect */
+            font-size: 2.5rem;
+            margin-top: 15px;
+            text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .time-part {
-            display: inline-block; /* Make them inline-block for spacing */
-            width: 50px; /* Fixed width to prevent shifting */
-            text-align: center; /* Center align the text */
-        }
-
-        /* Glitch effect styles */
-        .glitch {
-            position: relative;
-            color: black; /* Base color */
-            animation: glitch-animation 0.3s infinite; /* Add animation */
-        }
-
-        @keyframes glitch-animation {
-            0% {
-                text-shadow: 
-                    1px 0 red, 
-                    -1px 0 blue, 
-                    1px 1px rgba(0,0,0,0.5),
-                    -1px -1px rgba(0,0,0,0.5);
-            }
-            20% {
-                text-shadow: 
-                    1px 0 red, 
-                    -1px 0 blue, 
-                    1px 1px rgba(0,0,0,0.5),
-                    -1px -1px rgba(0,0,0,0.5);
-            }
-            40% {
-                text-shadow: 
-                    -1px 0 red, 
-                    1px 0 blue, 
-                    -1px 1px rgba(0,0,0,0.5),
-                    1px -1px rgba(0,0,0,0.5);
-            }
-            60% {
-                text-shadow: 
-                    -1px 0 red, 
-                    1px 0 blue, 
-                    -1px 1px rgba(0,0,0,0.5),
-                    1px -1px rgba(0,0,0,0.5);
-            }
-            100% {
-                text-shadow: 
-                    1px 0 red, 
-                    -1px 0 blue, 
-                    1px 1px rgba(0,0,0,0.5),
-                    -1px -1px rgba(0,0,0,0.5);
-            }
-        }
-
-        /* Adjust font size for smaller screens */
-        @media (max-width: 600px) {
-            .time {
-                font-size: 3rem;
-            }
-            .day, .date {
-                font-size: 1.8rem;
-            }
-        }
-
-        /* Landscape orientation adjustments */
-        @media (orientation: landscape) and (max-width: 600px) {
-            .day {
-                font-size: 2.5rem; /* Shorter day name */
-            }
-            .date {
-                font-size: 2rem; /* Adjust date size */
-            }
-            .time {
-                font-size: 2rem; /* Adjust time size */
-            }
-        }
-
-        footer {
-            position: fixed;
-            bottom: 0;
-            right: 0;
-            padding: 10px;
-            color: Black;
-            font-family: OfficialBook, Arial, sans-serif;
-            z-index: 1;
-            font-size: 12px;
-            display: flex;
+        .timer-container {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            display: none;
+            flex-direction: column;
             align-items: center;
+            background: #D9D2BF;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
         }
 
-        .footer-icons {
-            margin-left: 10px;
+        .close-timer {
+            position: absolute;
+            top: 5px;  /* Adjusts the vertical position */
+            right: 5px;  /* Adjusts the horizontal position */
+            font-size: 1.5rem;  /* Size of the close icon */
+            color: black;  /* Color of the close icon */
+            background: transparent;  /* No background */
+            border: none;  /* No border */
+            cursor: pointer;  /* Pointer cursor */
+            opacity: 50%;  /* Adjust opacity for visibility */
+            transition: opacity 0.3s; /* Transition for hover effect */
         }
 
-        .footer-icon {
-            margin-right: 5px;
-            width: 24px; /* Set the width of the icons */
-            height: 24px; /* Set the height of the icons */
-            object-fit: cover; /* Ensure the image covers the area without distortion */
+        .close-timer:hover {
+            opacity: 30%;  /* Full opacity on hover */
         }
 
-        /* Fullscreen toggle button using image */
+        .toggle-timer {
+            position: absolute;
+            top: 20px;
+            right: 15px;
+            cursor: pointer;
+            width: 30px;
+            height: 20px;
+            opacity: 30%;
+        }
+
+        .timer-display {
+            font-size: 24px;
+            color: black;
+            margin-bottom: 10px;
+        }
+
+        .timer-controls {
+            display: flex;
+            gap: 5px;
+        }
+
+        input[type="number"] {
+            width: 50px;
+            text-align: center;
+            -moz-appearance: textfield; /* Hide the spinners for Firefox */
+        }
+
+        input[type="number"]::-webkit-inner-spin-button, 
+        input[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none; /* Hide the spinners for Chrome/Safari */
+            margin: 0; /* No margin */
+        }
+
+        button {
+            padding: 5px 10px;
+            font-size: 1rem;
+            color: white;
+            background-color: #2a2924;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s, transform 0.2s;
+        }
+
         .fullscreen-btn {
-            position: fixed;
+            position: absolute;
             top: 10px;
             left: 10px;
             cursor: pointer;
-            z-index: 10;
-        }
-
-        .fullscreen-btn img {
-            width: 40px; /* Adjust button size */
+            width: 40px;
             height: 40px;
-            opacity: 0.5; /* 50% opacity */
-            transition: opacity 0.3s ease;
+            background-image: url('fullscreen.png');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-color: transparent;
+            opacity: 50%;
+            outline: none;
+            border: none;
+            transition: transform 0.2s; /* Only scale on hover */
         }
 
-        .fullscreen-btn img:hover {
-            opacity: 100%; /* Slightly increase opacity on hover */
+        .fullscreen-btn:hover {
+            transform: scale(1.05); /* Slight size increase on hover */
         }
 
-        /* Cursor visibility control */
-        body.cursor-hidden {
-            cursor: none; /* Hide cursor */
+        .active-timer-display {
+            display: none;
+            position: absolute;
+            top: 10px;
+            font-size: 2rem;
+            font-family: 'OfficialBook', sans-serif;
+            color: black;
+            text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
         }
-        
+
+        /* Flashing screen overlay */
+        .screen-flash {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: white;
+            z-index: 1000;
+            pointer-events: none; /* Allows clicks to pass through */
+        }
     </style>
 </head>
 <body>
-
-    <!-- Fullscreen toggle button using an image -->
-    <div class="fullscreen-btn" onclick="toggleFullscreen()">
-        <img src="fullscreen.png" alt="Fullscreen">
-    </div>
 
     <div class="clock-container">
         <div class="day-date-container">
@@ -208,39 +191,45 @@
             <div class="date-time">
                 <div class="date" id="date">October 10th</div>
                 <div class="time" id="time">
-                    <span class="time-part" id="hours">00</span> : 
-                    <span class="time-part" id="minutes">00</span> : 
-                    <span class="time-part" id="seconds">00</span>
+                    <span id="hours">00</span> : <span id="minutes">00</span> : <span id="seconds">00</span>
                 </div>
             </div>
         </div>
+
+        <img class="toggle-timer" src="arrow.png" alt="Toggle Timer" onclick="toggleTimer()">
     </div>
 
-    <footer>
-        <p>&copy; 2024 KyleTuck.com. All rights reserved.</p>
-        <div class="footer-icons">
-            <a href="https://kyletuck.com/" target="_blank"><img src="spiderman.png" alt="KT" class="footer-icon"></a>
+    <div class="timer-container" id="timer-container">
+        <button class="close-timer" onclick="toggleTimer()">×</button> <!-- Close button -->
+        <div class="timer-display" id="timer">Timer</div>
+        <div class="timer-controls">
+            <input type="number" id="input-hours" placeholder="HH" min="0" max="99">
+            <input type="number" id="input-minutes" placeholder="MM" min="0" max="59">
+            <input type="number" id="input-seconds" placeholder="SS" min="0" max="59">
+            <button onclick="startCountdown()">Start</button>
+            <button onclick="resetCountdown()">Reset</button>
         </div>
-    </footer>
+    </div>
+
+    <div class="active-timer-display" id="active-timer-display">00 : 00 : 00</div>
+    <button class="fullscreen-btn" onclick="toggleFullscreen()"></button>
+    
+    <div class="screen-flash" id="screen-flash"></div> <!-- Flash overlay -->
+    
+    <audio id="end-sound" src="coin.mp3" preload="auto"></audio> <!-- Audio element for the sound -->
 
     <script>
-        let lastSecond = -1; // Initialize to an impossible second
-        let mouseTimer; // Timer for mouse movement
+        let countdownInterval;
+        let countdownSeconds = 0;
 
         function updateClock() {
             const now = new Date();
-            
-            // Get day in words
             const daysOfWeek = ["Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"];
             const dayName = daysOfWeek[now.getDay()];
-
-            // Get current date in phonetic format
             const day = now.getDate();
-            const monthIndex = now.getMonth();
             const months = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-            const monthName = months[monthIndex]; // Get month name
+            const monthName = months[now.getMonth()];
 
-            // Determine the ordinal suffix for the day
             const suffix = (day) => {
                 if (day % 10 === 1 && day !== 11) return "st";
                 if (day % 10 === 2 && day !== 12) return "nd";
@@ -248,75 +237,115 @@
                 return "th";
             };
 
-            // Update the day and date divs
-            document.getElementById('day').innerText = dayName; // Full day name
-            document.getElementById('date').innerText = `${monthName} ${day}${suffix(day)}`; // Format as Month Dayth
+            document.getElementById('day').innerText = dayName;
+            document.getElementById('date').innerText = `${monthName} ${day}${suffix(day)}`;
 
-            // Get current time in 24-hour format
             const hours = String(now.getHours()).padStart(2, '0');
             const minutes = String(now.getMinutes()).padStart(2, '0');
             const seconds = String(now.getSeconds()).padStart(2, '0');
 
-            // Update the time div
-            document.getElementById('hours').innerText = hours; // Update hours
-            document.getElementById('minutes').innerText = minutes; // Update minutes
-            document.getElementById('seconds').innerText = seconds; // Update seconds
-
-            // Check if it's a new minute
-            if (seconds === '00' && lastSecond !== 0) {
-                applyGlitchEffect();
-                lastSecond = 0; // Update lastSecond to indicate glitch has been applied
-            } else if (seconds !== '00') {
-                lastSecond = -1; // Reset lastSecond when not a new minute
-            }
+            document.getElementById('hours').innerText = hours;
+            document.getElementById('minutes').innerText = minutes;
+            document.getElementById('seconds').innerText = seconds;
         }
 
-        // Update clock every second
-        setInterval(updateClock, 5000); // Update every second
-
-        // Initialize clock on page load
+        setInterval(updateClock, 5000);
         updateClock();
 
-        // Fullscreen toggle function
+        function toggleTimer() {
+            const timerContainer = document.getElementById('timer-container');
+            
+            // When closing the timer, reset everything
+            if (timerContainer.style.display === 'flex') {
+                resetTimerState();  // Call a function to reset the state
+            }
+
+            timerContainer.style.display = timerContainer.style.display === 'flex' ? 'none' : 'flex';
+        }
+
+        function startCountdown() {
+            clearInterval(countdownInterval);
+            
+            const hours = parseInt(document.getElementById('input-hours').value) || 0;
+            const minutes = parseInt(document.getElementById('input-minutes').value) || 0;
+            const seconds = parseInt(document.getElementById('input-seconds').value) || 0;
+
+            countdownSeconds = hours * 3600 + minutes * 60 + seconds;
+
+            document.getElementById('timer-container').style.display = 'none';
+            document.getElementById('active-timer-display').style.display = 'block';
+
+            countdownInterval = setInterval(() => {
+                if (countdownSeconds > 0) {
+                    countdownSeconds--;
+                    updateActiveTimerDisplay();
+                } else {
+                    clearInterval(countdownInterval);
+                    flashScreen();
+                    document.getElementById('active-timer-display').style.display = 'none';
+
+                    // Play the sound when the countdown ends
+                    document.getElementById('end-sound').play();
+                }
+            }, 1000);
+
+            updateActiveTimerDisplay();
+        }
+
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            countdownSeconds = 0;
+            document.getElementById('input-hours').value = '';
+            document.getElementById('input-minutes').value = '';
+            document.getElementById('input-seconds').value = '';
+            document.getElementById('active-timer-display').style.display = 'none'; // Keep this line to hide the active timer
+        }
+
+        function resetTimerState() {
+            clearInterval(countdownInterval);  // Stop any running countdown
+            countdownSeconds = 0;  // Reset the countdown seconds
+            document.getElementById('input-hours').value = '';  // Clear input for hours
+            document.getElementById('input-minutes').value = '';  // Clear input for minutes
+            document.getElementById('input-seconds').value = '';  // Clear input for seconds
+            document.getElementById('active-timer-display').innerText = '00 : 00 : 00'; // Reset active timer display
+            document.getElementById('active-timer-display').style.display = 'none'; // Hide active timer display
+        }
+
+        function updateActiveTimerDisplay() {
+            const hours = String(Math.floor(countdownSeconds / 3600)).padStart(2, '0');
+            const minutes = String(Math.floor((countdownSeconds % 3600) / 60)).padStart(2, '0');
+            const seconds = String(countdownSeconds % 60).padStart(2, '0');
+            document.getElementById('active-timer-display').innerText = `${hours} : ${minutes} : ${seconds}`;
+        }
+
+        function flashScreen() {
+            const flashOverlay = document.getElementById('screen-flash');
+            flashOverlay.style.display = 'block';
+            setTimeout(() => {
+                flashOverlay.style.display = 'none';
+            }, 1000); // Flash for 1 second
+        }
+
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen();
-                startMouseTimer(); // Start the mouse timer when entering fullscreen
-            } else if (document.exitFullscreen) {
-                document.exitFullscreen();
-                resetCursor(); // Reset cursor when exiting fullscreen
+                document.documentElement.requestFullscreen().catch(err => {
+                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                });
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                }
             }
         }
 
-        // Function to handle mouse movement
-        function startMouseTimer() {
-            // Mouse movement event listener
-            document.addEventListener('mousemove', () => {
-                clearTimeout(mouseTimer); // Clear the existing timer
-                document.body.classList.remove('cursor-hidden'); // Show cursor
-
-                // Set a timer to hide the cursor after 2 seconds of inactivity
-                mouseTimer = setTimeout(() => {
-                    if (document.fullscreenElement) {
-                        document.body.classList.add('cursor-hidden'); // Hide cursor only in fullscreen
-                    }
-                }, 2000); // 2000 milliseconds = 2 seconds
-            });
-
-            // Show cursor on page load in fullscreen
-            document.body.classList.remove('cursor-hidden');
-        }
-
-        // Reset cursor when exiting fullscreen
-        function resetCursor() {
-            clearTimeout(mouseTimer); // Clear any existing timers
-            document.body.classList.remove('cursor-hidden'); // Show cursor
-        }
-
-        // Start the mouse timer if already in fullscreen on load
-        if (document.fullscreenElement) {
-            startMouseTimer();
-        }
+        // Close the timer when clicking outside of it
+        document.addEventListener('click', (event) => {
+            const timerContainer = document.getElementById('timer-container');
+            const toggleTimerButton = document.querySelector('.toggle-timer');
+            if (timerContainer.style.display === 'flex' && !timerContainer.contains(event.target) && !toggleTimerButton.contains(event.target)) {
+                toggleTimer();
+            }
+        });
     </script>
 </body>
 </html>
