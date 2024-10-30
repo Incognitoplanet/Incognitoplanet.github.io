@@ -5,13 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Clock with Countdown Timer</title>
 
-    <link rel="icon" type="image/png" href="spiderman.png" sizes="32x32"> <!-- Favicon -->
-    <link rel="apple-touch-icon" href="spiderman.png"> <!-- App Icon for mobile devices -->
+    <link rel="icon" type="image/png" href="spiderman.png" sizes="32x32">
+    <link rel="apple-touch-icon" href="spiderman.png">
 
     <style>
         @font-face {
             font-family: 'OfficialBook';
-            src: url('OfficialBook.ttf') format('truetype'); /* Ensure the correct path to your OfficialBook.ttf file */
+            src: url('OfficialBook.ttf') format('truetype');
         }
 
         body {
@@ -64,7 +64,6 @@
             text-shadow: 3px 3px 5px rgba(0, 0, 0, 0.3);
         }
 
-        /* Timer styles */
         .timer-container {
             position: absolute;
             top: 20px;
@@ -76,6 +75,23 @@
             padding: 10px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+        }
+
+        .close-timer {
+            position: absolute;
+            top: 5px;  /* Adjusts the vertical position */
+            right: 5px;  /* Adjusts the horizontal position */
+            font-size: 1.5rem;  /* Size of the close icon */
+            color: black;  /* Color of the close icon */
+            background: transparent;  /* No background */
+            border: none;  /* No border */
+            cursor: pointer;  /* Pointer cursor */
+            opacity: 50%;  /* Adjust opacity for visibility */
+            transition: opacity 0.3s; /* Transition for hover effect */
+        }
+
+        .close-timer:hover {
+            opacity: 30%;  /* Full opacity on hover */
         }
 
         .toggle-timer {
@@ -115,21 +131,10 @@
             transition: background-color 0.3s, transform 0.2s;
         }
 
-        button:hover {
-            background-color: #3f3e39;
-            transform: scale(1.05);
-        }
-
-        button:active {
-            background-color: #2A5B8A;
-            transform: scale(0.95);
-        }
-
-        /* Fullscreen button style */
         .fullscreen-btn {
             position: absolute;
-            top: 10px; /* Position at the top */
-            left: 10px; /* Position at the left */
+            top: 10px;
+            left: 10px;
             cursor: pointer;
             width: 40px;
             height: 40px;
@@ -138,18 +143,36 @@
             background-repeat: no-repeat;
             background-color: transparent;
             opacity: 50%;
+            outline: none;
             border: none;
+            transition: transform 0.2s; /* Only scale on hover */
         }
 
-        /* Active countdown display centered at top with same font and shadow */
+        .fullscreen-btn:hover {
+            transform: scale(1.05); /* Slight size increase on hover */
+        }
+
         .active-timer-display {
-            display: none; /* Hidden initially */
+            display: none;
             position: absolute;
             top: 10px;
             font-size: 2rem;
             font-family: 'OfficialBook', sans-serif;
             color: black;
-            text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5); /* Shadow to match other elements */
+            text-shadow: 0px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        /* Flashing screen overlay */
+        .screen-flash {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-color: black;
+            z-index: 1000;
+            pointer-events: none; /* Allows clicks to pass through */
         }
     </style>
 </head>
@@ -166,15 +189,12 @@
             </div>
         </div>
 
-        <!-- Toggle Button -->
         <img class="toggle-timer" src="arrow.png" alt="Toggle Timer" onclick="toggleTimer()">
     </div>
 
-    <!-- Timer Container for input controls -->
     <div class="timer-container" id="timer-container">
-        <div class="timer-display" id="timer">00 : 00 : 00</div>
-
-        <!-- Timer Input Fields -->
+        <button class="close-timer" onclick="toggleTimer()">×</button> <!-- Close button -->
+        <div class="timer-display" id="timer">Timer</div>
         <div class="timer-controls">
             <input type="number" id="input-hours" placeholder="HH" min="0" max="99">
             <input type="number" id="input-minutes" placeholder="MM" min="0" max="59">
@@ -184,11 +204,10 @@
         </div>
     </div>
 
-    <!-- Active Countdown Display at the Top Center -->
     <div class="active-timer-display" id="active-timer-display">00 : 00 : 00</div>
-
-    <!-- Fullscreen Button -->
     <button class="fullscreen-btn" onclick="toggleFullscreen()"></button>
+    
+    <div class="screen-flash" id="screen-flash"></div> <!-- Flash overlay -->
 
     <script>
         let countdownInterval;
@@ -226,7 +245,6 @@
 
         function toggleTimer() {
             const timerContainer = document.getElementById('timer-container');
-            // Toggle visibility of the timer container
             timerContainer.style.display = timerContainer.style.display === 'flex' ? 'none' : 'flex';
         }
 
@@ -239,7 +257,6 @@
 
             countdownSeconds = hours * 3600 + minutes * 60 + seconds;
 
-            // Hide input fields and show active timer display at the top
             document.getElementById('timer-container').style.display = 'none';
             document.getElementById('active-timer-display').style.display = 'block';
 
@@ -249,8 +266,8 @@
                     updateActiveTimerDisplay();
                 } else {
                     clearInterval(countdownInterval);
-                    alert("Countdown finished!");
-                    document.getElementById('active-timer-display').style.display = 'none'; // Hide after completion
+                    flashScreen();
+                    document.getElementById('active-timer-display').style.display = 'none';
                 }
             }, 1000);
 
@@ -264,7 +281,7 @@
             document.getElementById('input-minutes').value = '';
             document.getElementById('input-seconds').value = '';
             document.getElementById('timer').innerText = '00 : 00 : 00';
-            document.getElementById('active-timer-display').style.display = 'none'; // Hide active timer
+            document.getElementById('active-timer-display').style.display = 'none';
         }
 
         function updateActiveTimerDisplay() {
@@ -274,7 +291,21 @@
             document.getElementById('active-timer-display').innerText = `${hours} : ${minutes} : ${seconds}`;
         }
 
-        // Fullscreen functionality
+        function flashScreen() {
+            const flashOverlay = document.getElementById('screen-flash');
+            let flashCount = 0;
+            flashOverlay.style.display = 'block';
+
+            const flashInterval = setInterval(() => {
+                flashOverlay.style.backgroundColor = flashCount % 2 === 0 ? 'black' : 'white';
+                flashCount++;
+                if (flashCount >= 10) { // Stop after 5 flashes (10 intervals of 100 ms each)
+                    clearInterval(flashInterval);
+                    flashOverlay.style.display = 'none';
+                }
+            }, 100);
+        }
+
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
@@ -286,6 +317,15 @@
                 }
             }
         }
+
+        // Close the timer when clicking outside of it
+        document.addEventListener('click', (event) => {
+            const timerContainer = document.getElementById('timer-container');
+            const toggleTimerButton = document.querySelector('.toggle-timer');
+            if (timerContainer.style.display === 'flex' && !timerContainer.contains(event.target) && !toggleTimerButton.contains(event.target)) {
+                toggleTimer();
+            }
+        });
     </script>
 </body>
 </html>
