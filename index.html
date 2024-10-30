@@ -221,6 +221,7 @@
     <script>
         let countdownInterval;
         let countdownSeconds = 0;
+        let isPaused = false; // Variable to track paused state
 
         function updateClock() {
             const now = new Date();
@@ -276,21 +277,28 @@
             document.getElementById('active-timer-display').style.display = 'block';
 
             countdownInterval = setInterval(() => {
-                if (countdownSeconds > 0) {
-                    countdownSeconds--;
-                    updateActiveTimerDisplay();
-                } else {
-                    clearInterval(countdownInterval);
-                    flashScreen();
-                    document.getElementById('active-timer-display').style.display = 'none';
+                if (!isPaused) { // Only decrement if not paused
+                    if (countdownSeconds > 0) {
+                        countdownSeconds--;
+                        updateActiveTimerDisplay();
+                    } else {
+                        clearInterval(countdownInterval);
+                        flashScreen();
+                        document.getElementById('active-timer-display').style.display = 'none';
 
-                    // Play the sound when the countdown ends
-                    document.getElementById('end-sound').play();
+                        // Play the sound when the countdown ends
+                        document.getElementById('end-sound').play();
+                    }
                 }
             }, 1000);
 
             updateActiveTimerDisplay();
         }
+
+        // Add click event to pause/resume countdown
+        document.getElementById('active-timer-display').addEventListener('click', () => {
+            isPaused = !isPaused; // Toggle paused state
+        });
 
         function resetCountdown() {
             clearInterval(countdownInterval);
@@ -299,6 +307,7 @@
             document.getElementById('input-minutes').value = '';
             document.getElementById('input-seconds').value = '';
             document.getElementById('active-timer-display').style.display = 'none'; // Keep this line to hide the active timer
+            isPaused = false; // Reset paused state
         }
 
         function resetTimerState() {
@@ -309,6 +318,7 @@
             document.getElementById('input-seconds').value = '';  // Clear input for seconds
             document.getElementById('active-timer-display').innerText = '00 : 00 : 00'; // Reset active timer display
             document.getElementById('active-timer-display').style.display = 'none'; // Hide active timer display
+            isPaused = false; // Reset paused state
         }
 
         function updateActiveTimerDisplay() {
