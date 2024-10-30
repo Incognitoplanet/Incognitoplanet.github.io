@@ -177,7 +177,7 @@
             left: 0;
             width: 100vw;
             height: 100vh;
-            background-color: black;
+            background-color: white;
             z-index: 1000;
             pointer-events: none; /* Allows clicks to pass through */
         }
@@ -215,6 +215,8 @@
     <button class="fullscreen-btn" onclick="toggleFullscreen()"></button>
     
     <div class="screen-flash" id="screen-flash"></div> <!-- Flash overlay -->
+    
+    <audio id="end-sound" src="coin.mp3" preload="auto"></audio> <!-- Audio element for the sound -->
 
     <script>
         let countdownInterval;
@@ -281,6 +283,9 @@
                     clearInterval(countdownInterval);
                     flashScreen();
                     document.getElementById('active-timer-display').style.display = 'none';
+
+                    // Play the sound when the countdown ends
+                    document.getElementById('end-sound').play();
                 }
             }, 1000);
 
