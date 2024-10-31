@@ -223,6 +223,7 @@
         let countdownInterval;
         let countdownSeconds = 0;
         let isPaused = false; // Variable to track paused state
+        let blinkInterval; // Variable to track the blink interval
 
         function updateClock() {
             const now = new Date();
@@ -249,36 +250,45 @@
             document.getElementById('hours').innerText = hours;
             document.getElementById('minutes').innerText = minutes;
             document.getElementById('seconds').innerText = seconds;
-        }
 
-        setInterval(updateClock, 5000);
-        updateClock();
+            requestAnimationFrame(updateClock);
+        }
 
         function toggleTimer() {
             const timerContainer = document.getElementById('timer-container');
-            
-            // When closing the timer, reset everything
-            if (timerContainer.style.display === 'flex') {
-                resetTimerState();  // Call a function to reset the state
+            if (timerContainer.style.display === 'none' || timerContainer.style.display === '') {
+                timerContainer.style.display = 'flex'; // Show timer container
+            } else {
+                timerContainer.style.display = 'none'; // Hide timer container
+                clearInterval(countdownInterval); // Clear any active countdown
+                document.getElementById('active-timer-display').style.display = 'none'; // Hide active timer
+                clearInterval(blinkInterval); // Clear blinking interval
+                isPaused = false; // Reset paused state
             }
-
-            timerContainer.style.display = timerContainer.style.display === 'flex' ? 'none' : 'flex';
         }
 
         function startCountdown() {
             clearInterval(countdownInterval);
-            
+
             const hours = parseInt(document.getElementById('input-hours').value) || 0;
             const minutes = parseInt(document.getElementById('input-minutes').value) || 0;
             const seconds = parseInt(document.getElementById('input-seconds').value) || 0;
 
             countdownSeconds = hours * 3600 + minutes * 60 + seconds;
 
+            // Validate input
+            if (countdownSeconds <= 0) {
+                alert("Please enter a valid time for the countdown.");
+                return;
+            }
+
             document.getElementById('timer-container').style.display = 'none';
             document.getElementById('active-timer-display').style.display = 'block';
 
+            updateActiveTimerDisplay(); // Update immediately to show starting time
+
             countdownInterval = setInterval(() => {
-                if (!isPaused) { // Only decrement if not paused
+                if (!isPaused) {
                     if (countdownSeconds > 0) {
                         countdownSeconds--;
                         updateActiveTimerDisplay();
@@ -286,61 +296,35 @@
                         clearInterval(countdownInterval);
                         flashScreen();
                         document.getElementById('active-timer-display').style.display = 'none';
-
-                        // Play the sound when the countdown ends
                         document.getElementById('end-sound').play();
                     }
                 }
             }, 1000);
-
-            updateActiveTimerDisplay();
-        }
-
-        // Add click event to pause/resume countdown
-        document.getElementById('active-timer-display').addEventListener('click', () => {
-            isPaused = !isPaused; // Toggle paused state
-        });
-
-        function resetCountdown() {
-            clearInterval(countdownInterval);
-            countdownSeconds = 0;
-            document.getElementById('input-hours').value = '';
-            document.getElementById('input-minutes').value = '';
-            document.getElementById('input-seconds').value = '';
-            document.getElementById('active-timer-display').style.display = 'none'; // Keep this line to hide the active timer
-            isPaused = false; // Reset paused state
-        }
-
-        function resetTimerState() {
-            clearInterval(countdownInterval);  // Stop any running countdown
-            countdownSeconds = 0;  // Reset the countdown seconds
-            document.getElementById('input-hours').value = '';  // Clear input for hours
-            document.getElementById('input-minutes').value = '';  // Clear input for minutes
-            document.getElementById('input-seconds').value = '';  // Clear input for seconds
-            document.getElementById('active-timer-display').innerText = '00 : 00 : 00'; // Reset active timer display
-            document.getElementById('active-timer-display').style.display = 'none'; // Hide active timer display
-            isPaused = false; // Reset paused state
         }
 
         function updateActiveTimerDisplay() {
             const hours = String(Math.floor(countdownSeconds / 3600)).padStart(2, '0');
             const minutes = String(Math.floor((countdownSeconds % 3600) / 60)).padStart(2, '0');
             const seconds = String(countdownSeconds % 60).padStart(2, '0');
+
             document.getElementById('active-timer-display').innerText = `${hours} : ${minutes} : ${seconds}`;
         }
 
-        function flashScreen() {
-            const flashOverlay = document.getElementById('screen-flash');
-            flashOverlay.style.display = 'block';
-            setTimeout(() => {
-                flashOverlay.style.display = 'none';
-            }, 1000); // Flash for 1 second
+        function resetCountdown() {
+            clearInterval(countdownInterval);
+            countdownSeconds = 0;
+            document.getElementById('active-timer-display').style.display = 'none';
+            document.getElementById('input-hours').value = '';
+            document.getElementById('input-minutes').value = '';
+            document.getElementById('input-seconds').value = '';
+            clearInterval(blinkInterval); // Clear blinking interval
+            isPaused = false; // Reset paused state
         }
 
         function toggleFullscreen() {
             if (!document.fullscreenElement) {
                 document.documentElement.requestFullscreen().catch(err => {
-                    console.error(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                    console.error(`Error attempting to enable full-screen mode: ${err.message}`);
                 });
             } else {
                 if (document.exitFullscreen) {
@@ -349,14 +333,53 @@
             }
         }
 
+        function flashScreen() {
+            const flashOverlay = document.getElementById('screen-flash');
+            flashOverlay.style.display = 'block';
+            setTimeout(() => {
+                flashOverlay.style.display = 'none';
+            }, 1000);
+        }
+
+        // Function to handle blinking effect when paused
+        function blinkActiveTimerDisplay() {
+            const activeTimerDisplay = document.getElementById('active-timer-display');
+            let isVisible = true; // State to track visibility
+
+            blinkInterval = setInterval(() => {
+                if (isPaused) {
+                    activeTimerDisplay.style.visibility = isVisible ? 'hidden' : 'visible';
+                    isVisible = !isVisible; // Toggle visibility
+                } else {
+                    clearInterval(blinkInterval); // Clear blinking when resumed
+                    activeTimerDisplay.style.visibility = 'visible'; // Ensure it is visible
+                }
+            }, 500); // Blink every 500 ms
+        }
+
+        // Add click event to pause/resume countdown
+        document.getElementById('active-timer-display').addEventListener('click', () => {
+            isPaused = !isPaused; // Toggle paused state
+
+            if (isPaused) {
+                blinkActiveTimerDisplay(); // Start blinking when paused
+            } else {
+                clearInterval(blinkInterval); // Stop blinking when resumed
+                document.getElementById('active-timer-display').style.visibility = 'visible'; // Ensure it is visible
+            }
+        });
+
         // Close the timer when clicking outside of it
         document.addEventListener('click', (event) => {
             const timerContainer = document.getElementById('timer-container');
-            const toggleTimerButton = document.querySelector('.toggle-timer');
-            if (timerContainer.style.display === 'flex' && !timerContainer.contains(event.target) && !toggleTimerButton.contains(event.target)) {
-                toggleTimer();
+            const toggleButton = document.querySelector('.toggle-timer');
+            if (timerContainer.style.display === 'flex' && !timerContainer.contains(event.target) && !toggleButton.contains(event.target)) {
+                toggleTimer(); // Close the timer container
             }
         });
+
+        // Initialize the clock and start it running
+        updateClock();
     </script>
 </body>
 </html>
