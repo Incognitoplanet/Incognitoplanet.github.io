@@ -126,7 +126,7 @@
             // Display current score
             ctx.fillStyle = "white";
             ctx.font = "20px 'Courier New'"; // Set font to Courier New for the score
-            ctx.fillText(Score: ${score}, 10, 20);
+            ctx.fillText(`Score: ${score}`, 10, 20);
         }
 
         function updateHighScores(newScore) {
@@ -141,7 +141,7 @@
             scoreBoard.innerHTML = '<strong>Top Scores:</strong><br>';
             highScores.forEach((highScore, index) => {
                 // Display a default message if no score exists
-                scoreBoard.innerHTML += ${index + 1}. ${highScore || "0"}<br>;
+                scoreBoard.innerHTML += `${index + 1}. ${highScore || "0"}<br>`;
             });
         }
 
@@ -152,13 +152,13 @@
             const gScore = new Map();
             const fScore = new Map();
 
-            gScore.set(${start.x},${start.y}, 0);
-            fScore.set(${start.x},${start.y}, heuristic(start, goal));
+            gScore.set(`${start.x},${start.y}`, 0);
+            fScore.set(`${start.x},${start.y}`, heuristic(start, goal));
 
             while (openSet.length > 0) {
                 // Get the node in openSet with the lowest fScore
                 let current = openSet.reduce((prev, curr) => {
-                    return (fScore.get(${curr.x},${curr.y}) < fScore.get(${prev.x},${prev.y}) ? curr : prev);
+                    return (fScore.get(`${curr.x},${curr.y}`) < fScore.get(`${prev.x},${prev.y}`) ? curr : prev);
                 });
 
                 // If we reached the goal, reconstruct the path
@@ -177,13 +177,13 @@
                         continue; // Ignore invalid neighbors
                     }
 
-                    const tentativeGScore = gScore.get(${current.x},${current.y}) + 1; // Distance from start
+                    const tentativeGScore = gScore.get(`${current.x},${current.y}`) + 1; // Distance from start
 
-                    if (!gScore.has(${neighbor.x},${neighbor.y}) || tentativeGScore < gScore.get(${neighbor.x},${neighbor.y})) {
+                    if (!gScore.has(`${neighbor.x},${neighbor.y}`) || tentativeGScore < gScore.get(`${neighbor.x},${neighbor.y}`)) {
                         // This path to neighbor is better than any previous one
-                        cameFrom.set(${neighbor.x},${neighbor.y}, current);
-                        gScore.set(${neighbor.x},${neighbor.y}, tentativeGScore);
-                        fScore.set(${neighbor.x},${neighbor.y}, tentativeGScore + heuristic(neighbor, goal));
+                        cameFrom.set(`${neighbor.x},${neighbor.y}`, current);
+                        gScore.set(`${neighbor.x},${neighbor.y}`, tentativeGScore);
+                        fScore.set(`${neighbor.x},${neighbor.y}`, tentativeGScore + heuristic(neighbor, goal));
 
                         if (!openSet.some(node => node.x === neighbor.x && node.y === neighbor.y)) {
                             openSet.push(neighbor); // Add to open set if not already present
@@ -201,8 +201,8 @@
 
         function reconstructPath(cameFrom, current) {
             const totalPath = [current];
-            while (cameFrom.has(${current.x},${current.y})) {
-                current = cameFrom.get(${current.x},${current.y});
+            while (cameFrom.has(`${current.x},${current.y}`)) {
+                current = cameFrom.get(`${current.x},${current.y}`);
                 totalPath.unshift(current);
             }
             return totalPath;
@@ -231,7 +231,7 @@
         setInterval(() => {
             automatedMovement();
             gameLoop();
-        }, 1);  // Set game speed
+        }, 100);  // Set game speed
     </script>
 </body>
 </html>
