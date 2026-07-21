@@ -1,0 +1,111 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#ffd447">
+  <meta name="description" content="A colourful retro photo and video wall.">
+  <title>INCOG MEDIA DROP</title>
+  <style>
+    :root {
+      --ink: #1d1838; --paper: #fffaf0; --yellow: #ffd447; --coral: #ff6b5f;
+      --blue: #51b7ff; --green: #63d68a; --purple: #9b72ff;
+      --grid: rgba(29,24,56,.12); --media-fit: cover;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0; min-height: 100vh; color: var(--ink); font-family: "Courier New", ui-monospace, monospace;
+      background-color: #f6ebd3;
+      background-image: linear-gradient(90deg,var(--grid) 1px,transparent 1px),linear-gradient(var(--grid) 1px,transparent 1px),linear-gradient(135deg,rgba(255,212,71,.55) 0 18%,transparent 18%),linear-gradient(35deg,transparent 0 66%,rgba(81,183,255,.34) 66% 82%,transparent 82%);
+      background-size: 16px 16px,16px 16px,100% 100%,100% 100%; overflow-x: hidden;
+    }
+    body::before, body::after { content:""; position:fixed; z-index:-1; width:180px; height:180px; border:8px solid var(--ink); box-shadow:10px 10px 0 var(--coral); opacity:.22; transform:rotate(12deg); pointer-events:none; }
+    body::before { left:-65px; top:24vh; background:var(--green); }
+    body::after { right:-70px; bottom:8vh; background:var(--purple); transform:rotate(-9deg); }
+    .site-header { width:min(1180px,calc(100% - 28px)); margin:18px auto 0; padding:18px; border:5px solid var(--ink); background:var(--yellow); box-shadow:8px 8px 0 var(--ink); position:relative; overflow:hidden; }
+    .site-header::after { content:""; position:absolute; right:-30px; bottom:-48px; width:180px; height:100px; background:var(--blue); border:5px solid var(--ink); transform:rotate(-12deg); }
+    .eyebrow { margin:0 0 6px; font-weight:900; letter-spacing:.14em; text-transform:uppercase; font-size:clamp(.7rem,2vw,.88rem); }
+    h1 { margin:0; max-width:850px; font-size:clamp(2.2rem,9vw,6.4rem); line-height:.82; letter-spacing:-.08em; text-transform:uppercase; text-shadow:4px 4px 0 var(--paper); position:relative; z-index:1; }
+    .subtitle { max-width:780px; margin:18px 0 0; font-weight:700; line-height:1.45; position:relative; z-index:1; }
+    .toolbar { width:min(1180px,calc(100% - 28px)); margin:22px auto 0; display:flex; flex-wrap:wrap; gap:12px; align-items:center; }
+    button { appearance:none; border:4px solid var(--ink); background:var(--paper); color:var(--ink); min-height:48px; padding:10px 14px; font:900 .82rem/1 "Courier New",monospace; text-transform:uppercase; letter-spacing:.06em; box-shadow:5px 5px 0 var(--ink); cursor:pointer; transition:transform .08s ease,box-shadow .08s ease,background .12s ease; }
+    button:hover { background:var(--green); }
+    button:focus-visible { outline:4px solid var(--purple); outline-offset:4px; }
+    button:active { transform:translate(4px,4px); box-shadow:1px 1px 0 var(--ink); }
+    button[data-active="true"] { background:var(--blue); }
+    .status { margin-left:auto; padding:8px 10px; border:3px solid var(--ink); background:var(--coral); font-weight:900; font-size:.78rem; box-shadow:4px 4px 0 var(--ink); }
+    .gallery { width:min(1240px,calc(100% - 18px)); margin:24px auto 70px; padding:18px 10px 42px; display:flex; flex-wrap:wrap; justify-content:center; align-items:flex-start; gap:clamp(18px,3vw,34px); min-height:48vh; }
+    .polaroid { --tilt:0deg; --lift:0px; width:clamp(180px,23vw,280px); margin:0; padding:12px 12px 48px; border:4px solid var(--ink); background:var(--paper); box-shadow:9px 10px 0 var(--ink); transform:translateY(var(--lift)) rotate(var(--tilt)) scale(.82); opacity:0; position:relative; animation:pop-in .48s steps(5,end) forwards; animation-delay:var(--delay); transition:transform .14s ease,box-shadow .14s ease; }
+    .polaroid:nth-child(4n+1){background:#fff7d6}.polaroid:nth-child(4n+2){background:#f1fff5}.polaroid:nth-child(4n+3){background:#fff0ef}.polaroid:nth-child(4n){background:#f2ecff}
+    .polaroid:hover,.polaroid:focus-within { z-index:3; transform:translateY(calc(var(--lift) - 9px)) rotate(0deg) scale(1.035); box-shadow:13px 15px 0 var(--ink); }
+    .media-button { display:block; width:100%; min-height:0; padding:0; border:0; box-shadow:none; background:transparent; cursor:zoom-in; }
+    .media-button:hover,.media-button:active { background:transparent; transform:none; box-shadow:none; }
+    .media-window { aspect-ratio:1/1; width:100%; overflow:hidden; border:4px solid var(--ink); background:linear-gradient(45deg,#ded7c9 25%,transparent 25%) 0 0/18px 18px,linear-gradient(45deg,transparent 75%,#ded7c9 75%) 0 0/18px 18px,#f7f1e6; position:relative; }
+    .media-window img,.media-window video { display:block; width:100%; height:100%; object-fit:var(--media-fit); object-position:center; background:#e5dfd4; }
+    .media-window video { pointer-events:none; }
+    .video-badge,.zip-badge { position:absolute; top:8px; padding:5px 7px; border:3px solid var(--ink); box-shadow:3px 3px 0 var(--ink); font-size:.64rem; font-weight:900; z-index:2; }
+    .video-badge { left:8px; background:var(--blue); }
+    .zip-badge { right:8px; background:var(--yellow); }
+    .caption { position:absolute; left:12px; right:12px; bottom:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; font-weight:900; font-size:.72rem; letter-spacing:.025em; text-transform:uppercase; }
+    .message { width:min(780px,100%); border:5px solid var(--ink); background:var(--paper); box-shadow:8px 8px 0 var(--ink); padding:22px; font-weight:900; line-height:1.55; }
+    .message code { display:inline-block; margin-top:10px; overflow-wrap:anywhere; }
+    .lightbox { position:fixed; inset:0; z-index:20; padding:20px; background:rgba(29,24,56,.88); display:grid; place-items:center; }
+    .lightbox[hidden] { display:none; }
+    .lightbox-card { width:min(1000px,96vw); max-height:94vh; padding:12px 12px 58px; border:5px solid var(--ink); background:var(--paper); box-shadow:11px 11px 0 var(--coral); position:relative; }
+    .lightbox-card img,.lightbox-card video { display:block; width:100%; max-height:calc(94vh - 88px); object-fit:contain; background:#111; border:4px solid var(--ink); }
+    .lightbox-caption { position:absolute; left:16px; right:86px; bottom:17px; font-weight:900; text-transform:uppercase; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .close-button { position:absolute; right:12px; bottom:10px; min-height:36px; padding:7px 10px; background:var(--yellow); }
+    @keyframes pop-in { 0%{opacity:0;transform:translateY(calc(var(--lift) + 55px)) rotate(var(--tilt)) scale(.82)}70%{opacity:1;transform:translateY(calc(var(--lift) - 7px)) rotate(var(--tilt)) scale(1.025)}100%{opacity:1;transform:translateY(var(--lift)) rotate(var(--tilt)) scale(1)} }
+    @media(max-width:700px){.status{width:100%;margin-left:0}.gallery{gap:24px 18px}.polaroid{width:min(78vw,270px)}.site-header{box-shadow:5px 5px 0 var(--ink)}}
+    @media(prefers-reduced-motion:reduce){*{animation-duration:.01ms!important;animation-delay:0ms!important;transition:none!important}}
+  </style>
+</head>
+<body>
+  <header class="site-header">
+    <p class="eyebrow">8/16-bit image + video archive</p>
+    <h1>INCOG<br>MEDIA DROP</h1>
+    <p class="subtitle">Reads loose images, loose videos, and ZIP archives directly from the public repository’s <strong>incog</strong> folder.</p>
+  </header>
+  <nav class="toolbar" aria-label="Gallery controls">
+    <button id="shuffleBtn" type="button">Shuffle media</button>
+    <button id="fitBtn" type="button" data-active="false">Fit: crop</button>
+    <span class="status" id="status" role="status" aria-live="polite">CONNECTING...</span>
+  </nav>
+  <main class="gallery" id="gallery" aria-label="Photography and video gallery"></main>
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Full media viewer" hidden>
+    <div class="lightbox-card">
+      <div id="lightboxMedia"></div>
+      <div class="lightbox-caption" id="lightboxCaption"></div>
+      <button class="close-button" id="closeLightbox" type="button" aria-label="Close viewer">X</button>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
+  <script src="config.js"></script>
+  <script>
+    const gallery=document.querySelector('#gallery'),shuffleBtn=document.querySelector('#shuffleBtn'),fitBtn=document.querySelector('#fitBtn'),status=document.querySelector('#status'),lightbox=document.querySelector('#lightbox'),lightboxMedia=document.querySelector('#lightboxMedia'),lightboxCaption=document.querySelector('#lightboxCaption'),closeLightbox=document.querySelector('#closeLightbox');
+    const IMAGE_EXTENSIONS=new Set(['jpg','jpeg','png','gif','webp','avif','svg','bmp','ico']);
+    const VIDEO_EXTENSIONS=new Set(['mp4','webm','ogv','ogg','mov','m4v']);
+    const ZIP_EXTENSIONS=new Set(['zip']);
+    const MIME={jpg:'image/jpeg',jpeg:'image/jpeg',png:'image/png',gif:'image/gif',webp:'image/webp',avif:'image/avif',svg:'image/svg+xml',bmp:'image/bmp',ico:'image/x-icon',mp4:'video/mp4',webm:'video/webm',ogv:'video/ogg',ogg:'video/ogg',mov:'video/quicktime',m4v:'video/x-m4v'};
+    let mediaItems=[],fitMode='cover',objectUrls=[];
+    const ext=n=>(n.split('.').pop()||'').toLowerCase();
+    const readableName=n=>n.split('/').pop().replace(/\.[^.]+$/,'').replace(/[_-]+/g,' ').replace(/\s+/g,' ').trim()||'Media';
+    const shuffle=a=>{const c=[...a];for(let i=c.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[c[i],c[j]]=[c[j],c[i]]}return c};
+    const randomBetween=(a,b)=>Math.random()*(b-a)+a;
+    const encodeApiPath=p=>p.split('/').filter(Boolean).map(encodeURIComponent).join('/');
+    function detectRepository(){const s=window.GALLERY_CONFIG||{};if(s.owner&&s.repo)return{owner:s.owner.trim(),repo:s.repo.trim(),branch:(s.branch||'').trim(),folder:(s.folder||'incog').replace(/^\/+|\/+$/g,'')||'incog'};const h=location.hostname.toLowerCase();if(!h.endsWith('.github.io'))return null;const owner=h.slice(0,-'.github.io'.length),parts=location.pathname.split('/').filter(Boolean),repo=parts[0]||`${owner}.github.io`;return{owner,repo,branch:'',folder:(s.folder||'incog').replace(/^\/+|\/+$/g,'')||'incog'}}
+    function showMessage(message,detail){const box=document.createElement('div');box.className='message';box.append(document.createTextNode(message));if(detail){const br=document.createElement('br'),code=document.createElement('code');code.textContent=detail;box.append(br,code)}gallery.replaceChildren(box)}
+    function makeElement(item,lightboxMode=false){if(item.kind==='video'){const v=document.createElement('video');v.src=item.url;v.controls=lightboxMode;v.preload=lightboxMode?'metadata':'metadata';v.playsInline=true;v.muted=!lightboxMode;if(!lightboxMode)v.setAttribute('aria-hidden','true');return v}const img=document.createElement('img');img.src=item.url;img.alt=item.name;img.decoding='async';return img}
+    function openMedia(item){lightboxMedia.replaceChildren(makeElement(item,true));lightboxCaption.textContent=item.name;lightbox.hidden=false;document.body.style.overflow='hidden';closeLightbox.focus()}
+    function closeMedia(){const video=lightboxMedia.querySelector('video');if(video)video.pause();lightbox.hidden=true;lightboxMedia.replaceChildren();document.body.style.overflow=''}
+    function render(){gallery.replaceChildren();if(!mediaItems.length){showMessage('No supported media was found.','Put images, videos, or ZIP files inside the lowercase /incog folder.');status.textContent='NO MEDIA';return}const f=document.createDocumentFragment();shuffle(mediaItems).forEach((item,index)=>{const card=document.createElement('figure');card.className='polaroid';card.style.setProperty('--tilt',`${randomBetween(-5.2,5.2).toFixed(2)}deg`);card.style.setProperty('--lift',`${randomBetween(-9,18).toFixed(0)}px`);card.style.setProperty('--delay',`${Math.min(index*65,1200)}ms`);const button=document.createElement('button');button.className='media-button';button.type='button';button.setAttribute('aria-label',`Open ${item.name}`);button.addEventListener('click',()=>openMedia(item));const frame=document.createElement('span');frame.className='media-window';const el=makeElement(item,false);if(el.tagName==='IMG')el.loading=index<4?'eager':'lazy';el.addEventListener('error',()=>{card.remove();console.error('Could not display media:',item.url)},{once:true});frame.append(el);if(item.kind==='video'){const badge=document.createElement('span');badge.className='video-badge';badge.textContent='VIDEO';frame.append(badge)}if(item.fromZip){const badge=document.createElement('span');badge.className='zip-badge';badge.textContent='ZIP';frame.append(badge)}const caption=document.createElement('figcaption');caption.className='caption';caption.textContent=item.name;button.append(frame);card.append(button,caption);f.append(card)});gallery.append(f);status.textContent=`${mediaItems.length} ITEM${mediaItems.length===1?'':'S'} LOADED`}
+    async function githubFetch(url){const r=await fetch(url,{headers:{Accept:'application/vnd.github+json','X-GitHub-Api-Version':'2022-11-28'},cache:'no-store'});if(!r.ok){let m=`${r.status} ${r.statusText}`;try{const b=await r.json();if(b.message)m=b.message}catch{}throw new Error(m)}return r.json()}
+    async function listFolder(repository,path,branch){const endpoint=`https://api.github.com/repos/${encodeURIComponent(repository.owner)}/${encodeURIComponent(repository.repo)}/contents/${encodeApiPath(path)}?ref=${encodeURIComponent(branch)}`;const entries=await githubFetch(endpoint);if(!Array.isArray(entries))return[];const results=[];for(const entry of entries){if(entry.type==='dir'){results.push(...await listFolder(repository,entry.path,branch));continue}if(entry.type!=='file'||!entry.download_url)continue;const e=ext(entry.name);if(IMAGE_EXTENSIONS.has(e)||VIDEO_EXTENSIONS.has(e)||ZIP_EXTENSIONS.has(e))results.push({url:`${entry.download_url}${entry.download_url.includes('?')?'&':'?'}v=${encodeURIComponent(entry.sha||'')}`,name:entry.name,path:entry.path,extension:e,sha:entry.sha||''})}return results}
+    async function unpackZip(file,index,total){status.textContent=`OPENING ZIP ${index}/${total}...`;const response=await fetch(file.url,{cache:'no-store'});if(!response.ok)throw new Error(`Could not download ${file.name}: ${response.status}`);const buffer=await response.arrayBuffer();const zip=await JSZip.loadAsync(buffer);const results=[];const entries=Object.values(zip.files).filter(z=>!z.dir&&!z.name.startsWith('__MACOSX/')&&!z.name.split('/').some(part=>part.startsWith('.')));for(const entry of entries){const e=ext(entry.name),kind=IMAGE_EXTENSIONS.has(e)?'image':VIDEO_EXTENSIONS.has(e)?'video':null;if(!kind)continue;const blob=await entry.async('blob');const typedBlob=blob.type?blob:new Blob([blob],{type:MIME[e]||'application/octet-stream'});const url=URL.createObjectURL(typedBlob);objectUrls.push(url);results.push({url,name:readableName(entry.name),kind,fromZip:true})}return results}
+    async function loadMedia(){const repository=detectRepository();if(!repository){status.textContent='SETUP NEEDED';showMessage('The repository could not be detected from this address.','Open config.js and enter your GitHub owner and repository name.');return}status.textContent='READING REPOSITORY...';try{let branch=repository.branch;if(!branch){const metadata=await githubFetch(`https://api.github.com/repos/${encodeURIComponent(repository.owner)}/${encodeURIComponent(repository.repo)}`);branch=metadata.default_branch||'main'}const files=await listFolder(repository,repository.folder,branch),loose=[],zips=[];for(const file of files){if(file.extension==='zip')zips.push(file);else loose.push({url:file.url,name:readableName(file.name),kind:IMAGE_EXTENSIONS.has(file.extension)?'image':'video',fromZip:false})}mediaItems.push(...loose);for(let i=0;i<zips.length;i++){try{mediaItems.push(...await unpackZip(zips[i],i+1,zips.length))}catch(error){console.error(error);showMessage(`Could not open ${zips[i].name}.`,`${error.message}. Make sure it is a normal ZIP, not a Git LFS pointer.`)}}render()}catch(error){console.error(error);status.textContent='LOAD ERROR';const target=`${repository.owner}/${repository.repo}/${repository.folder}`;showMessage(`Could not load the media: ${error.message}`,`Check that ${target} exists, uses lowercase incog, and the repository is public.`)}}
+    shuffleBtn.addEventListener('click',render);fitBtn.addEventListener('click',()=>{fitMode=fitMode==='cover'?'contain':'cover';document.documentElement.style.setProperty('--media-fit',fitMode);fitBtn.textContent=fitMode==='cover'?'Fit: crop':'Fit: whole';fitBtn.dataset.active=String(fitMode==='contain')});closeLightbox.addEventListener('click',closeMedia);lightbox.addEventListener('click',e=>{if(e.target===lightbox)closeMedia()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!lightbox.hidden)closeMedia()});window.addEventListener('beforeunload',()=>objectUrls.forEach(URL.revokeObjectURL));loadMedia();
+  </script>
+</body>
+</html>
