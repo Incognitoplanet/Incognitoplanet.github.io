@@ -1028,6 +1028,11 @@
     let slideshowIndex = 0;
     let lastSlideshowImageUrl = '';
     let lastPointerMoveReset = 0;
+    let fullscreenWasActive = false;
+    let keepViewerAfterFullscreenExit = false;
+
+    const fullscreenElement = () =>
+      document.fullscreenElement || document.webkitFullscreenElement || null;
 
     const ext = name => (name.split('.').pop() || '').toLowerCase();
 
@@ -1197,10 +1202,14 @@
     }
 
     async function leaveBrowserFullscreen() {
-      if (!document.fullscreenElement) return;
+      if (!fullscreenElement()) return;
 
       try {
-        await document.exitFullscreen();
+        if (document.exitFullscreen) {
+          await document.exitFullscreen();
+        } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+        }
       } catch (error) {
         console.warn('Could not exit fullscreen:', error);
       }
@@ -1236,20 +1245,40 @@
       if (slideshowActive || lightbox.hidden) return;
 
       try {
-        if (document.fullscreenElement) {
-          await document.exitFullscreen();
+        if (fullscreenElement()) {
+          keepViewerAfterFullscreenExit = true;
+          await leaveBrowserFullscreen();
         } else if (lightbox.requestFullscreen) {
           await lightbox.requestFullscreen();
         } else if (lightbox.webkitRequestFullscreen) {
           lightbox.webkitRequestFullscreen();
         }
       } catch (error) {
+        keepViewerAfterFullscreenExit = false;
         console.warn('Fullscreen is not available:', error);
       }
     }
 
-    function updateFullscreenButton() {
-      const isFullscreen = Boolean(document.fullscreenElement);
+    function handleFullscreenChange() {
+      const isFullscreen = Boolean(fullscreenElement());
+      const closedWithEscape =
+        fullscreenWasActive &&
+        !isFullscreen &&
+        !keepViewerAfterFullscreenExit &&
+        !lightbox.hidden;
+
+      fullscreenWasActive = isFullscreen;
+
+      if (closedWithEscape) {
+        if (slideshowActive) {
+          stopSlideshow(true);
+        } else {
+          hideViewer({ exitFullscreen: false });
+          scheduleIdleSlideshow();
+        }
+      }
+
+      keepViewerAfterFullscreenExit = false;
       fullscreenButton.textContent = isFullscreen ? '↙' : '⛶';
       fullscreenButton.setAttribute(
         'aria-label',
@@ -1875,8 +1904,8 @@
     fullscreenButton.addEventListener('click', toggleFullscreen);
     closeLightbox.addEventListener('click', closeMedia);
 
-    document.addEventListener('fullscreenchange', updateFullscreenButton);
-    document.addEventListener('webkitfullscreenchange', updateFullscreenButton);
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
     lightbox.addEventListener('click', event => {
       if (event.target === lightbox) closeMedia();
