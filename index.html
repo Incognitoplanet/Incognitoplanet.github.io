@@ -101,7 +101,23 @@
     function detectRepository(){const s=window.GALLERY_CONFIG||{};if(s.owner&&s.repo)return{owner:s.owner.trim(),repo:s.repo.trim(),branch:(s.branch||'').trim(),folder:(s.folder||'incog').replace(/^\/+|\/+$/g,'')||'incog'};const h=location.hostname.toLowerCase();if(!h.endsWith('.github.io'))return null;const owner=h.slice(0,-'.github.io'.length),parts=location.pathname.split('/').filter(Boolean),repo=parts[0]||`${owner}.github.io`;return{owner,repo,branch:'',folder:(s.folder||'incog').replace(/^\/+|\/+$/g,'')||'incog'}}
     function showMessage(message,detail){const box=document.createElement('div');box.className='message';box.append(document.createTextNode(message));if(detail){const br=document.createElement('br'),code=document.createElement('code');code.textContent=detail;box.append(br,code)}gallery.replaceChildren(box)}
     function makeElement(item,lightboxMode=false){if(item.kind==='video'){const v=document.createElement('video');v.src=item.url;v.controls=lightboxMode;v.preload=lightboxMode?'metadata':'metadata';v.playsInline=true;v.muted=!lightboxMode;if(!lightboxMode)v.setAttribute('aria-hidden','true');return v}const img=document.createElement('img');img.src=item.url;img.alt=item.name;img.decoding='async';return img}
-    function openMedia(item){lightboxMedia.replaceChildren(makeElement(item,true));lightboxCaption.textContent=item.name;lightbox.hidden=false;document.body.style.overflow='hidden';closeLightbox.focus()}
+    function openMedia(item){
+      const media=makeElement(item,true);
+      lightboxMedia.replaceChildren(media);
+      lightboxCaption.textContent=item.name;
+      lightbox.hidden=false;
+      document.body.style.overflow='hidden';
+
+      if(item.kind==='video'){
+        media.currentTime=0;
+        media.autoplay=true;
+        media.play().catch(error=>{
+          console.warn('Automatic video playback was blocked:',error);
+        });
+      }
+
+      closeLightbox.focus();
+    }
     function closeMedia(){const video=lightboxMedia.querySelector('video');if(video)video.pause();lightbox.hidden=true;lightboxMedia.replaceChildren();document.body.style.overflow=''}
     function syncFilterButtons(){
       const showingImages=activeType==='image';
