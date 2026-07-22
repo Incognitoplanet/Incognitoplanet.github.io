@@ -51,8 +51,6 @@
         var(--bg);
       background-size: auto, auto, 30px 30px, 30px 30px, auto;
     }
-
-    /* Subtle film grain */
     body::before {
       content: "";
       position: fixed;
@@ -85,8 +83,6 @@
         linear-gradient(145deg, #2c3037, var(--panel-deep));
       box-shadow: 0 16px 34px rgba(13,14,17,.32);
     }
-
-    /* Retro stripe panel */
     .site-header::before {
       content: "";
       position: absolute;
@@ -257,7 +253,6 @@
       gap: clamp(20px, 2.2vw, 32px);
     }
 
-
     .gallery.has-date-sections {
       display: block;
     }
@@ -340,8 +335,6 @@
       animation-delay: var(--delay);
       transition: transform .2s cubic-bezier(.16,1,.3,1), box-shadow .2s ease;
     }
-
-    /* Random tint behind each neutral Polaroid */
     .polaroid::before {
       content: "";
       position: absolute;
@@ -454,8 +447,6 @@
       box-shadow: 0 12px 30px rgba(0,0,0,.24);
       line-height: 1.65;
     }
-
-    /* Loader */
     .loader {
       width: min(420px, 90vw);
       margin: 60px auto;
@@ -591,26 +582,40 @@
     .viewer-prev { left: 22px; }
     .viewer-next { right: 22px; }
 
-
-    .fullscreen-button {
+    .slideshow-button,
+    .fullscreen-button,
+    .close-button {
       position: absolute;
-      right: 66px;
       bottom: 11px;
       min-width: 44px;
       min-height: 38px;
       padding: 8px 11px;
       color: #fff;
-      background: #343840;
       border-color: rgba(255,255,255,.22);
       box-shadow: 0 3px 0 #111318;
     }
 
+    .slideshow-button,
+    .fullscreen-button {
+      background: #343840;
+    }
+
+    .slideshow-button:hover:not(:disabled),
     .fullscreen-button:hover:not(:disabled) {
       color: #fff;
       background: #464b54;
     }
 
-    .idle-slideshow-label {
+    .slideshow-button {
+      display: none;
+      right: 120px;
+    }
+
+    .fullscreen-button {
+      right: 66px;
+    }
+
+    .slideshow-label {
       position: absolute;
       top: 22px;
       left: 50%;
@@ -631,16 +636,16 @@
       backdrop-filter: blur(6px);
     }
 
-    .idle-slideshow-label[hidden] {
+    .slideshow-label[hidden] {
       display: none;
     }
 
-    .lightbox.is-idle-slideshow {
+    .lightbox.is-slideshow {
       cursor: default;
       background: #111318;
     }
 
-    .lightbox.is-idle-slideshow .lightbox-card {
+    .lightbox.is-slideshow .lightbox-card {
       width: 100vw;
       height: 100vh;
       max-height: none;
@@ -653,14 +658,14 @@
       box-shadow: none;
     }
 
-    .lightbox.is-idle-slideshow .lightbox-media {
+    .lightbox.is-slideshow .lightbox-media {
       width: 100%;
       height: 100%;
       display: grid;
       place-items: center;
     }
 
-    .lightbox.is-idle-slideshow .lightbox-card img {
+    .lightbox.is-slideshow .lightbox-card img {
       width: 100%;
       height: 100%;
       max-height: none;
@@ -669,11 +674,12 @@
       background: #111318;
     }
 
-    .lightbox.is-idle-slideshow .viewer-nav,
-    .lightbox.is-idle-slideshow .close-button,
-    .lightbox.is-idle-slideshow .fullscreen-button,
-    .lightbox.is-idle-slideshow .lightbox-caption,
-    .lightbox.is-idle-slideshow .lightbox-counter {
+    .lightbox.is-slideshow .viewer-nav,
+    .lightbox.is-slideshow .close-button,
+    .lightbox.is-slideshow .slideshow-button,
+    .lightbox.is-slideshow .fullscreen-button,
+    .lightbox.is-slideshow .lightbox-caption,
+    .lightbox.is-slideshow .lightbox-counter {
       display: none;
     }
 
@@ -721,7 +727,7 @@
       position: fixed;
       left: 18px;
       bottom: 18px;
-      max-width: calc(100vw - 280px);
+      max-width: calc(100vw - 340px);
       padding: 8px 11px;
       border-radius: 6px;
       color: rgba(245,246,246,.86);
@@ -730,27 +736,24 @@
 
     .lightbox:fullscreen .lightbox-counter {
       position: fixed;
-      right: 132px;
+      right: 186px;
       bottom: 21px;
       color: rgba(245,246,246,.72);
     }
 
+    .lightbox:fullscreen .slideshow-button {
+      display: block;
+    }
+
+    .lightbox:fullscreen .slideshow-button,
     .lightbox:fullscreen .fullscreen-button,
     .lightbox:fullscreen .close-button {
       position: fixed;
     }
 
     .close-button {
-      position: absolute;
       right: 12px;
-      bottom: 11px;
-      min-width: 44px;
-      min-height: 38px;
-      padding: 8px 11px;
-      color: #fff;
       background: #24272d;
-      border-color: rgba(255,255,255,.22);
-      box-shadow: 0 3px 0 #111318;
     }
 
     .back-to-top {
@@ -979,9 +982,10 @@
       <button class="viewer-nav viewer-next" id="nextMedia" type="button" aria-label="Next media">›</button>
       <div class="lightbox-caption" id="lightboxCaption"></div>
       <div class="lightbox-counter" id="lightboxCounter"></div>
-      <div class="idle-slideshow-label" id="idleSlideshowLabel" hidden>
+      <div class="slideshow-label" id="slideshowLabel" hidden>
         Random archive mode • click, touch or press a key to exit
       </div>
+      <button class="slideshow-button" id="slideshowButton" type="button" aria-label="Start random slideshow" title="Play slideshow">▶</button>
       <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Enter fullscreen" title="Fullscreen">⛶</button>
       <button class="close-button" id="closeLightbox" type="button" aria-label="Close viewer">X</button>
     </div>
@@ -998,7 +1002,8 @@
     const lightboxMedia = document.querySelector('#lightboxMedia');
     const lightboxCaption = document.querySelector('#lightboxCaption');
     const lightboxCounter = document.querySelector('#lightboxCounter');
-    const idleSlideshowLabel = document.querySelector('#idleSlideshowLabel');
+    const slideshowLabel = document.querySelector('#slideshowLabel');
+    const slideshowButton = document.querySelector('#slideshowButton');
     const fullscreenButton = document.querySelector('#fullscreenButton');
     const closeLightbox = document.querySelector('#closeLightbox');
     const prevMedia = document.querySelector('#prevMedia');
@@ -1024,8 +1029,8 @@
       mov:'video/quicktime', m4v:'video/x-m4v'
     };
 
-    const IDLE_START_DELAY = 3 * 60 * 1000;
-    const IDLE_SLIDE_DURATION = 90 * 1000;
+    const SLIDESHOW_IDLE_DELAY = 3 * 60 * 1000;
+    const SLIDE_DURATION = 90 * 1000;
 
     const TINTS = [
       'rgba(92,130,129,.18)',
@@ -1045,12 +1050,12 @@
     let touchStartY = null;
     let touchStartX = null;
     let mediaChangeTimer = null;
-    let idleStartTimer = null;
-    let idleSlideTimer = null;
-    let idleSlideshowActive = false;
-    let idleOrder = [];
-    let idleOrderIndex = 0;
-    let lastIdleImageUrl = '';
+    let slideshowStartTimer = null;
+    let slideshowTimer = null;
+    let slideshowActive = false;
+    let slideshowOrder = [];
+    let slideshowIndex = 0;
+    let lastSlideshowImageUrl = '';
     let lastPointerMoveReset = 0;
 
     const ext = name => (name.split('.').pop() || '').toLowerCase();
@@ -1108,10 +1113,6 @@
         dateLabel: '',
         dateSort: Number.POSITIVE_INFINITY
       };
-    }
-
-    function detectRepository() {
-      return { ...REPOSITORY };
     }
 
     function showMessage(message, detail = '') {
@@ -1180,7 +1181,9 @@
         const media = makeElement(item, true);
         lightboxMedia.replaceChildren(media);
         lightboxCaption.textContent = item.name;
-        fullscreenButton.hidden = idleSlideshowActive || item.kind !== 'image';
+        const isImage = item.kind === 'image';
+        slideshowButton.hidden = !isImage;
+        fullscreenButton.hidden = slideshowActive || !isImage;
         updateViewerControls();
 
         requestAnimationFrame(() => {
@@ -1210,11 +1213,9 @@
     }
 
     function navigateMedia(direction) {
-      if (lightbox.hidden || !viewerItems.length || idleSlideshowActive) return;
+      if (lightbox.hidden || !viewerItems.length || slideshowActive) return;
 
       const nextIndex = currentMediaIndex + direction;
-
-      /* Deliberately does not loop from last to first or first to last. */
       if (nextIndex < 0 || nextIndex >= viewerItems.length) {
         updateViewerControls();
         return;
@@ -1242,8 +1243,8 @@
       lightbox.hidden = true;
       lightboxMedia.replaceChildren();
       lightboxMedia.classList.remove('is-changing');
-      lightbox.classList.remove('is-idle-slideshow');
-      idleSlideshowLabel.hidden = true;
+      lightbox.classList.remove('is-slideshow');
+      slideshowLabel.hidden = true;
       document.body.style.overflow = '';
       viewerItems = [];
       currentMediaIndex = -1;
@@ -1252,8 +1253,8 @@
     }
 
     function closeMedia() {
-      if (idleSlideshowActive) {
-        stopIdleSlideshow(true);
+      if (slideshowActive) {
+        stopSlideshow(true);
         return;
       }
 
@@ -1262,7 +1263,7 @@
     }
 
     async function toggleFullscreen() {
-      if (idleSlideshowActive || lightbox.hidden) return;
+      if (slideshowActive || lightbox.hidden) return;
 
       try {
         if (document.fullscreenElement) {
@@ -1287,7 +1288,7 @@
       fullscreenButton.title = isFullscreen ? 'Exit fullscreen' : 'Fullscreen';
     }
 
-    function createIdleOrder(previousUrl = '') {
+    function createSlideshowOrder(previousUrl = '') {
       const images = shuffle(mediaItems.filter(item => item.kind === 'image'));
 
       if (
@@ -1301,72 +1302,77 @@
       return images;
     }
 
-    function scheduleNextIdleImage() {
-      clearTimeout(idleSlideTimer);
+    function scheduleNextSlide() {
+      clearTimeout(slideshowTimer);
 
-      if (!idleSlideshowActive) return;
+      if (!slideshowActive) return;
 
-      idleSlideTimer = window.setTimeout(() => {
-        if (!idleSlideshowActive) return;
+      slideshowTimer = window.setTimeout(() => {
+        if (!slideshowActive) return;
 
-        idleOrderIndex += 1;
+        slideshowIndex += 1;
 
-        if (idleOrderIndex >= idleOrder.length) {
-          idleOrder = createIdleOrder(lastIdleImageUrl);
-          idleOrderIndex = 0;
-          viewerItems = idleOrder;
+        if (slideshowIndex >= slideshowOrder.length) {
+          slideshowOrder = createSlideshowOrder(lastSlideshowImageUrl);
+          slideshowIndex = 0;
+          viewerItems = slideshowOrder;
         }
 
-        const item = idleOrder[idleOrderIndex];
+        const item = slideshowOrder[slideshowIndex];
         if (!item) {
-          stopIdleSlideshow(true);
+          stopSlideshow(true);
           return;
         }
 
-        currentMediaIndex = idleOrderIndex;
-        lastIdleImageUrl = item.url;
+        currentMediaIndex = slideshowIndex;
+        lastSlideshowImageUrl = item.url;
         displayCurrentMedia(1, false);
-        scheduleNextIdleImage();
-      }, IDLE_SLIDE_DURATION);
+        scheduleNextSlide();
+      }, SLIDE_DURATION);
     }
 
-    function startIdleSlideshow() {
-      clearTimeout(idleStartTimer);
+    function startSlideshow(keepCurrent = false) {
+      clearTimeout(slideshowStartTimer);
 
-      if (
-        idleSlideshowActive ||
-        document.visibilityState !== 'visible'
-      ) return;
+      if (slideshowActive || document.visibilityState !== 'visible') return;
 
-      idleOrder = createIdleOrder(lastIdleImageUrl);
+      const currentItem = viewerItems[currentMediaIndex];
+      slideshowOrder = createSlideshowOrder(lastSlideshowImageUrl);
 
-      if (!idleOrder.length) {
+      if (keepCurrent && currentItem?.kind === 'image') {
+        slideshowOrder = [
+          currentItem,
+          ...slideshowOrder.filter(item => item.url !== currentItem.url)
+        ];
+      }
+
+      if (!slideshowOrder.length) {
         scheduleIdleSlideshow();
         return;
       }
 
-      idleSlideshowActive = true;
-      idleOrderIndex = 0;
-      viewerItems = idleOrder;
+      slideshowActive = true;
+      slideshowIndex = 0;
+      viewerItems = slideshowOrder;
       currentMediaIndex = 0;
-      lastIdleImageUrl = idleOrder[0].url;
+      lastSlideshowImageUrl = slideshowOrder[0].url;
 
-      lightbox.classList.add('is-idle-slideshow');
-      idleSlideshowLabel.hidden = false;
+      lightbox.classList.add('is-slideshow');
+      slideshowLabel.hidden = false;
       fullscreenButton.hidden = true;
       displayCurrentMedia(0, false);
-      scheduleNextIdleImage();
+      scheduleNextSlide();
     }
 
-    function stopIdleSlideshow(closeViewer = true) {
-      if (!idleSlideshowActive) return;
+    function stopSlideshow(closeViewer = true) {
+      if (!slideshowActive) return;
 
-      idleSlideshowActive = false;
-      clearTimeout(idleSlideTimer);
-      idleOrder = [];
-      idleOrderIndex = 0;
-      lightbox.classList.remove('is-idle-slideshow');
-      idleSlideshowLabel.hidden = true;
+      slideshowActive = false;
+      clearTimeout(slideshowTimer);
+      slideshowOrder = [];
+      slideshowIndex = 0;
+      lightbox.classList.remove('is-slideshow');
+      slideshowLabel.hidden = true;
 
       if (closeViewer) {
         hideViewer();
@@ -1376,25 +1382,25 @@
     }
 
     function scheduleIdleSlideshow() {
-      clearTimeout(idleStartTimer);
+      clearTimeout(slideshowStartTimer);
 
       if (
-        idleSlideshowActive ||
+        slideshowActive ||
         document.visibilityState !== 'visible' ||
         !mediaItems.some(item => item.kind === 'image')
       ) return;
 
-      idleStartTimer = window.setTimeout(
-        startIdleSlideshow,
-        IDLE_START_DELAY
+      slideshowStartTimer = window.setTimeout(
+        startSlideshow,
+        SLIDESHOW_IDLE_DELAY
       );
     }
 
     function registerUserActivity(event) {
-      if (idleSlideshowActive) {
+      if (slideshowActive) {
         if (event?.cancelable) event.preventDefault();
         if (event?.stopImmediatePropagation) event.stopImmediatePropagation();
-        stopIdleSlideshow(true);
+        stopSlideshow(true);
         return;
       }
 
@@ -1829,28 +1835,15 @@
     }
 
     async function loadMedia() {
-      const repository = detectRepository();
-
-      if (!repository) {
-        status.hidden = true;
-        showMessage('The gallery is not available right now.');
-        return;
-      }
-
       status.hidden = false;
       status.textContent = 'Reading archive...';
 
       try {
-        let branch = repository.branch;
-
-        if (!branch) {
-          const metadata = await githubFetch(
-            `https://api.github.com/repos/${encodeURIComponent(repository.owner)}/${encodeURIComponent(repository.repo)}`
-          );
-          branch = metadata.default_branch || 'main';
-        }
-
-        const files = await listRepositoryFiles(repository, repository.folder, branch);
+        const files = await listRepositoryFiles(
+          REPOSITORY,
+          REPOSITORY.folder,
+          REPOSITORY.branch
+        );
         const loose = [];
         const zips = [];
 
@@ -1910,6 +1903,7 @@
 
     prevMedia.addEventListener('click', () => navigateMedia(-1));
     nextMedia.addEventListener('click', () => navigateMedia(1));
+    slideshowButton.addEventListener('click', () => startSlideshow(true));
     fullscreenButton.addEventListener('click', toggleFullscreen);
     closeLightbox.addEventListener('click', closeMedia);
 
@@ -1961,7 +1955,7 @@
     }, { passive: true });
 
     document.addEventListener('keydown', event => {
-      if (idleSlideshowActive) {
+      if (slideshowActive) {
         registerUserActivity(event);
         return;
       }
@@ -2000,7 +1994,7 @@
     });
 
     document.addEventListener('pointermove', () => {
-      if (idleSlideshowActive) return;
+      if (slideshowActive) return;
 
       const now = Date.now();
       if (now - lastPointerMoveReset < 5000) return;
@@ -2019,10 +2013,10 @@
 
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
-        clearTimeout(idleStartTimer);
+        clearTimeout(slideshowStartTimer);
 
-        if (idleSlideshowActive) {
-          stopIdleSlideshow(true);
+        if (slideshowActive) {
+          stopSlideshow(true);
         }
       } else {
         scheduleIdleSlideshow();
@@ -2030,8 +2024,8 @@
     });
 
     window.addEventListener('beforeunload', () => {
-      clearTimeout(idleStartTimer);
-      clearTimeout(idleSlideTimer);
+      clearTimeout(slideshowStartTimer);
+      clearTimeout(slideshowTimer);
       objectUrls.forEach(URL.revokeObjectURL);
     });
 
