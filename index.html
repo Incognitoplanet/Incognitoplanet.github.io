@@ -2100,7 +2100,7 @@
         `https://api.github.com/repos/` +
         `${encodeURIComponent(repository.owner)}/` +
         `${encodeURIComponent(repository.repo)}/git/trees/` +
-        `${encodeURIComponent(branch)}?recursive=1`;
+        `${encodeURIComponent(branch)}?recursive=1&_=${Date.now()}`;
 
       const data = await fetchJson(endpoint, {
         headers: {
@@ -2134,12 +2134,60 @@
         }));
     }
 
+    async function listFilesWithGitHubContents(repository, folder, branch) {
+      const root = folder.replace(/^\/+|\/+$/g, '');
+      const queue = [root];
+      const files = [];
+
+      while (queue.length) {
+        const currentPath = queue.shift();
+        const endpoint =
+          `https://api.github.com/repos/` +
+          `${encodeURIComponent(repository.owner)}/` +
+          `${encodeURIComponent(repository.repo)}/contents/` +
+          `${encodeApiPath(currentPath)}` +
+          `?ref=${encodeURIComponent(branch)}&_=${Date.now()}`;
+
+        const entries = await fetchJson(endpoint, {
+          headers: {
+            Accept: 'application/vnd.github+json',
+            'X-GitHub-Api-Version': '2022-11-28'
+          }
+        });
+
+        if (!Array.isArray(entries)) {
+          throw new Error('GitHub did not return a folder listing');
+        }
+
+        for (const entry of entries) {
+          if (entry.type === 'dir') {
+            queue.push(entry.path);
+            continue;
+          }
+
+          if (entry.type !== 'file' || !supportedRepositoryFile(entry.path)) {
+            continue;
+          }
+
+          files.push({
+            url: rawGitHubUrl(repository, branch, entry.path, entry.sha || ''),
+            name: entry.name || entry.path.split('/').pop(),
+            path: entry.path,
+            extension: ext(entry.path),
+            sha: entry.sha || ''
+          });
+        }
+      }
+
+      return files;
+    }
+
     async function listFilesWithJsDelivr(repository, folder, branch) {
       const endpoint =
         `https://data.jsdelivr.com/v1/package/gh/` +
         `${encodeURIComponent(repository.owner)}/` +
         `${encodeURIComponent(repository.repo)}@` +
-        `${encodeURIComponent(branch)}/flat`;
+        `${encodeURIComponent(branch)}/flat?_=${Date.now()}`;
 
       const data = await fetchJson(endpoint);
       if (!Array.isArray(data.files)) {
@@ -2173,6 +2221,28 @@
 
     async function listRepositoryFiles(repository, folder, branch) {
       const errors = [];
+      const cacheKey = [
+        'incognito-gallery-files',
+        repository.owner,
+        repository.repo,
+        branch,
+        folder
+      ].join(':');
+
+      const saveCache = files => {
+        try {
+          sessionStorage.setItem(cacheKey, JSON.stringify(files));
+        } catch {}
+      };
+
+      const readCache = () => {
+        try {
+          const files = JSON.parse(sessionStorage.getItem(cacheKey) || '[]');
+          return Array.isArray(files) ? files : [];
+        } catch {
+          return [];
+        }
+      };
 
       try {
         status.textContent = 'Reading archive...';
@@ -2182,20 +2252,51 @@
           branch
         );
 
-        if (files.length) return files;
-        errors.push('GitHub returned no supported media');
+        if (files.length) {
+          saveCache(files);
+          return files;
+        }
+
+        errors.push('GitHub tree returned no supported media');
       } catch (error) {
         console.warn('Primary repository listing failed:', error);
-        errors.push(`GitHub: ${error.message}`);
+        errors.push(`GitHub tree: ${error.message}`);
       }
 
       try {
-        status.textContent = 'Trying backup...';
-        const files = await listFilesWithJsDelivr(
+        status.textContent = 'Refreshing folders...';
+        const files = await listFilesWithGitHubContents(
           repository,
           folder,
           branch
         );
+
+        if (files.length) {
+          saveCache(files);
+          return files;
+        }
+
+        errors.push('GitHub folders returned no supported media');
+      } catch (error) {
+        console.warn('GitHub folder listing failed:', error);
+        errors.push(`GitHub folders: ${error.message}`);
+      }
+
+      const cachedFiles = readCache();
+
+      try {
+        status.textContent = 'Trying backup...';
+        const backupFiles = await listFilesWithJsDelivr(
+          repository,
+          folder,
+          branch
+        );
+        const mergedFiles = new Map();
+
+        for (const file of backupFiles) mergedFiles.set(file.path, file);
+        for (const file of cachedFiles) mergedFiles.set(file.path, file);
+
+        const files = [...mergedFiles.values()];
 
         if (files.length) return files;
         errors.push('Backup returned no supported media');
@@ -2204,47 +2305,9 @@
         errors.push(`Backup: ${error.message}`);
       }
 
+      if (cachedFiles.length) return cachedFiles;
+
       throw new Error(errors.join(' | '));
-    }
-
-    let jsZipPromise = null;
-
-    function loadJSZip() {
-      if (window.JSZip) return Promise.resolve(window.JSZip);
-      if (jsZipPromise) return jsZipPromise;
-
-      jsZipPromise = new Promise((resolve, reject) => {
-        const script = document.createElement('script');
-        const timeout = window.setTimeout(() => {
-          script.remove();
-          jsZipPromise = null;
-          reject(new Error('ZIP support took too long to load'));
-        }, 12000);
-
-        script.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
-        script.async = true;
-
-        script.addEventListener('load', () => {
-          window.clearTimeout(timeout);
-
-          if (window.JSZip) {
-            resolve(window.JSZip);
-          } else {
-            jsZipPromise = null;
-            reject(new Error('ZIP support did not initialise'));
-          }
-        }, { once: true });
-
-        script.addEventListener('error', () => {
-          window.clearTimeout(timeout);
-          jsZipPromise = null;
-          reject(new Error('ZIP support could not be downloaded'));
-        }, { once: true });
-
-        document.head.append(script);
-      });
-
-      return jsZipPromise;
     }
 
     async function unpackZip(file, index, total) {
