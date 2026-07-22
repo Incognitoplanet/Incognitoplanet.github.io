@@ -260,6 +260,31 @@
     .date-section {
       width: 100%;
       margin: 0 0 58px;
+      position: relative;
+      isolation: isolate;
+    }
+
+    .date-section::after {
+      content: "";
+      position: absolute;
+      inset: -8px 0;
+      z-index: 12;
+      opacity: 0;
+      pointer-events: none;
+      background:
+        repeating-linear-gradient(
+          0deg,
+          rgba(255,255,255,.16) 0 1px,
+          transparent 1px 4px
+        ),
+        radial-gradient(circle at 18% 28%, rgba(136,170,167,.28), transparent 24%),
+        radial-gradient(circle at 76% 62%, rgba(118,81,96,.24), transparent 28%),
+        linear-gradient(90deg, transparent, rgba(255,255,255,.11), transparent);
+      mix-blend-mode: screen;
+    }
+
+    .date-section.crt-switch::after {
+      animation: crt-folder-switch .62s steps(6,end);
     }
 
     .date-section:last-child {
@@ -306,7 +331,10 @@
       font-weight: 400;
       letter-spacing: .045em;
       line-height: 1.3;
-      white-space: nowrap;
+      max-width: min(760px, 82vw);
+      text-align: center;
+      white-space: normal;
+      overflow-wrap: anywhere;
     }
 
     .date-grid {
@@ -350,6 +378,13 @@
       z-index: 3;
       transform: translateY(calc(var(--lift) - 8px)) rotate(0deg) scale(1.025);
       box-shadow: 0 17px 34px rgba(16,18,22,.38);
+    }
+
+    .polaroid.is-broken {
+      opacity: 0;
+      transform: translateY(var(--lift)) rotate(var(--tilt)) scale(.9);
+      pointer-events: none;
+      transition: opacity .2s ease, transform .2s ease;
     }
 
     .media-button {
@@ -531,13 +566,24 @@
 
     .lightbox-media {
       opacity: 1;
-      transform: translateX(0);
-      transition: opacity .18s ease, transform .18s ease;
+      transform: translateX(0) scale(1);
+      filter: blur(0);
+      transition: opacity .34s ease, transform .34s ease, filter .34s ease;
     }
 
     .lightbox-media.is-changing {
       opacity: 0;
-      transform: translateX(var(--slide-direction, 10px));
+      transform: translateX(var(--slide-direction, 10px)) scale(.992);
+      filter: blur(1px);
+    }
+
+    .lightbox.is-slideshow .lightbox-media {
+      transition: opacity 1s ease, transform 1s ease, filter 1s ease;
+    }
+
+    .lightbox.is-slideshow .lightbox-media.is-changing {
+      transform: scale(.985);
+      filter: blur(2px);
     }
 
     .lightbox-card img,
@@ -784,6 +830,15 @@
       50% { transform: translateY(-5px); }
     }
 
+    @keyframes crt-folder-switch {
+      0% { opacity: 0; transform: translateY(-3px) scaleY(.96); }
+      12% { opacity: .72; transform: translateY(2px) scaleY(1.02); }
+      28% { opacity: .28; transform: translateY(-1px) scaleY(.99); }
+      45% { opacity: .62; transform: translateY(1px) scaleY(1.01); }
+      68% { opacity: .18; transform: translateY(0) scaleY(1); }
+      100% { opacity: 0; transform: translateY(0) scaleY(1); }
+    }
+
     @media (max-width: 1250px) {
       .gallery,
       .date-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
@@ -949,6 +1004,7 @@
   <nav class="toolbar" aria-label="Gallery type">
     <button id="imagesBtn" type="button" data-active="true" aria-pressed="true">Images</button>
     <button id="videosBtn" type="button" data-active="false" aria-pressed="false">Videos</button>
+    <button id="crtBtn" type="button" data-active="false" aria-pressed="false">CRT FX: Off</button>
     <span class="status" id="status" role="status" aria-live="polite">Connecting...</span>
   </nav>
 
@@ -978,6 +1034,7 @@
     const gallery = document.querySelector('#gallery');
     const imagesBtn = document.querySelector('#imagesBtn');
     const videosBtn = document.querySelector('#videosBtn');
+    const crtBtn = document.querySelector('#crtBtn');
     const status = document.querySelector('#status');
     const lightbox = document.querySelector('#lightbox');
     const lightboxMedia = document.querySelector('#lightboxMedia');
@@ -1011,6 +1068,7 @@
 
     const SLIDESHOW_IDLE_DELAY = 3 * 60 * 1000;
     const SLIDE_DURATION = 90 * 1000;
+    const THUMBNAIL_SIZE = 640;
 
     const TINTS = [
       'rgba(92,130,129,.18)',
@@ -1039,6 +1097,10 @@
     let lastPointerMoveReset = 0;
     let fullscreenWasActive = false;
     let keepViewerAfterFullscreenExit = false;
+    let crtEffectEnabled = false;
+    let folderObserver = null;
+    let lastCrtSection = null;
+    const itemCards = new Map();
 
     const fullscreenElement = () =>
       document.fullscreenElement || document.webkitFullscreenElement || null;
@@ -1051,6 +1113,13 @@
         .replace(/[_-]+/g, ' ')
         .replace(/\s+/g, ' ')
         .trim() || 'Media';
+
+    const formatFolderTitle = value =>
+      value
+        .replace(/[_-]+/g, ' ')
+        .replace(/\s+/g, ' ')
+        .trim()
+        .replace(/\b\w/g, character => character.toUpperCase());
 
     const shuffle = array => {
       const copy = [...array];
@@ -1071,10 +1140,16 @@
       const segments = path.split('/').filter(Boolean);
 
       for (const segment of segments) {
-        const match = segment.match(/^(\d{2})-(\d{2})-(\d{4})(?:$|[ _-].*)/);
+        if (
+          IMAGE_EXTENSIONS.has(ext(segment)) ||
+          VIDEO_EXTENSIONS.has(ext(segment)) ||
+          ZIP_EXTENSIONS.has(ext(segment))
+        ) continue;
+
+        const match = segment.match(/^(\d{2})-(\d{2})-(\d{4})(?:[ _-]+(.+))?$/);
         if (!match) continue;
 
-        const [, dayText, monthText, yearText] = match;
+        const [, dayText, monthText, yearText, titleText = ''] = match;
         const day = Number(dayText);
         const month = Number(monthText);
         const year = Number(yearText);
@@ -1088,8 +1163,11 @@
 
         if (!isValid) continue;
 
+        const dateText = `${dayText}-${monthText}-${yearText}`;
+        const folderTitle = formatFolderTitle(titleText);
+
         return {
-          dateLabel: `${dayText}-${monthText}-${yearText}`,
+          dateLabel: folderTitle ? `${dateText} — ${folderTitle}` : dateText,
           dateSort: timestamp
         };
       }
@@ -1098,6 +1176,25 @@
         dateLabel: '',
         dateSort: Number.POSITIVE_INFINITY
       };
+    }
+
+    function createThumbnailUrl(url, extension = '') {
+      if (
+        !/^https?:\/\//i.test(url) ||
+        ['svg', 'ico'].includes(extension)
+      ) return url;
+
+      const parameters = new URLSearchParams({
+        url,
+        w: String(THUMBNAIL_SIZE),
+        h: String(THUMBNAIL_SIZE),
+        fit: 'cover',
+        output: 'webp',
+        q: '74',
+        we: '1'
+      });
+
+      return `https://wsrv.nl/?${parameters.toString()}`;
     }
 
     function showMessage(message, detail = '') {
@@ -1129,10 +1226,14 @@
       }
 
       const image = document.createElement('img');
-      image.src = item.url;
+      image.src = lightboxMode ? item.url : item.thumbnailUrl || item.url;
       image.alt = item.name;
       image.decoding = 'async';
       image.draggable = false;
+
+      if (!lightboxMode && item.thumbnailUrl && item.thumbnailUrl !== item.url) {
+        image.dataset.fallbackUrl = item.url;
+      }
 
       if (!lightboxMode) {
         const markLoaded = () => image.classList.add('is-loaded');
@@ -1163,8 +1264,11 @@
       lightboxMedia.style.setProperty('--slide-direction', `${direction < 0 ? -14 : 14}px`);
       lightboxMedia.classList.add('is-changing');
 
+      const transitionDelay = slideshowActive ? 760 : 270;
+
       mediaChangeTimer = window.setTimeout(() => {
         const media = makeElement(item, true);
+        media.addEventListener('error', () => handleViewerMediaError(item), { once: true });
         lightboxMedia.replaceChildren(media);
         lightboxCaption.textContent = item.name;
         const isImage = item.kind === 'image';
@@ -1181,7 +1285,7 @@
           media.autoplay = true;
           media.play().catch(() => {});
         }
-      }, 145);
+      }, transitionDelay);
 
       lightbox.hidden = false;
       document.body.style.overflow = 'hidden';
@@ -1189,12 +1293,11 @@
       if (focusClose) closeLightbox.focus();
     }
 
-    function openMedia(item, index) {
-      viewerItems = visibleMediaItems;
-      currentMediaIndex = Number.isInteger(index)
-        ? index
-        : viewerItems.indexOf(item);
+    function openMedia(item) {
+      viewerItems = visibleMediaItems.filter(entry => !entry.broken);
+      currentMediaIndex = viewerItems.indexOf(item);
 
+      if (currentMediaIndex < 0) return;
       displayCurrentMedia(0, true);
     }
 
@@ -1414,6 +1517,119 @@
       scheduleIdleSlideshow();
     }
 
+    function updateGalleryStatus() {
+      const count = mediaItems.filter(item => item.kind === activeType && !item.broken).length;
+      status.textContent = count
+        ? `${count} ${activeType === 'image' ? 'images' : 'videos'}`
+        : `No ${activeType === 'image' ? 'images' : 'videos'}`;
+    }
+
+    function removeEmptySection(card) {
+      const grid = card.closest('.date-grid');
+      const section = card.closest('.date-section');
+      card.remove();
+
+      if (grid && !grid.querySelector('.polaroid:not(.is-broken)')) {
+        section?.remove();
+      }
+
+      if (!gallery.querySelector('.polaroid:not(.is-broken)')) {
+        showMessage(`No working ${activeType === 'image' ? 'images' : 'videos'} were found.`);
+      }
+    }
+
+    function markItemBroken(item) {
+      if (item.broken) return;
+
+      item.broken = true;
+      mediaItems = mediaItems.filter(entry => entry !== item);
+      visibleMediaItems = visibleMediaItems.filter(entry => entry !== item);
+      viewerItems = viewerItems.filter(entry => entry !== item);
+      slideshowOrder = slideshowOrder.filter(entry => entry !== item);
+
+      const card = itemCards.get(item);
+      if (card) {
+        card.classList.add('is-broken');
+        window.setTimeout(() => removeEmptySection(card), 210);
+      }
+
+      itemCards.delete(item);
+      updateGalleryStatus();
+    }
+
+    function handleViewerMediaError(item) {
+      const failedIndex = currentMediaIndex;
+      markItemBroken(item);
+
+      if (!viewerItems.length) {
+        if (slideshowActive) stopSlideshow(true);
+        else hideViewer();
+        return;
+      }
+
+      currentMediaIndex = Math.min(failedIndex, viewerItems.length - 1);
+
+      if (slideshowActive) {
+        slideshowOrder = viewerItems;
+        slideshowIndex = currentMediaIndex;
+      }
+
+      displayCurrentMedia(1, false);
+    }
+
+    function triggerCrtEffect(section) {
+      section.classList.remove('crt-switch');
+      void section.offsetWidth;
+      section.classList.add('crt-switch');
+      window.setTimeout(() => section.classList.remove('crt-switch'), 650);
+    }
+
+    function setupFolderEffects() {
+      folderObserver?.disconnect();
+      folderObserver = null;
+      lastCrtSection = null;
+
+      if (!crtEffectEnabled) return;
+
+      const sections = [...gallery.querySelectorAll('.date-section')];
+      if (!sections.length) return;
+
+      folderObserver = new IntersectionObserver(entries => {
+        const current = entries.find(entry => entry.isIntersecting)?.target;
+        if (!current || current === lastCrtSection) return;
+
+        lastCrtSection = current;
+        triggerCrtEffect(current);
+      }, {
+        rootMargin: '-38% 0px -48% 0px',
+        threshold: 0
+      });
+
+      sections.forEach(section => folderObserver.observe(section));
+    }
+
+    function syncCrtButton() {
+      crtBtn.dataset.active = String(crtEffectEnabled);
+      crtBtn.setAttribute('aria-pressed', String(crtEffectEnabled));
+      crtBtn.textContent = `CRT FX: ${crtEffectEnabled ? 'On' : 'Off'}`;
+    }
+
+    function toggleCrtEffect() {
+      crtEffectEnabled = !crtEffectEnabled;
+      syncCrtButton();
+
+      try {
+        localStorage.setItem('incognitoCrtEffect', String(crtEffectEnabled));
+      } catch {}
+
+      setupFolderEffects();
+
+      if (crtEffectEnabled) {
+        const firstSection = gallery.querySelector('.date-section');
+        if (firstSection) triggerCrtEffect(firstSection);
+      }
+    }
+
     function syncFilterButtons() {
       const showingImages = activeType === 'image';
       imagesBtn.dataset.active = String(showingImages);
@@ -1429,12 +1645,13 @@
       card.style.setProperty('--lift', `${randomBetween(-4, 8).toFixed(0)}px`);
       card.style.setProperty('--delay', `${Math.min(index * 45, 900)}ms`);
       card.style.setProperty('--tint', TINTS[Math.floor(Math.random() * TINTS.length)]);
+      itemCards.set(item, card);
 
       const button = document.createElement('button');
       button.className = 'media-button';
       button.type = 'button';
       button.setAttribute('aria-label', `Open ${item.name}`);
-      button.addEventListener('click', () => openMedia(item, index));
+      button.addEventListener('click', () => openMedia(item));
 
       const frame = document.createElement('span');
       frame.className = 'media-window';
@@ -1443,9 +1660,16 @@
       if (media.tagName === 'IMG') media.loading = index < 5 ? 'eager' : 'lazy';
 
       media.addEventListener('error', () => {
-        card.remove();
-        console.error('Could not display media:', item.url);
-      }, { once: true });
+        const fallbackUrl = media.dataset.fallbackUrl;
+
+        if (fallbackUrl) {
+          delete media.dataset.fallbackUrl;
+          media.src = fallbackUrl;
+          return;
+        }
+
+        markItemBroken(item);
+      });
 
       frame.append(media);
 
@@ -1473,6 +1697,8 @@
     }
 
     function render() {
+      folderObserver?.disconnect();
+      itemCards.clear();
       gallery.replaceChildren();
       gallery.classList.remove('has-date-sections');
 
@@ -1483,9 +1709,9 @@
         return;
       }
 
-      const imageCount = mediaItems.filter(item => item.kind === 'image').length;
-      const videoCount = mediaItems.filter(item => item.kind === 'video').length;
-      const filteredItems = mediaItems.filter(item => item.kind === activeType);
+      const imageCount = mediaItems.filter(item => item.kind === 'image' && !item.broken).length;
+      const videoCount = mediaItems.filter(item => item.kind === 'video' && !item.broken).length;
+      const filteredItems = mediaItems.filter(item => item.kind === activeType && !item.broken);
 
       if (!filteredItems.length) {
         visibleMediaItems = [];
@@ -1516,7 +1742,7 @@
       }
 
       const groups = [...datedGroups.values()]
-        .sort((a, b) => a.sort - b.sort);
+        .sort((a, b) => a.sort - b.sort || a.label.localeCompare(b.label));
 
       if (undatedItems.length) {
         groups.push({
@@ -1573,7 +1799,8 @@
         gallery.append(fragment);
       }
 
-      status.textContent = `${visibleMediaItems.length} ${activeType === 'image' ? 'images' : 'videos'}`;
+      updateGalleryStatus();
+      setupFolderEffects();
     }
 
     async function fetchJson(url, options = {}) {
@@ -1831,6 +2058,7 @@
 
         results.push({
           url,
+          thumbnailUrl: url,
           name: readableName(entry.name),
           kind,
           fromZip: true,
@@ -1863,10 +2091,15 @@
               ...dateGroup
             });
           } else {
+            const kind = IMAGE_EXTENSIONS.has(file.extension) ? 'image' : 'video';
+
             loose.push({
               url: file.url,
+              thumbnailUrl: kind === 'image'
+                ? createThumbnailUrl(file.url, file.extension)
+                : file.url,
               name: readableName(file.name),
-              kind: IMAGE_EXTENSIONS.has(file.extension) ? 'image' : 'video',
+              kind,
               fromZip: false,
               ...dateGroup
             });
@@ -1907,6 +2140,8 @@
       syncFilterButtons();
       render();
     });
+
+    crtBtn.addEventListener('click', toggleCrtEffect);
 
     prevMedia.addEventListener('click', () => navigateMedia(-1));
     nextMedia.addEventListener('click', () => navigateMedia(1));
@@ -2061,7 +2296,12 @@
       objectUrls.forEach(URL.revokeObjectURL);
     });
 
+    try {
+      crtEffectEnabled = localStorage.getItem('incognitoCrtEffect') === 'true';
+    } catch {}
+
     syncFilterButtons();
+    syncCrtButton();
     loadMedia();
   </script>
 </body>
