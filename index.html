@@ -615,31 +615,6 @@
       right: 66px;
     }
 
-    .slideshow-label {
-      position: absolute;
-      top: 22px;
-      left: 50%;
-      z-index: 4;
-      max-width: calc(100% - 150px);
-      padding: 9px 13px;
-      transform: translateX(-50%);
-      border: 1px solid rgba(255,255,255,.18);
-      border-radius: 7px;
-      color: rgba(245,246,246,.88);
-      background: rgba(20,22,27,.76);
-      box-shadow: 0 6px 18px rgba(0,0,0,.24);
-      font-family: var(--pixel);
-      font-size: clamp(.48rem, 1.2vw, .62rem);
-      line-height: 1.5;
-      text-align: center;
-      pointer-events: none;
-      backdrop-filter: blur(6px);
-    }
-
-    .slideshow-label[hidden] {
-      display: none;
-    }
-
     .lightbox.is-slideshow {
       cursor: default;
       background: #111318;
@@ -982,9 +957,6 @@
       <button class="viewer-nav viewer-next" id="nextMedia" type="button" aria-label="Next media">›</button>
       <div class="lightbox-caption" id="lightboxCaption"></div>
       <div class="lightbox-counter" id="lightboxCounter"></div>
-      <div class="slideshow-label" id="slideshowLabel" hidden>
-        Random archive mode • click, touch or press a key to exit
-      </div>
       <button class="slideshow-button" id="slideshowButton" type="button" aria-label="Start random slideshow" title="Play slideshow">▶</button>
       <button class="fullscreen-button" id="fullscreenButton" type="button" aria-label="Enter fullscreen" title="Fullscreen">⛶</button>
       <button class="close-button" id="closeLightbox" type="button" aria-label="Close viewer">X</button>
@@ -1002,7 +974,6 @@
     const lightboxMedia = document.querySelector('#lightboxMedia');
     const lightboxCaption = document.querySelector('#lightboxCaption');
     const lightboxCounter = document.querySelector('#lightboxCounter');
-    const slideshowLabel = document.querySelector('#slideshowLabel');
     const slideshowButton = document.querySelector('#slideshowButton');
     const fullscreenButton = document.querySelector('#fullscreenButton');
     const closeLightbox = document.querySelector('#closeLightbox');
@@ -1244,7 +1215,6 @@
       lightboxMedia.replaceChildren();
       lightboxMedia.classList.remove('is-changing');
       lightbox.classList.remove('is-slideshow');
-      slideshowLabel.hidden = true;
       document.body.style.overflow = '';
       viewerItems = [];
       currentMediaIndex = -1;
@@ -1358,7 +1328,6 @@
       lastSlideshowImageUrl = slideshowOrder[0].url;
 
       lightbox.classList.add('is-slideshow');
-      slideshowLabel.hidden = false;
       fullscreenButton.hidden = true;
       displayCurrentMedia(0, false);
       scheduleNextSlide();
@@ -1372,7 +1341,6 @@
       slideshowOrder = [];
       slideshowIndex = 0;
       lightbox.classList.remove('is-slideshow');
-      slideshowLabel.hidden = true;
 
       if (closeViewer) {
         hideViewer();
