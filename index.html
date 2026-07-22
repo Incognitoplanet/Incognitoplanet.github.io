@@ -71,40 +71,39 @@
     .lightbox::after {
       content: "";
       position: fixed;
-      left: -3%;
-      right: -3%;
+      left: -4%;
+      right: -4%;
       top: 100vh;
-      height: 74px;
+      height: 150px;
       z-index: 45;
       pointer-events: none;
-      opacity: .54;
+      opacity: 0;
       background:
         linear-gradient(
           180deg,
           transparent 0%,
-          rgba(64,105,116,.05) 10%,
-          rgba(83,145,151,.14) 28%,
-          rgba(220,245,241,.34) 46%,
-          rgba(255,255,255,.72) 49%,
-          rgba(164,210,207,.34) 53%,
-          rgba(118,81,96,.12) 70%,
+          rgba(0,0,0,.016) 16%,
+          rgba(0,0,0,.045) 34%,
+          rgba(255,255,255,.026) 48%,
+          rgba(255,255,255,.085) 50%,
+          rgba(255,255,255,.022) 52%,
+          rgba(0,0,0,.038) 68%,
+          rgba(0,0,0,.012) 84%,
           transparent 100%
         ),
         repeating-linear-gradient(
           180deg,
-          transparent 0 5px,
-          rgba(255,255,255,.08) 6px,
-          transparent 7px 11px
+          transparent 0 7px,
+          rgba(255,255,255,.018) 8px,
+          transparent 9px 15px
         );
       box-shadow:
-        0 -18px 34px rgba(63,122,132,.08),
-        0 18px 40px rgba(118,81,96,.10),
-        inset 0 1px rgba(255,255,255,.18),
-        inset 0 -1px rgba(64,105,116,.14);
-      filter: blur(.35px);
-      opacity: 0;
-      transform: translateY(0);
-      mix-blend-mode: screen;
+        0 -28px 52px rgba(0,0,0,.025),
+        0 30px 56px rgba(255,255,255,.018);
+      filter: blur(.55px);
+      transform: translate3d(0,0,0) skewY(-.08deg);
+      mix-blend-mode: soft-light;
+      will-change: transform, opacity;
     }
 
     body.vhs-scan-active::after {
@@ -120,6 +119,71 @@
     .lightbox.vhs-scan-active:-webkit-full-screen::after {
       display: block;
       animation: vhs-scan-pass var(--vhs-scan-duration, 6s) linear both;
+    }
+
+    .crt-glass {
+      position: fixed;
+      inset: 0;
+      z-index: 44;
+      overflow: hidden;
+      pointer-events: none;
+    }
+
+    .crt-glass::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      opacity: .34;
+      background: repeating-linear-gradient(
+        to bottom,
+        transparent 0 3px,
+        rgba(0,0,0,.10) 3px 4px
+      );
+    }
+
+    .crt-glass::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at center, transparent 58%, rgba(7,9,12,.055) 78%, rgba(4,5,7,.18) 100%),
+        linear-gradient(128deg, rgba(255,255,255,.045), transparent 24%),
+        radial-gradient(ellipse at 22% 4%, rgba(255,255,255,.035), transparent 32%);
+    }
+
+    .crt-glass-viewer {
+      display: none;
+      z-index: 5;
+    }
+
+    .lightbox:fullscreen .crt-glass-viewer,
+    .lightbox:-webkit-full-screen .crt-glass-viewer {
+      display: block;
+    }
+
+    .lightbox-media {
+      isolation: isolate;
+    }
+
+    .lightbox-media::before,
+    .lightbox-media::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      z-index: 3;
+      opacity: 0;
+      pointer-events: none;
+      mix-blend-mode: screen;
+    }
+
+    .lightbox-media.is-crt-arriving::before {
+      background: linear-gradient(90deg, rgba(255,52,78,.12), transparent 3.5%, transparent 96.5%, rgba(61,218,255,.12));
+      animation: crt-colour-pulse .18s ease-out both;
+    }
+
+    .lightbox-media.is-crt-arriving::after {
+      background: linear-gradient(90deg, rgba(61,218,255,.08), transparent 2%, transparent 98%, rgba(255,52,78,.08));
+      animation: crt-colour-pulse .18s ease-out reverse both;
     }
 
     .site-header {
@@ -861,16 +925,24 @@
     }
 
 
+    @keyframes crt-colour-pulse {
+      0% { opacity: 0; transform: translateX(0); }
+      35% { opacity: 1; transform: translateX(1px); }
+      100% { opacity: 0; transform: translateX(0); }
+    }
+
     @keyframes vhs-scan-pass {
       0% {
         opacity: 0;
-        transform: translateY(0);
+        transform: translate3d(-.2%,0,0) skewY(-.08deg);
       }
-      5% { opacity: .54; }
-      92% { opacity: .54; }
+      8% { opacity: var(--vhs-scan-opacity, .22); }
+      38% { transform: translate3d(.15%,calc(-38vh - 58px),0) skewY(.05deg); }
+      66% { transform: translate3d(-.1%,calc(-66vh - 96px),0) skewY(-.04deg); }
+      92% { opacity: var(--vhs-scan-opacity, .22); }
       100% {
         opacity: 0;
-        transform: translateY(calc(-100vh - 78px));
+        transform: translate3d(.1%,calc(-100vh - 160px),0) skewY(.03deg);
       }
     }
 
@@ -1030,6 +1102,7 @@
 </head>
 
 <body>
+  <div class="crt-glass crt-glass-page" aria-hidden="true"></div>
   <header class="site-header">
     <p class="eyebrow">Photo archive // signal 001</p>
     <h1>Incognito Planet</h1>
@@ -1050,6 +1123,7 @@
   </main>
 
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Full media viewer" hidden>
+    <div class="crt-glass crt-glass-viewer" aria-hidden="true"></div>
     <div class="lightbox-card">
       <button class="viewer-nav viewer-prev" id="prevMedia" type="button" aria-label="Previous media">‹</button>
       <div class="lightbox-media" id="lightboxMedia"></div>
@@ -1121,6 +1195,7 @@
     let touchStartY = null;
     let touchStartX = null;
     let mediaChangeTimer = null;
+    let crtPulseTimer = null;
     let slideshowStartTimer = null;
     let slideshowTimer = null;
     let slideshowActive = false;
@@ -1170,8 +1245,8 @@
       if (document.visibilityState !== 'visible') return;
 
       const delay = initial
-        ? randomBetween(2500, 8000)
-        : randomBetween(9000, 24000);
+        ? randomBetween(5000, 14000)
+        : randomBetween(22000, 52000);
 
       vhsScanTimer = window.setTimeout(runVhsScan, delay);
     }
@@ -1182,11 +1257,14 @@
         return;
       }
 
-      const duration = Math.round(randomBetween(5400, 7000));
+      const duration = Math.round(randomBetween(7600, 11200));
+      const opacity = randomBetween(.15, .25).toFixed(3);
       const durationValue = `${duration}ms`;
 
       document.body.style.setProperty('--vhs-scan-duration', durationValue);
       lightbox.style.setProperty('--vhs-scan-duration', durationValue);
+      document.body.style.setProperty('--vhs-scan-opacity', opacity);
+      lightbox.style.setProperty('--vhs-scan-opacity', opacity);
       document.body.classList.add('vhs-scan-active');
       lightbox.classList.add('vhs-scan-active');
 
@@ -1342,6 +1420,11 @@
 
         requestAnimationFrame(() => {
           lightboxMedia.classList.remove('is-changing');
+          lightboxMedia.classList.add('is-crt-arriving');
+          clearTimeout(crtPulseTimer);
+          crtPulseTimer = window.setTimeout(() => {
+            lightboxMedia.classList.remove('is-crt-arriving');
+          }, 190);
         });
 
         if (item.kind === 'video') {
@@ -1397,9 +1480,10 @@
       if (video) video.pause();
 
       clearTimeout(mediaChangeTimer);
+      clearTimeout(crtPulseTimer);
       lightbox.hidden = true;
       lightboxMedia.replaceChildren();
-      lightboxMedia.classList.remove('is-changing');
+      lightboxMedia.classList.remove('is-changing', 'is-crt-arriving');
       lightbox.classList.remove('is-slideshow');
       document.body.style.overflow = '';
       viewerItems = [];
@@ -2306,6 +2390,7 @@
       clearTimeout(slideshowStartTimer);
       clearTimeout(slideshowTimer);
       clearTimeout(vhsScanTimer);
+      clearTimeout(crtPulseTimer);
       objectUrls.forEach(URL.revokeObjectURL);
     });
 
