@@ -716,7 +716,7 @@
       color: rgba(245,246,246,.72);
     }
 
-    .lightbox:fullscreen .slideshow-button {
+    .lightbox:fullscreen:not(.is-slideshow) .slideshow-button {
       display: block;
     }
 
@@ -1153,7 +1153,7 @@
         lightboxMedia.replaceChildren(media);
         lightboxCaption.textContent = item.name;
         const isImage = item.kind === 'image';
-        slideshowButton.hidden = !isImage;
+        slideshowButton.hidden = slideshowActive || !isImage;
         fullscreenButton.hidden = slideshowActive || !isImage;
         updateViewerControls();
 
