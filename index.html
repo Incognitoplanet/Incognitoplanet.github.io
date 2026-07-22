@@ -67,6 +67,61 @@
       mix-blend-mode: overlay;
     }
 
+    body::after,
+    .lightbox::after {
+      content: "";
+      position: fixed;
+      left: -3%;
+      right: -3%;
+      top: 100vh;
+      height: 74px;
+      z-index: 45;
+      pointer-events: none;
+      opacity: .54;
+      background:
+        linear-gradient(
+          180deg,
+          transparent 0%,
+          rgba(64,105,116,.05) 10%,
+          rgba(83,145,151,.14) 28%,
+          rgba(220,245,241,.34) 46%,
+          rgba(255,255,255,.72) 49%,
+          rgba(164,210,207,.34) 53%,
+          rgba(118,81,96,.12) 70%,
+          transparent 100%
+        ),
+        repeating-linear-gradient(
+          180deg,
+          transparent 0 5px,
+          rgba(255,255,255,.08) 6px,
+          transparent 7px 11px
+        );
+      box-shadow:
+        0 -18px 34px rgba(63,122,132,.08),
+        0 18px 40px rgba(118,81,96,.10),
+        inset 0 1px rgba(255,255,255,.18),
+        inset 0 -1px rgba(64,105,116,.14);
+      filter: blur(.35px);
+      opacity: 0;
+      transform: translateY(0);
+      mix-blend-mode: screen;
+    }
+
+    body.vhs-scan-active::after {
+      animation: vhs-scan-pass var(--vhs-scan-duration, 6s) linear both;
+    }
+
+    .lightbox::after {
+      z-index: 6;
+      display: none;
+    }
+
+    .lightbox.vhs-scan-active:fullscreen::after,
+    .lightbox.vhs-scan-active:-webkit-full-screen::after {
+      display: block;
+      animation: vhs-scan-pass var(--vhs-scan-duration, 6s) linear both;
+    }
+
     .site-header {
       width: min(1180px, calc(100% - 32px));
       min-height: clamp(250px, 31vw, 390px);
@@ -260,31 +315,6 @@
     .date-section {
       width: 100%;
       margin: 0 0 58px;
-      position: relative;
-      isolation: isolate;
-    }
-
-    .date-section::after {
-      content: "";
-      position: absolute;
-      inset: -8px 0;
-      z-index: 12;
-      opacity: 0;
-      pointer-events: none;
-      background:
-        repeating-linear-gradient(
-          0deg,
-          rgba(255,255,255,.16) 0 1px,
-          transparent 1px 4px
-        ),
-        radial-gradient(circle at 18% 28%, rgba(136,170,167,.28), transparent 24%),
-        radial-gradient(circle at 76% 62%, rgba(118,81,96,.24), transparent 28%),
-        linear-gradient(90deg, transparent, rgba(255,255,255,.11), transparent);
-      mix-blend-mode: screen;
-    }
-
-    .date-section.crt-switch::after {
-      animation: crt-folder-switch .62s steps(6,end);
     }
 
     .date-section:last-child {
@@ -830,13 +860,18 @@
       50% { transform: translateY(-5px); }
     }
 
-    @keyframes crt-folder-switch {
-      0% { opacity: 0; transform: translateY(-3px) scaleY(.96); }
-      12% { opacity: .72; transform: translateY(2px) scaleY(1.02); }
-      28% { opacity: .28; transform: translateY(-1px) scaleY(.99); }
-      45% { opacity: .62; transform: translateY(1px) scaleY(1.01); }
-      68% { opacity: .18; transform: translateY(0) scaleY(1); }
-      100% { opacity: 0; transform: translateY(0) scaleY(1); }
+
+    @keyframes vhs-scan-pass {
+      0% {
+        opacity: 0;
+        transform: translateY(0);
+      }
+      5% { opacity: .54; }
+      92% { opacity: .54; }
+      100% {
+        opacity: 0;
+        transform: translateY(calc(-100vh - 78px));
+      }
     }
 
     @media (max-width: 1250px) {
@@ -1004,7 +1039,6 @@
   <nav class="toolbar" aria-label="Gallery type">
     <button id="imagesBtn" type="button" data-active="true" aria-pressed="true">Images</button>
     <button id="videosBtn" type="button" data-active="false" aria-pressed="false">Videos</button>
-    <button id="crtBtn" type="button" data-active="false" aria-pressed="false">CRT FX: Off</button>
     <span class="status" id="status" role="status" aria-live="polite">Connecting...</span>
   </nav>
 
@@ -1034,7 +1068,6 @@
     const gallery = document.querySelector('#gallery');
     const imagesBtn = document.querySelector('#imagesBtn');
     const videosBtn = document.querySelector('#videosBtn');
-    const crtBtn = document.querySelector('#crtBtn');
     const status = document.querySelector('#status');
     const lightbox = document.querySelector('#lightbox');
     const lightboxMedia = document.querySelector('#lightboxMedia');
@@ -1095,11 +1128,9 @@
     let slideshowIndex = 0;
     let lastSlideshowImageUrl = '';
     let lastPointerMoveReset = 0;
+    let vhsScanTimer = null;
     let fullscreenWasActive = false;
     let keepViewerAfterFullscreenExit = false;
-    let crtEffectEnabled = false;
-    let folderObserver = null;
-    let lastCrtSection = null;
     const itemCards = new Map();
 
     const fullscreenElement = () =>
@@ -1132,6 +1163,39 @@
 
     const randomBetween = (minimum, maximum) =>
       Math.random() * (maximum - minimum) + minimum;
+
+    function scheduleVhsScan(initial = false) {
+      clearTimeout(vhsScanTimer);
+
+      if (document.visibilityState !== 'visible') return;
+
+      const delay = initial
+        ? randomBetween(2500, 8000)
+        : randomBetween(9000, 24000);
+
+      vhsScanTimer = window.setTimeout(runVhsScan, delay);
+    }
+
+    function runVhsScan() {
+      if (document.visibilityState !== 'visible') {
+        scheduleVhsScan();
+        return;
+      }
+
+      const duration = Math.round(randomBetween(5400, 7000));
+      const durationValue = `${duration}ms`;
+
+      document.body.style.setProperty('--vhs-scan-duration', durationValue);
+      lightbox.style.setProperty('--vhs-scan-duration', durationValue);
+      document.body.classList.add('vhs-scan-active');
+      lightbox.classList.add('vhs-scan-active');
+
+      vhsScanTimer = window.setTimeout(() => {
+        document.body.classList.remove('vhs-scan-active');
+        lightbox.classList.remove('vhs-scan-active');
+        scheduleVhsScan();
+      }, duration);
+    }
 
     const encodeApiPath = path =>
       path.split('/').filter(Boolean).map(encodeURIComponent).join('/');
@@ -1577,58 +1641,6 @@
       displayCurrentMedia(1, false);
     }
 
-    function triggerCrtEffect(section) {
-      section.classList.remove('crt-switch');
-      void section.offsetWidth;
-      section.classList.add('crt-switch');
-      window.setTimeout(() => section.classList.remove('crt-switch'), 650);
-    }
-
-    function setupFolderEffects() {
-      folderObserver?.disconnect();
-      folderObserver = null;
-      lastCrtSection = null;
-
-      if (!crtEffectEnabled) return;
-
-      const sections = [...gallery.querySelectorAll('.date-section')];
-      if (!sections.length) return;
-
-      folderObserver = new IntersectionObserver(entries => {
-        const current = entries.find(entry => entry.isIntersecting)?.target;
-        if (!current || current === lastCrtSection) return;
-
-        lastCrtSection = current;
-        triggerCrtEffect(current);
-      }, {
-        rootMargin: '-38% 0px -48% 0px',
-        threshold: 0
-      });
-
-      sections.forEach(section => folderObserver.observe(section));
-    }
-
-    function syncCrtButton() {
-      crtBtn.dataset.active = String(crtEffectEnabled);
-      crtBtn.setAttribute('aria-pressed', String(crtEffectEnabled));
-      crtBtn.textContent = `CRT FX: ${crtEffectEnabled ? 'On' : 'Off'}`;
-    }
-
-    function toggleCrtEffect() {
-      crtEffectEnabled = !crtEffectEnabled;
-      syncCrtButton();
-
-      try {
-        localStorage.setItem('incognitoCrtEffect', String(crtEffectEnabled));
-      } catch {}
-
-      setupFolderEffects();
-
-      if (crtEffectEnabled) {
-        const firstSection = gallery.querySelector('.date-section');
-        if (firstSection) triggerCrtEffect(firstSection);
-      }
-    }
 
     function syncFilterButtons() {
       const showingImages = activeType === 'image';
@@ -1697,7 +1709,6 @@
     }
 
     function render() {
-      folderObserver?.disconnect();
       itemCards.clear();
       gallery.replaceChildren();
       gallery.classList.remove('has-date-sections');
@@ -1800,7 +1811,6 @@
       }
 
       updateGalleryStatus();
-      setupFolderEffects();
     }
 
     async function fetchJson(url, options = {}) {
@@ -2141,8 +2151,6 @@
       render();
     });
 
-    crtBtn.addEventListener('click', toggleCrtEffect);
-
     prevMedia.addEventListener('click', () => navigateMedia(-1));
     nextMedia.addEventListener('click', () => navigateMedia(1));
     slideshowButton.addEventListener('click', () => startSlideshow(true));
@@ -2281,28 +2289,30 @@
     document.addEventListener('visibilitychange', () => {
       if (document.visibilityState === 'hidden') {
         clearTimeout(slideshowStartTimer);
+        clearTimeout(vhsScanTimer);
+        document.body.classList.remove('vhs-scan-active');
+        lightbox.classList.remove('vhs-scan-active');
 
         if (slideshowActive) {
           stopSlideshow(true);
         }
       } else {
         scheduleIdleSlideshow();
+        scheduleVhsScan(true);
       }
     });
 
     window.addEventListener('beforeunload', () => {
       clearTimeout(slideshowStartTimer);
       clearTimeout(slideshowTimer);
+      clearTimeout(vhsScanTimer);
       objectUrls.forEach(URL.revokeObjectURL);
     });
 
-    try {
-      crtEffectEnabled = localStorage.getItem('incognitoCrtEffect') === 'true';
-    } catch {}
 
     syncFilterButtons();
-    syncCrtButton();
     loadMedia();
+    scheduleVhsScan(true);
   </script>
 </body>
 </html>
