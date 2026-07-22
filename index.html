@@ -748,8 +748,6 @@
 
   <button class="back-to-top" id="backToTop" type="button" aria-label="Back to top">↑</button>
 
-  <script src="https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js"></script>
-  <script src="config.js"></script>
   <script>
     const gallery = document.querySelector('#gallery');
     const imagesBtn = document.querySelector('#imagesBtn');
@@ -763,6 +761,13 @@
     const prevMedia = document.querySelector('#prevMedia');
     const nextMedia = document.querySelector('#nextMedia');
     const backToTop = document.querySelector('#backToTop');
+
+    const REPOSITORY = Object.freeze({
+      owner: 'Incognitoplanet',
+      repo: 'Incognitoplanet.github.io',
+      branch: 'main',
+      folder: 'incog'
+    });
 
     const IMAGE_EXTENSIONS = new Set(['jpg','jpeg','png','gif','webp','avif','svg','bmp','ico']);
     const VIDEO_EXTENSIONS = new Set(['mp4','webm','ogv','ogg','mov','m4v']);
@@ -819,30 +824,7 @@
       path.split('/').filter(Boolean).map(encodeURIComponent).join('/');
 
     function detectRepository() {
-      const settings = window.GALLERY_CONFIG || {};
-
-      if (settings.owner && settings.repo) {
-        return {
-          owner: settings.owner.trim(),
-          repo: settings.repo.trim(),
-          branch: (settings.branch || '').trim(),
-          folder: (settings.folder || 'incog').replace(/^\/+|\/+$/g, '') || 'incog'
-        };
-      }
-
-      const hostname = location.hostname.toLowerCase();
-      if (!hostname.endsWith('.github.io')) return null;
-
-      const owner = hostname.slice(0, -'.github.io'.length);
-      const parts = location.pathname.split('/').filter(Boolean);
-      const repo = parts[0] || `${owner}.github.io`;
-
-      return {
-        owner,
-        repo,
-        branch: '',
-        folder: (settings.folder || 'incog').replace(/^\/+|\/+$/g, '') || 'incog'
-      };
+      return { ...REPOSITORY };
     }
 
     function showMessage(message, detail = '') {
@@ -1112,6 +1094,46 @@
       return results;
     }
 
+    let jsZipPromise = null;
+
+    function loadJSZip() {
+      if (window.JSZip) return Promise.resolve(window.JSZip);
+      if (jsZipPromise) return jsZipPromise;
+
+      jsZipPromise = new Promise((resolve, reject) => {
+        const script = document.createElement('script');
+        const timeout = window.setTimeout(() => {
+          script.remove();
+          jsZipPromise = null;
+          reject(new Error('ZIP support took too long to load'));
+        }, 12000);
+
+        script.src = 'https://cdn.jsdelivr.net/npm/jszip@3.10.1/dist/jszip.min.js';
+        script.async = true;
+
+        script.addEventListener('load', () => {
+          window.clearTimeout(timeout);
+
+          if (window.JSZip) {
+            resolve(window.JSZip);
+          } else {
+            jsZipPromise = null;
+            reject(new Error('ZIP support did not initialise'));
+          }
+        }, { once: true });
+
+        script.addEventListener('error', () => {
+          window.clearTimeout(timeout);
+          jsZipPromise = null;
+          reject(new Error('ZIP support could not be downloaded'));
+        }, { once: true });
+
+        document.head.append(script);
+      });
+
+      return jsZipPromise;
+    }
+
     async function unpackZip(file, index, total) {
       status.textContent = `Opening ZIP ${index}/${total}...`;
 
@@ -1121,7 +1143,8 @@
       }
 
       const buffer = await response.arrayBuffer();
-      const zip = await JSZip.loadAsync(buffer);
+      const JSZipLibrary = await loadJSZip();
+      const zip = await JSZipLibrary.loadAsync(buffer);
       const results = [];
 
       const entries = Object.values(zip.files).filter(entry =>
@@ -1213,7 +1236,7 @@
       } catch (error) {
         console.error(error);
         status.textContent = 'Load error';
-        showMessage('The gallery could not be loaded.');
+        showMessage('The gallery could not be loaded. Please refresh the page.');
       }
     }
 
