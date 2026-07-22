@@ -1625,6 +1625,44 @@
       box-shadow: none;
     }
 
+  
+    /* Clean Polaroids: remove the coloured outline and decorative line */
+    .polaroid {
+      border: 1px solid rgba(23, 25, 30, .24);
+      box-shadow: 0 10px 24px rgba(16, 18, 22, .28);
+    }
+
+    .polaroid::before,
+    .polaroid::after {
+      display: none !important;
+      content: none !important;
+    }
+
+    .polaroid:hover,
+    .polaroid:focus-within {
+      box-shadow: 0 17px 34px rgba(16, 18, 22, .38);
+    }
+
+    /* Dark close control with a clear white X */
+    .close-button {
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, .22);
+      background: #24272d;
+      box-shadow: 0 3px 0 #111318;
+    }
+
+    .close-button:hover {
+      color: #ffffff;
+      background: #343840;
+      box-shadow: 0 4px 0 #111318;
+    }
+
+    .close-button:active {
+      color: #ffffff;
+      background: #1d2025;
+      box-shadow: 0 1px 0 #111318;
+    }
+
   </style>
 </head>
 <body>
