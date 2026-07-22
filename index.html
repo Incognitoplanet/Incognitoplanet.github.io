@@ -257,6 +257,70 @@
       gap: clamp(20px, 2.2vw, 32px);
     }
 
+
+    .gallery.has-date-sections {
+      display: block;
+    }
+
+    .date-section {
+      width: 100%;
+      margin: 0 0 58px;
+    }
+
+    .date-section:last-child {
+      margin-bottom: 0;
+    }
+
+    .date-divider {
+      display: grid;
+      grid-template-columns: minmax(24px, 1fr) auto minmax(24px, 1fr);
+      align-items: center;
+      gap: clamp(12px, 2vw, 24px);
+      margin: 2px 0 30px;
+      color: rgba(239, 241, 240, .92);
+    }
+
+    .date-divider::before,
+    .date-divider::after {
+      content: "";
+      height: 1px;
+      background: linear-gradient(
+        90deg,
+        transparent,
+        rgba(136, 170, 167, .72)
+      );
+    }
+
+    .date-divider::after {
+      background: linear-gradient(
+        90deg,
+        rgba(136, 170, 167, .72),
+        transparent
+      );
+    }
+
+    .date-heading {
+      margin: 0;
+      padding: 9px 14px 8px;
+      border: 1px solid rgba(255, 255, 255, .12);
+      border-radius: 7px;
+      background: rgba(36, 40, 46, .84);
+      box-shadow: 0 4px 0 rgba(18, 20, 24, .34);
+      font-family: var(--pixel);
+      font-size: clamp(.64rem, 1.5vw, .82rem);
+      font-weight: 400;
+      letter-spacing: .045em;
+      line-height: 1.3;
+      white-space: nowrap;
+    }
+
+    .date-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      align-items: start;
+      gap: clamp(20px, 2.2vw, 32px);
+    }
+
     .polaroid {
       --tilt: 0deg;
       --lift: 0px;
@@ -585,11 +649,13 @@
     }
 
     @media (max-width: 1250px) {
-      .gallery { grid-template-columns: repeat(4, minmax(0,1fr)); }
+      .gallery,
+      .date-grid { grid-template-columns: repeat(4, minmax(0,1fr)); }
     }
 
     @media (max-width: 980px) {
-      .gallery { grid-template-columns: repeat(3, minmax(0,1fr)); }
+      .gallery,
+      .date-grid { grid-template-columns: repeat(3, minmax(0,1fr)); }
     }
 
     @media (max-width: 850px) {
@@ -620,7 +686,8 @@
         justify-content: center;
       }
 
-      .gallery {
+      .gallery,
+      .date-grid {
         grid-template-columns: repeat(2, minmax(0,1fr));
         gap: 26px 18px;
       }
@@ -658,6 +725,23 @@
       .gallery {
         width: min(340px, calc(100% - 24px));
         grid-template-columns: 1fr;
+      }
+
+      .date-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .gallery.has-date-sections {
+        width: min(100% - 24px, 1540px);
+      }
+
+      .date-divider {
+        gap: 9px;
+      }
+
+      .date-heading {
+        padding-inline: 10px;
+        font-size: .58rem;
       }
 
       .lightbox {
@@ -823,6 +907,39 @@
     const encodeApiPath = path =>
       path.split('/').filter(Boolean).map(encodeURIComponent).join('/');
 
+    function extractDateGroup(path = '') {
+      const segments = path.split('/').filter(Boolean);
+
+      for (const segment of segments) {
+        const match = segment.match(/^(\d{2})-(\d{2})-(\d{4})(?:$|[ _-].*)/);
+        if (!match) continue;
+
+        const [, dayText, monthText, yearText] = match;
+        const day = Number(dayText);
+        const month = Number(monthText);
+        const year = Number(yearText);
+        const timestamp = Date.UTC(year, month - 1, day);
+        const date = new Date(timestamp);
+
+        const isValid =
+          date.getUTCFullYear() === year &&
+          date.getUTCMonth() === month - 1 &&
+          date.getUTCDate() === day;
+
+        if (!isValid) continue;
+
+        return {
+          dateLabel: `${dayText}-${monthText}-${yearText}`,
+          dateSort: timestamp
+        };
+      }
+
+      return {
+        dateLabel: '',
+        dateSort: Number.POSITIVE_INFINITY
+      };
+    }
+
     function detectRepository() {
       return { ...REPOSITORY };
     }
@@ -955,8 +1072,59 @@
       videosBtn.setAttribute('aria-pressed', String(!showingImages));
     }
 
+    function createMediaCard(item, index) {
+      const card = document.createElement('figure');
+      card.className = 'polaroid';
+      card.style.setProperty('--tilt', `${randomBetween(-3.2, 3.2).toFixed(2)}deg`);
+      card.style.setProperty('--lift', `${randomBetween(-4, 8).toFixed(0)}px`);
+      card.style.setProperty('--delay', `${Math.min(index * 45, 900)}ms`);
+      card.style.setProperty('--tint', TINTS[Math.floor(Math.random() * TINTS.length)]);
+
+      const button = document.createElement('button');
+      button.className = 'media-button';
+      button.type = 'button';
+      button.setAttribute('aria-label', `Open ${item.name}`);
+      button.addEventListener('click', () => openMedia(item, index));
+
+      const frame = document.createElement('span');
+      frame.className = 'media-window';
+
+      const media = makeElement(item, false);
+      if (media.tagName === 'IMG') media.loading = index < 5 ? 'eager' : 'lazy';
+
+      media.addEventListener('error', () => {
+        card.remove();
+        console.error('Could not display media:', item.url);
+      }, { once: true });
+
+      frame.append(media);
+
+      if (item.kind === 'video') {
+        const badge = document.createElement('span');
+        badge.className = 'video-badge';
+        badge.textContent = 'Video';
+        frame.append(badge);
+      }
+
+      if (item.fromZip) {
+        const badge = document.createElement('span');
+        badge.className = 'zip-badge';
+        badge.textContent = 'ZIP';
+        frame.append(badge);
+      }
+
+      const caption = document.createElement('figcaption');
+      caption.className = 'caption';
+      caption.textContent = item.name;
+
+      button.append(frame);
+      card.append(button, caption);
+      return card;
+    }
+
     function render() {
       gallery.replaceChildren();
+      gallery.classList.remove('has-date-sections');
 
       if (!mediaItems.length) {
         visibleMediaItems = [];
@@ -967,68 +1135,94 @@
 
       const imageCount = mediaItems.filter(item => item.kind === 'image').length;
       const videoCount = mediaItems.filter(item => item.kind === 'video').length;
-      visibleMediaItems = mediaItems.filter(item => item.kind === activeType);
+      const filteredItems = mediaItems.filter(item => item.kind === activeType);
 
-      if (!visibleMediaItems.length) {
+      if (!filteredItems.length) {
+        visibleMediaItems = [];
         const label = activeType === 'image' ? 'images' : 'videos';
         showMessage(`No ${label} were found.`);
         status.textContent = `${imageCount} images • ${videoCount} videos`;
         return;
       }
 
-      const fragment = document.createDocumentFragment();
+      const datedGroups = new Map();
+      const undatedItems = [];
 
-      visibleMediaItems.forEach((item, index) => {
-        const card = document.createElement('figure');
-        card.className = 'polaroid';
-        card.style.setProperty('--tilt', `${randomBetween(-3.2, 3.2).toFixed(2)}deg`);
-        card.style.setProperty('--lift', `${randomBetween(-4, 8).toFixed(0)}px`);
-        card.style.setProperty('--delay', `${Math.min(index * 55, 1100)}ms`);
-        card.style.setProperty('--tint', TINTS[Math.floor(Math.random() * TINTS.length)]);
-
-        const button = document.createElement('button');
-        button.className = 'media-button';
-        button.type = 'button';
-        button.setAttribute('aria-label', `Open ${item.name}`);
-        button.addEventListener('click', () => openMedia(item, index));
-
-        const frame = document.createElement('span');
-        frame.className = 'media-window';
-
-        const media = makeElement(item, false);
-        if (media.tagName === 'IMG') media.loading = index < 5 ? 'eager' : 'lazy';
-
-        media.addEventListener('error', () => {
-          card.remove();
-          console.error('Could not display media:', item.url);
-        }, { once: true });
-
-        frame.append(media);
-
-        if (item.kind === 'video') {
-          const badge = document.createElement('span');
-          badge.className = 'video-badge';
-          badge.textContent = 'Video';
-          frame.append(badge);
+      for (const item of filteredItems) {
+        if (!item.dateLabel) {
+          undatedItems.push(item);
+          continue;
         }
 
-        if (item.fromZip) {
-          const badge = document.createElement('span');
-          badge.className = 'zip-badge';
-          badge.textContent = 'ZIP';
-          frame.append(badge);
+        if (!datedGroups.has(item.dateLabel)) {
+          datedGroups.set(item.dateLabel, {
+            label: item.dateLabel,
+            sort: item.dateSort,
+            items: []
+          });
         }
 
-        const caption = document.createElement('figcaption');
-        caption.className = 'caption';
-        caption.textContent = item.name;
+        datedGroups.get(item.dateLabel).items.push(item);
+      }
 
-        button.append(frame);
-        card.append(button, caption);
-        fragment.append(card);
-      });
+      const groups = [...datedGroups.values()]
+        .sort((a, b) => a.sort - b.sort);
 
-      gallery.append(fragment);
+      if (undatedItems.length) {
+        groups.push({
+          label: 'Other',
+          sort: Number.POSITIVE_INFINITY,
+          items: undatedItems
+        });
+      }
+
+      const hasDatedFolders = datedGroups.size > 0;
+
+      if (!hasDatedFolders) {
+        visibleMediaItems = filteredItems;
+        const fragment = document.createDocumentFragment();
+
+        visibleMediaItems.forEach((item, index) => {
+          fragment.append(createMediaCard(item, index));
+        });
+
+        gallery.append(fragment);
+      } else {
+        gallery.classList.add('has-date-sections');
+        visibleMediaItems = groups.flatMap(group => group.items);
+
+        let globalIndex = 0;
+        const fragment = document.createDocumentFragment();
+
+        for (const group of groups) {
+          const section = document.createElement('section');
+          section.className = 'date-section';
+          section.setAttribute('aria-label', group.label);
+
+          const divider = document.createElement('header');
+          divider.className = 'date-divider';
+
+          const heading = document.createElement('h2');
+          heading.className = 'date-heading';
+          heading.textContent = group.label;
+
+          divider.append(heading);
+
+          const grid = document.createElement('div');
+          grid.className = 'date-grid';
+
+          for (const item of group.items) {
+            grid.append(createMediaCard(item, globalIndex));
+            globalIndex += 1;
+          }
+
+          section.append(divider, grid);
+          fragment.append(section);
+        }
+
+        gallery.append(fragment);
+      }
+
       status.textContent = `${visibleMediaItems.length} ${activeType === 'image' ? 'images' : 'videos'}`;
     }
 
@@ -1171,11 +1365,20 @@
         const url = URL.createObjectURL(typedBlob);
         objectUrls.push(url);
 
+        const entryDateGroup = extractDateGroup(entry.name);
+        const inheritedDateGroup = entryDateGroup.dateLabel
+          ? entryDateGroup
+          : {
+              dateLabel: file.dateLabel || '',
+              dateSort: file.dateSort ?? Number.POSITIVE_INFINITY
+            };
+
         results.push({
           url,
           name: readableName(entry.name),
           kind,
-          fromZip: true
+          fromZip: true,
+          ...inheritedDateGroup
         });
       }
 
@@ -1209,14 +1412,20 @@
         const zips = [];
 
         for (const file of files) {
+          const dateGroup = extractDateGroup(file.path);
+
           if (file.extension === 'zip') {
-            zips.push(file);
+            zips.push({
+              ...file,
+              ...dateGroup
+            });
           } else {
             loose.push({
               url: file.url,
               name: readableName(file.name),
               kind: IMAGE_EXTENSIONS.has(file.extension) ? 'image' : 'video',
-              fromZip: false
+              fromZip: false,
+              ...dateGroup
             });
           }
         }
