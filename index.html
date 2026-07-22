@@ -391,6 +391,15 @@
       background: #c4c4c7;
     }
 
+    .media-window img,
+    .lightbox-card img {
+      pointer-events: none;
+      -webkit-touch-callout: none;
+      -webkit-user-drag: none;
+      -webkit-user-select: none;
+      user-select: none;
+    }
+
     .media-window img {
       filter: blur(15px) saturate(.72);
       transform: scale(1.08);
@@ -1123,6 +1132,7 @@
       image.src = item.url;
       image.alt = item.name;
       image.decoding = 'async';
+      image.draggable = false;
 
       if (!lightboxMode) {
         const markLoaded = () => image.classList.add('is-loaded');
@@ -1907,6 +1917,21 @@
     document.addEventListener('fullscreenchange', handleFullscreenChange);
     document.addEventListener('webkitfullscreenchange', handleFullscreenChange);
 
+    document.addEventListener('contextmenu', event => {
+      if (event.target.closest?.('.media-button, .lightbox-media')) {
+        event.preventDefault();
+      }
+    });
+
+    document.addEventListener('dragstart', event => {
+      if (event.target.closest?.('.media-button, .lightbox-media')) {
+        event.preventDefault();
+      }
+    });
+
+    gallery.addEventListener('copy', event => event.preventDefault());
+    lightbox.addEventListener('copy', event => event.preventDefault());
+
     lightbox.addEventListener('click', event => {
       if (event.target === lightbox) closeMedia();
     });
@@ -1952,6 +1977,16 @@
     }, { passive: true });
 
     document.addEventListener('keydown', event => {
+      const protectedShortcut =
+        (event.ctrlKey || event.metaKey) &&
+        ['c', 's'].includes(event.key.toLowerCase()) &&
+        (!lightbox.hidden || gallery.contains(document.activeElement));
+
+      if (protectedShortcut) {
+        event.preventDefault();
+        return;
+      }
+
       if (slideshowActive) {
         registerUserActivity(event);
         return;
